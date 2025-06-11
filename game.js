@@ -554,7 +554,14 @@ smokeParticles.forEach(p => {
 smokeParticles = smokeParticles.filter(p => p.alpha > 0);
 
 
-requestAnimationFrame(draw);
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // ... al je teken- en update-logica ...
+
+  requestAnimationFrame(draw); // ← deze moet echt hierbinnen staan!
+}
+
 
 
 let imagesLoaded = 0;
