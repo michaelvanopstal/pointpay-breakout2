@@ -19,21 +19,11 @@ let rightPressed = false;
 let leftPressed = false;
 let flagsOnPaddle = false;
 let flagTimer = 0;
-let powerBlockUsed = false;
 let flyingCoins = [];
-let powerBlockRespawnTime = 100000; // 3 minuten in ms
-let powerBlockHitTime = null;
 let lives = 3;
 let level = 1;
 let gameOver = false;
 let ballMoving = false;
-let powerBlock2Timer = 0;
-let powerBlock2Interval = 15000; // verschijnt om de 15 seconden
-let blinkInterval2;
-let powerBlock2Row = 0;
-let powerBlock2Col = 0;
-let powerBlock2RespawnDelay = 20000; // 20 seconden na raken terug
-let powerBlock2HitTime = null;
 let rocketFired = false;
 let rocketSpeed = 10;
 let smokeParticles = [];
@@ -453,99 +443,7 @@ function resetBricks() {
 const powerBlockImg = new Image();
 powerBlockImg.src = "power_block_logo.png";
 
-let powerBlock = {
-  x: 0,
-  y: 0,
-  width: brickWidth,
-  height: brickHeight,
-  active: false,
-  visible: true
-};
 
-let powerBlockTimer = 0;
-let powerBlockInterval = 10000;
-let powerBlockHit = false;
-let blinkInterval;
-let powerBlockRow = 0;
-let powerBlockCol = 0;
-
-
-function spawnPowerBlock() {
-  const randCol = Math.floor(Math.random() * brickColumnCount);
-  const randRow = Math.floor(Math.random() * brickRowCount);
-  powerBlockCol = randCol;
-  powerBlockRow = randRow;
-
-  const totalBricksWidth = brickColumnCount * brickWidth;
-  const offsetX = (canvas.width - totalBricksWidth) / 2;
-
-  powerBlock.x = offsetX + randCol * brickWidth;
-  powerBlock.y = randRow * brickHeight;
-  powerBlock.active = true;
-  powerBlock.visible = true;
-
-  clearInterval(blinkInterval);
-  blinkInterval = setInterval(() => {
-    if (powerBlock.active) {
-      powerBlock.visible = !powerBlock.visible;
-    } else {
-      clearInterval(blinkInterval);
-    }
-  }, 300); 
-}
-
-
-   function startPowerBlockJumping() {
-  setInterval(() => {
-    if (powerBlock.active) {
-      spawnPowerBlock(); // Verspring elke 15 seconden
-    }
-  }, 25000);
-}
-
-
-function spawnPowerBlock2() {
-  const randCol = Math.floor(Math.random() * brickColumnCount);
-  const randRow = Math.floor(Math.random() * brickRowCount); 
-  const totalBricksWidth = brickColumnCount * brickWidth;
-  const offsetX = (canvas.width - totalBricksWidth) / 2;
-
-  powerBlock2Col = randCol;
-  powerBlock2Row = randRow;
-  powerBlock2.x = offsetX + randCol * brickWidth;
-  powerBlock2.y = randRow * brickHeight;
-  powerBlock2.active = true;
-  powerBlock2.visible = true;
-
-  clearInterval(blinkInterval2);
-  blinkInterval2 = setInterval(() => {
-    if (powerBlock2.active) {
-      powerBlock2.visible = !powerBlock2.visible;
-    } else {
-      clearInterval(blinkInterval2);
-    }
-  }, 500); // knipper elke 500ms
-}
-
-
-
-function drawPowerBlock() {
-  if (powerBlock.active && powerBlock.visible) {
-    ctx.drawImage(powerBlockImg, powerBlock.x, powerBlock.y, powerBlock.width, powerBlock.height);
-  }
-}
-
-function drawPowerBlock2() {
-  if (powerBlock2.active && powerBlock2.visible) {
-    ctx.drawImage(
-      powerBlock2Img,
-      powerBlock2.x + brickWidth * 0.05,
-      powerBlock2.y + brickHeight * 0.05,
-      brickWidth * 0.9,
-      brickHeight * 0.9
-    );
-  }
-}
 
 
 function draw() {
@@ -554,8 +452,7 @@ function draw() {
   drawCoins();
   checkCoinCollision();
   drawBricks();
-  drawPowerBlock();
-  drawPowerBlock2();
+
   drawBall();
   drawPaddle();
   drawPaddleFlags();
@@ -603,29 +500,6 @@ function draw() {
     x = paddleX + paddleWidth / 2 - ballRadius;
     resetBricks();
     y = canvas.height - paddleHeight - ballRadius * 2;
-  }
-
-  
-  if (Date.now() - powerBlockTimer > powerBlockInterval && !powerBlock.active && ballLaunched && !powerBlockUsed) {
-  spawnPowerBlock();
-  powerBlockTimer = Date.now();
-}
-
-  if (
-  powerBlockHitTime &&
-  Date.now() - powerBlockHitTime > powerBlockRespawnTime
-) {
-  spawnPowerBlock();
-  powerBlockUsed = false;
-  powerBlockHitTime = null;
-}
-  
-  if (
-    powerBlock2HitTime &&
-    Date.now() - powerBlock2HitTime > powerBlock2RespawnDelay
-  ) {
-    spawnPowerBlock2();
-    powerBlock2HitTime = null;
   }
   
  if (rocketActive && !rocketFired) {
