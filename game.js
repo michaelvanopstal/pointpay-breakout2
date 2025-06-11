@@ -670,6 +670,7 @@ function startFlybyAnimation() {
 
 
 
+// Tel bij welke afbeelding onLoad wordt aangeroepen
 let imagesLoaded = 0;
 
 function onImageLoad() {
@@ -677,19 +678,21 @@ function onImageLoad() {
   console.log("Afbeelding geladen:", imagesLoaded);
 
   if (imagesLoaded === 5) {
+    // Startpositie van de bal instellen als alle assets geladen zijn
     x = paddleX + paddleWidth / 2 - ballRadius;
     y = canvas.height - paddleHeight - ballRadius * 2;
     draw();
   }
 }
 
-// Koppel alle images aan onImageLoad
+// Koppel onLoad aan alle afbeeldingen
 blockImg.onload = onImageLoad;
 ballImg.onload = onImageLoad;
 powerBlockImg.onload = onImageLoad;
 powerBlock2Img.onload = onImageLoad;
 rocketImg.onload = onImageLoad;
 
+// Muisbediening voor raketten of vlaggen
 document.addEventListener("mousedown", function () {
   if (rocketActive && rocketAmmo > 0 && !rocketFired) {
     rocketFired = true;
@@ -697,16 +700,19 @@ document.addEventListener("mousedown", function () {
   } else if (flagsOnPaddle) {
     shootFromFlags();
   }
-}); 
+});
 
+// ✨ Fiets-animatie
 function startBikeAnimation() {
   const bike = document.getElementById("bikeFlyer");
+  if (!bike) return; // Safety check
+
   bike.style.display = "block";
 
-  const startX = window.innerWidth + 100;   // rechts uit beeld
-  const endX = -200;                        // links uit beeld
-  const startY = window.innerHeight + 100;  // onder uit beeld
-  const endY = -150;                        // boven uit beeld
+  const startX = window.innerWidth + 100;   // Rechts buiten beeld
+  const endX = -200;                        // Links buiten beeld
+  const startY = window.innerHeight + 100;  // Onder buiten beeld
+  const endY = -150;                        // Boven buiten beeld
   const duration = 20000;                   // 20 seconden
   let startTime = null;
 
@@ -715,22 +721,21 @@ function startBikeAnimation() {
     const elapsed = timestamp - startTime;
     const progress = Math.min(elapsed / duration, 1);
 
+    // Extra zwevende beweging (wobble effect)
     const step = elapsed / 16;
-
     const baseX = startX + (endX - startX) * progress;
     const baseY = startY + (endY - startY) * progress;
 
     const wobbleX = Math.sin(step / 10) * 3;
     const wobbleY = Math.cos(step / 15) * 3;
 
-    const x = baseX + wobbleX;
-    const y = baseY + wobbleY;
+    const currentX = baseX + wobbleX;
+    const currentY = baseY + wobbleY;
 
-    bike.style.left = `${x}px`;
-    bike.style.top = `${y}px`;
+    bike.style.left = `${currentX}px`;
+    bike.style.top = `${currentY}px`;
 
-
-      if (progress < 1) {
+    if (progress < 1) {
       requestAnimationFrame(animateBike);
     } else {
       bike.style.display = "none";
@@ -740,9 +745,8 @@ function startBikeAnimation() {
   requestAnimationFrame(animateBike);
 }
 
-// Start direct na laden
+// 🚴 Start eerste animatie 1 seconde na laden
 setTimeout(startBikeAnimation, 1000);
 
-// Start daarna elke 2 minuten
-setInterval(startBikeAnimation, 20000);
-
+// 🚴 Herhaal elke 2 minuten
+setInterval(startBikeAnimation, 20000); // 2 min = 120.000 ms
