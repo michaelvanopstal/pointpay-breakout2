@@ -138,7 +138,7 @@ function keyDownHandler(e) {
       resetPaddle();
       startTime = new Date();
       gameOver = false;
-      document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+      document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
       document.getElementById("timeDisplay").textContent = "time 00:00";
 
       flagsOnPaddle = false;
@@ -151,6 +151,13 @@ function keyDownHandler(e) {
 function keyUpHandler(e) {
   if (e.key === "Right" || e.key === "ArrowRight") rightPressed = false;
   else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = false;
+}
+
+function mouseMoveHandler(e) {
+  const relativeX = e.clientX - canvas.offsetLeft;
+  if (relativeX > 0 && relativeX < canvas.width) {
+    paddleX = relativeX - paddleWidth / 2;
+  }
 }
 
 
