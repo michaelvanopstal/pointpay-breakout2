@@ -667,9 +667,9 @@ rocketImg.onload = onImageLoad;
 
 document.addEventListener("mousedown", function () {
   if (rocketActive && rocketAmmo > 0 && !rocketFired) {
-  rocketFired = true;
-  rocketAmmo--;
- } else if (flagsOnPaddle) {
+    rocketFired = true;
+    rocketAmmo--;
+  } else if (flagsOnPaddle) {
     shootFromFlags();
   }
 });
