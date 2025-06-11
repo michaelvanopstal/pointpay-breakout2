@@ -642,8 +642,6 @@ if (secondBallActive) {
     p.alpha -= 0.02;
   });
   smokeParticles = smokeParticles.filter(p => p.alpha > 0);
-
-  requestAnimationFrame(draw);
 }
 
 
