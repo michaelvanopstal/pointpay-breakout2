@@ -34,9 +34,9 @@ let secondBallDuration = 60000; // 1 minuut in ms
 
 
 const bonusBricks = [
-  { col: 3, row: 5, type: "rocket" },
-  { col: 4, row: 6, type: "power" },
-  { col: 2, row: 7, type: "doubleball" },
+  { col: 6, row: 8, type: "rocket" },
+  { col: 8, row: 6, type: "power" },
+  { col: 2, row: 9, type: "doubleball" },
 
 ];
 
