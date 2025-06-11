@@ -3,18 +3,19 @@ body {
   background: url('wandljk_kl_png_V1.jpeg') no-repeat center center;
   background-size: cover;
   overflow: hidden;
-  
   position: relative;
 }
 
+/* Canvas = speelscherm op middenlaag */
 #gameCanvas {
   position: absolute;
   top: 10px;
-  left: 0px;
+  left: 0;
   width: 650px;
   height: 595px;
   background-color: transparent;
-  border: 3px solid "transparent"
+  border: 3px solid transparent;
+  z-index: 10; /* komt boven achtergrond, onder overlays */
 }
 
 #scoreDisplay {
