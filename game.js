@@ -504,7 +504,7 @@ if (ballLaunched) {
 
 
 
-// 🧨 Raket tekenen (als bonus geactiveerd)
+
 if (rocketActive && !rocketFired) {
   // Volgt paddle
   rocketX = paddleX + paddleWidth / 2 - 12;
@@ -530,7 +530,7 @@ if (rocketActive && !rocketFired) {
   }
 }
 
-// 🔥 Explosies tekenen
+
 explosions.forEach(e => {
   ctx.beginPath();
   ctx.arc(e.x, e.y, e.radius, 0, Math.PI * 2);
@@ -543,7 +543,7 @@ explosions.forEach(e => {
 explosions = explosions.filter(e => e.alpha > 0);
 
 
-// 💨 Rook tekenen
+
 smokeParticles.forEach(p => {
   ctx.beginPath();
   ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
