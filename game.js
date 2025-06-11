@@ -429,18 +429,29 @@ function draw() {
   checkFlyingCoinHits();
 
   
-  if (rightPressed && paddleX < canvas.width - paddleWidth) paddleX += 7;
-  else if (leftPressed && paddleX > 0) paddleX -= 7;
+  if (rightPressed && paddleX < canvas.width - paddleWidth) {
+  paddleX += 7;
+} else if (leftPressed && paddleX > 0) {
+  paddleX -= 7;
+}
 
-  if (ballLaunched) {
+if (ballLaunched) {
   x += dx;
   y += dy;
 
-  if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) dx = -dx;
-  if (y + dy < ballRadius) dy = -dy;
+  if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
+    dx = -dx;
+  }
 
-  if (y + dy > canvas.height - paddleHeight - ballRadius &&
-      x > paddleX && x < paddleX + paddleWidth) {
+  if (y + dy < ballRadius) {
+    dy = -dy;
+  }
+
+  if (
+    y + dy > canvas.height - paddleHeight - ballRadius &&
+    x > paddleX &&
+    x < paddleX + paddleWidth
+  ) {
     const hitPos = (x - paddleX) / paddleWidth;
     const angle = (hitPos - 0.5) * Math.PI / 2;
     const speed = Math.sqrt(dx * dx + dy * dy);
@@ -454,19 +465,7 @@ function draw() {
     ballLaunched = false;
     dx = 4;
     dy = -4;
-    elapsedTime = 0;
-    timerRunning = false;
-    clearInterval(timerInterval);
-    flagsOnPaddle = false;
-    flyingCoins = [];
-  }
-
-} else {
-  // Bal is nog niet gelanceerd → op paddle houden
-  x = paddleX + paddleWidth / 2 - ballRadius;
-  resetBricks();
-  y = canvas.height - paddleHeight - ballRadius * 2;
-}
+    elapsedTime =
 
 
 // 🧨 Raket tekenen (als bonus geactiveerd)
