@@ -160,6 +160,36 @@ function mouseMoveHandler(e) {
   }
 }
 
+function drawBricks() {
+  const totalBricksWidth = brickColumnCount * brickWidth;
+  const offsetX = (canvas.width - totalBricksWidth) / 2;
+
+  for (let c = 0; c < brickColumnCount; c++) {
+    for (let r = 0; r < brickRowCount; r++) {
+      const b = bricks[c][r];
+      if (b.status === 1) {
+        const brickX = offsetX + c * brickWidth;
+        const brickY = r * brickHeight;
+
+        // Positie bewaren
+        b.x = brickX;
+        b.y = brickY;
+
+        // Afbeelding kiezen
+        switch (b.type) {
+          case "rocket":
+            ctx.drawImage(rocketImg, brickX, brickY, brickWidth, brickHeight);
+            break;
+          case "power":
+            ctx.drawImage(powerBlockImg, brickX, brickY, brickWidth, brickHeight);
+            break;
+          default:
+            ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight);
+        }
+      }
+    }
+  }
+}
 
 
 
