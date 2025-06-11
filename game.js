@@ -495,7 +495,9 @@ if (ballLaunched) {
     ballLaunched = false;
     dx = 4;
     dy = -4;
-    elapsedTime =
+    elapsedTime =0
+
+  }
 
 
 // 🧨 Raket tekenen (als bonus geactiveerd)
