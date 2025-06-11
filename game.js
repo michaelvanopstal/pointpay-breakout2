@@ -731,5 +731,6 @@ function startBikeAnimation() {
 setInterval(startBikeAnimation, 1000);
 
 // Start 1 keer kort na laden voor test
-setTimeout(startBikeAnimation, 1000);
+setTimeout(startBikeAnimation, 1000)
+  ;startFlybyAnimation(); 
 
