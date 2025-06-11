@@ -704,7 +704,8 @@ document.addEventListener("mousedown", function () {
 
 
 function startBikeAnimation() {
- {console.log("Animatie gestart na", performance.now(), "milliseconden");
+  console.log("🚴 Animatie gestart na", performance.now().toFixed(0), "milliseconden");
+
   const bike = document.getElementById("bikeFlyer");
   if (!bike) return; // Safety check
 
@@ -722,7 +723,6 @@ function startBikeAnimation() {
     const elapsed = timestamp - startTime;
     const progress = Math.min(elapsed / duration, 1);
 
-    // Extra zwevende beweging (wobble effect)
     const step = elapsed / 16;
     const baseX = startX + (endX - startX) * progress;
     const baseY = startY + (endY - startY) * progress;
@@ -745,53 +745,9 @@ function startBikeAnimation() {
 
   requestAnimationFrame(animateBike);
 }
-
 
 // 🚴 Start eerste animatie 1 seconde na laden
 setTimeout(startBikeAnimation, 1000);
 
-// 🚴 Herhaal elke 2 minuten
-setInterval(startBikeAnimation, 20000); // 2 min = 120.000 ms
-  
-  const bike = document.getElementById("bikeFlyer");
-  if (!bike) return; // Safety check
-
-  bike.style.display = "block";
-
-  const startX = window.innerWidth + 100;   // Rechts buiten beeld
-  const endX = -200;                        // Links buiten beeld
-  const startY = window.innerHeight + 100;  // Onder buiten beeld
-  const endY = -150;                        // Boven buiten beeld
-  const duration = 20000;                   // 20 seconden
-  let startTime = null;
-
-  function animateBike(timestamp) {
-    if (!startTime) startTime = timestamp;
-    const elapsed = timestamp - startTime;
-    const progress = Math.min(elapsed / duration, 1);
-
-    // Extra zwevende beweging (wobble effect)
-    const step = elapsed / 16;
-    const baseX = startX + (endX - startX) * progress;
-    const baseY = startY + (endY - startY) * progress;
-
-    const wobbleX = Math.sin(step / 10) * 3;
-    const wobbleY = Math.cos(step / 15) * 3;
-
-    const currentX = baseX + wobbleX;
-    const currentY = baseY + wobbleY;
-
-    bike.style.left = `${currentX}px`;
-    bike.style.top = `${currentY}px`;
-
-    if (progress < 1) {
-      requestAnimationFrame(animateBike);
-    } else {
-      bike.style.display = "none";
-    }
-  }
-
-  requestAnimationFrame(animateBike);
-}
-
-
+// 🚴 Herhaal elke 20 seconden
+setInterval(startBikeAnimation, 20000);
