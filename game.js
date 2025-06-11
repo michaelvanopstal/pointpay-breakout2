@@ -642,6 +642,8 @@ if (secondBallActive) {
     p.alpha -= 0.02;
   });
   smokeParticles = smokeParticles.filter(p => p.alpha > 0);
+
+  requestAnimationFrame(draw);
 }
 
 
@@ -668,7 +670,6 @@ function startFlybyAnimation() {
 
 
 
-// Tel bij welke afbeelding onLoad wordt aangeroepen
 let imagesLoaded = 0;
 
 function onImageLoad() {
@@ -676,21 +677,19 @@ function onImageLoad() {
   console.log("Afbeelding geladen:", imagesLoaded);
 
   if (imagesLoaded === 5) {
-    // Startpositie van de bal instellen als alle assets geladen zijn
     x = paddleX + paddleWidth / 2 - ballRadius;
     y = canvas.height - paddleHeight - ballRadius * 2;
     draw();
   }
 }
 
-// Koppel onLoad aan alle afbeeldingen
+// Koppel alle images aan onImageLoad
 blockImg.onload = onImageLoad;
 ballImg.onload = onImageLoad;
 powerBlockImg.onload = onImageLoad;
 powerBlock2Img.onload = onImageLoad;
 rocketImg.onload = onImageLoad;
 
-// Muisbediening voor raketten of vlaggen
 document.addEventListener("mousedown", function () {
   if (rocketActive && rocketAmmo > 0 && !rocketFired) {
     rocketFired = true;
@@ -698,21 +697,16 @@ document.addEventListener("mousedown", function () {
   } else if (flagsOnPaddle) {
     shootFromFlags();
   }
-});
-
+}); 
 
 function startBikeAnimation() {
-  console.log("🚴 Animatie gestart na", performance.now().toFixed(0), "milliseconden");
-
   const bike = document.getElementById("bikeFlyer");
-  if (!bike) return; // Safety check
-
   bike.style.display = "block";
 
-  const startX = window.innerWidth + 100;   // Rechts buiten beeld
-  const endX = -200;                        // Links buiten beeld
-  const startY = window.innerHeight + 100;  // Onder buiten beeld
-  const endY = -150;                        // Boven buiten beeld
+  const startX = window.innerWidth + 100;   // rechts uit beeld
+  const endX = -200;                        // links uit beeld
+  const startY = window.innerHeight + 100;  // onder uit beeld
+  const endY = -150;                        // boven uit beeld
   const duration = 20000;                   // 20 seconden
   let startTime = null;
 
@@ -722,19 +716,21 @@ function startBikeAnimation() {
     const progress = Math.min(elapsed / duration, 1);
 
     const step = elapsed / 16;
+
     const baseX = startX + (endX - startX) * progress;
     const baseY = startY + (endY - startY) * progress;
 
     const wobbleX = Math.sin(step / 10) * 3;
     const wobbleY = Math.cos(step / 15) * 3;
 
-    const currentX = baseX + wobbleX;
-    const currentY = baseY + wobbleY;
+    const x = baseX + wobbleX;
+    const y = baseY + wobbleY;
 
-    bike.style.left = `${currentX}px`;
-    bike.style.top = `${currentY}px`;
+    bike.style.left = `${x}px`;
+    bike.style.top = `${y}px`;
 
-    if (progress < 1) {
+
+      if (progress < 1) {
       requestAnimationFrame(animateBike);
     } else {
       bike.style.display = "none";
@@ -744,8 +740,9 @@ function startBikeAnimation() {
   requestAnimationFrame(animateBike);
 }
 
-// 🚴 Start eerste animatie 1 seconde na laden
+// Start direct na laden
 setTimeout(startBikeAnimation, 1000);
 
-// 🚴 Herhaal elke 20 seconden
+// Start daarna elke 2 minuten
 setInterval(startBikeAnimation, 20000);
+

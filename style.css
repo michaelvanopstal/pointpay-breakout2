@@ -15,7 +15,7 @@ body {
   height: 595px;
   background-color: transparent;
   border: 3px solid transparent;
-  z-index: 999; /* komt boven achtergrond, onder overlays */
+  z-index: 10; /* komt boven achtergrond, onder overlays */
 }
 
 #scoreDisplay {
@@ -45,7 +45,7 @@ body {
   padding: 10px;
   color: white;
   font-size: 16px;
-  z-index: 999;
+  z-index: 99;
 }
 #highscore-overlay h2 {
   text-align: center;
@@ -171,16 +171,12 @@ body {
   to   { transform: translateX(-100%); }
 }
 
-.positive {
-  color: #00ff77;
-}
-
-.negative {
-  color: #ff4444;
-}
-
+.positive { color: #00ff77; }
+.negative { color: #ff4444; }
 #login-btn,
 #logout-btn {
+
+{
   background-color: #007bff;   /* helder blauw */
   color: white;
   border: none;
@@ -192,11 +188,10 @@ body {
 }
 
 #bikeFlyby {
-  width: 120px;
+  width: 120px; /* pas aan naar grootte */
   height: auto;
   z-index: 1;
 }
-
 
 #bikeFlyer {
   position: absolute;
@@ -204,8 +199,15 @@ body {
   height: auto;
   display: none;
   will-change: transform, left, top;
-  z-index: 10; /* eventueel hoger dan 1 voor veiligheid */
+  z-index: 1; /* hoger dan andere lagen */
   pointer-events: none;
+}
+
+#bikeFlyer {
+  position: absolute;
+  width: 150px;
+  height: auto;
+  display: none;
 }
 
 #bike-layer {
