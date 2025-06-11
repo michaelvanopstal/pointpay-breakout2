@@ -495,6 +495,7 @@ function draw() {
   elapsedTime = 0;
   // 👇 Voeg dit toe:
   resetBall();
+  resetBricks();
 }
 
 
