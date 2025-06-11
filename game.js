@@ -522,10 +522,11 @@ function draw() {
   dx = 4;
   dy = -4;
   elapsedTime = 0;
-  // 👇 Voeg dit toe:
   resetBall();
   resetBricks();
 }
+
+
 
 if (secondBallActive) {
   secondBall.x += secondBall.dx;
