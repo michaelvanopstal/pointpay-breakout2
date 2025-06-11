@@ -99,21 +99,17 @@ let rocketY = 0;
   
 
 console.log("keydown-handler wordt nu actief");
+
 document.addEventListener("keydown", keyDownHandler);
 document.addEventListener("keyup", keyUpHandler);
 document.addEventListener("mousemove", mouseMoveHandler);
 
- 
 function keyDownHandler(e) {
   console.log("Toets ingedrukt:", e.key);
 
-  if (e.key === "Right" || e.key === "ArrowRight") {
-    rightPressed = true;
-  } else if (e.key === "Left" || e.key === "ArrowLeft") {
-    leftPressed = true;
-  }
+  if (e.key === "Right" || e.key === "ArrowRight") rightPressed = true;
+  else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = true;
 
-  // Start bal (éénmalige lancering)
   if ((e.key === "ArrowUp" || e.key === "Up") && !ballLaunched) {
     ballLaunched = true;
     ballMoving = true;
@@ -124,17 +120,14 @@ function keyDownHandler(e) {
     document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
   }
 
-  // Raket afvuren (één keer)
   if ((e.code === "ArrowUp" || e.code === "Space") && rocketActive && !rocketFired) {
     rocketFired = true;
   }
 
-  // Vlaggetjes schieten (indien actief)
   if (flagsOnPaddle && (e.code === "Space" || e.code === "ArrowUp")) {
     shootFromFlags();
   }
 
-  // Herstarten bij game over
   if (!ballMoving && (e.code === "ArrowUp" || e.code === "Space")) {
     if (lives <= 0) {
       lives = 3;
@@ -145,13 +138,19 @@ function keyDownHandler(e) {
       resetPaddle();
       startTime = new Date();
       gameOver = false;
-      document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
+      document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
       document.getElementById("timeDisplay").textContent = "time 00:00";
+
       flagsOnPaddle = false;
       flyingCoins = [];
     }
     ballMoving = true;
   }
+}
+
+function keyUpHandler(e) {
+  if (e.key === "Right" || e.key === "ArrowRight") rightPressed = false;
+  else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = false;
 }
 
 
