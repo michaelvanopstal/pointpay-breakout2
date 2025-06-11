@@ -469,9 +469,18 @@ function resetBricks() {
   for (let c = 0; c < brickColumnCount; c++) {
     for (let r = 0; r < brickRowCount; r++) {
       bricks[c][r].status = 1;
+
+      // Zet opnieuw het juiste type als het een bonusblok is
+      const bonus = bonusBricks.find(b => b.col === c && b.row === r);
+      if (bonus) {
+        bricks[c][r].type = bonus.type;
+      } else {
+        bricks[c][r].type = "normal";
+      }
     }
   }
 }
+
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
