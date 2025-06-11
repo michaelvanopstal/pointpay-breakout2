@@ -720,6 +720,17 @@ function startBikeAnimation() {
   const duration = 20000;
   let startTime = null;
 
+  function startBikeAnimation() {
+  const bike = document.getElementById("bikeFlyer");
+  bike.style.display = "block";
+
+  const startX = window.innerWidth + 100; // rechts uit beeld
+  const endX = -200;                      // links uit beeld
+  const startY = window.innerHeight + 100; // onder uit beeld
+  const endY = -150;                       // boven uit beeld
+  const duration = 20000;
+  let startTime = null;
+
   function animateBike(timestamp) {
     if (!startTime) startTime = timestamp;
     const elapsed = timestamp - startTime;
@@ -730,8 +741,8 @@ function startBikeAnimation() {
     const baseX = startX + (endX - startX) * progress;
     const baseY = startY + (endY - startY) * progress;
 
-    const wobbleX = Math.sin(step / 10) * 3; // kleine voor-achter beweging
-    const wobbleY = Math.cos(step / 15) * 3; // kleine op-en-neer beweging
+    const wobbleX = Math.sin(step / 10) * 3;
+    const wobbleY = Math.cos(step / 15) * 3;
 
     const x = baseX + wobbleX;
     const y = baseY + wobbleY;
@@ -741,8 +752,13 @@ function startBikeAnimation() {
 
     if (progress < 1) {
       requestAnimationFrame(animateBike);
-    } 
+    } else {
+      bike.style.display = "none";
+    }
+  }
 
+  requestAnimationFrame(animateBike);
+}
 
 // Start elke 2 minuten
 setInterval(startBikeAnimation, 20000);
