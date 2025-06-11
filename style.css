@@ -184,7 +184,7 @@ body {
 #bikeFlyby {
   width: 120px; /* pas aan naar grootte */
   height: auto;
-  z-index: 1;
+  z-index: 7;
   position: absolute;
   width: 150px;
   height: auto;
@@ -200,7 +200,7 @@ body {
 }
 #bikeSmokeLayer {
   position: absolute;
-  z-index: 1; /* boven canvas, onder fiets */
+  z-index: 7; /* boven canvas, onder fiets */
   pointer-events: none;
 }
 
@@ -215,7 +215,7 @@ body {
   border-radius: 50%;
   transform: scale(0.8);
   animation: puffFade 2s ease-out forwards;
-  z-index: 1; /* Hoger dan bikeSmokeLayer */
+  z-index: 7; /* Hoger dan bikeSmokeLayer */
 }
 
 @keyframes puffFade {
@@ -229,7 +229,7 @@ body {
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: 1; /* Hoger dan canvas */
+  z-index: 7; /* Hoger dan canvas */
 }
 
 
