@@ -474,16 +474,17 @@ function draw() {
   }
 
   if (
-    y + dy > canvas.height - paddleHeight - ballRadius &&
-    x > paddleX &&
-    x < paddleX + paddleWidth
-  ) {
-    const hitPos = (x - paddleX) / paddleWidth;
-    const angle = (hitPos - 0.5) * Math.PI / 2;
-    const speed = Math.sqrt(dx * dx + dy * dy);
-    dx = speed * Math.sin(angle);
-    dy = -Math.abs(speed * Math.cos(angle));
-  }
+  y + dy > canvas.height - paddleHeight - ballRadius &&
+  y + dy < canvas.height - ballRadius && // voorkomt doorschieten
+  x > paddleX &&
+  x < paddleX + paddleWidth
+) {
+  const hitPos = (x - paddleX) / paddleWidth;
+  const angle = (hitPos - 0.5) * Math.PI / 2;
+  const speed = Math.sqrt(dx * dx + dy * dy);
+  dx = speed * Math.sin(angle);
+  dy = -Math.abs(speed * Math.cos(angle));
+}
 
   if (y + dy > canvas.height - ballRadius) {
   saveHighscore();
