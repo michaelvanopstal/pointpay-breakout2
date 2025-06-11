@@ -527,12 +527,34 @@ function draw() {
   resetBricks();
 }
 
-  if (secondBallActive) {
+ if (secondBallActive) {
   secondBall.x += secondBall.dx;
   secondBall.y += secondBall.dy;
-  ctx.drawImage(ballImg, secondBall.x, secondBall.y, ballRadius * 2, ballRadius * 2);
-  // Voeg hier botsing en paddle logica toe net zoals bij de eerste bal
-}
+
+  // Randen
+  if (secondBall.x + secondBall.dx > canvas.width - ballRadius || secondBall.x + secondBall.dx < ballRadius) {
+    secondBall.dx = -secondBall.dx;
+  }
+
+  if (secondBall.y + secondBall.dy < ballRadius) {
+    secondBall.dy = -secondBall.dy;
+  }
+
+  // Paddle-botsing
+  if (
+    secondBall.y + secondBall.dy > canvas.height - paddleHeight - ballRadius &&
+    secondBall.y + secondBall.dy < canvas.height - ballRadius &&
+    secondBall.x > paddleX &&
+    secondBall.x < paddleX + paddleWidth
+  ) {
+    const hitPos = (secondBall.x - paddleX) / paddleWidth;
+    const angle = (hitPos - 0.5) * Math.PI / 2;
+    const speed = Math.sqrt(secondBall.dx * secondBall.dx + secondBall.dy * secondBall.dy);
+    secondBall.dx = speed * Math.sin(angle);
+    secondBall.dy = -Math.abs(speed * Math.cos(angle));
+  }
+
+  // Onderaan het canvas
 
 
   // Raket tekenen
