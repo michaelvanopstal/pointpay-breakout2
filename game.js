@@ -745,7 +745,7 @@ function startBikeAnimation() {
 
 
 // Start elke 2 minuten
-setInterval(startBikeAnimation, 120000);
+setInterval(startBikeAnimation, 20000);
 
 // Start direct bij het laden
 setTimeout(startBikeAnimation, 1000);
