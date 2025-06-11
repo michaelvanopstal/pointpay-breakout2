@@ -702,7 +702,8 @@ document.addEventListener("mousedown", function () {
   }
 });
 
-// ✨ Fiets-animatie
+
+console.log("Animatie gestart na", performance.now(), "milliseconden");
 function startBikeAnimation() {
   const bike = document.getElementById("bikeFlyer");
   if (!bike) return; // Safety check
@@ -745,11 +746,6 @@ function startBikeAnimation() {
   requestAnimationFrame(animateBike);
 }
 
-function startBikeAnimation() {
-  console.log("🚴 Animatie gestart op", new Date().toLocaleTimeString());
-
-  // ... rest van de animatie
-}
 
 // 🚴 Start eerste animatie 1 seconde na laden
 setTimeout(startBikeAnimation, 1000);
