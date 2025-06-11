@@ -171,11 +171,9 @@ function drawBricks() {
         const brickX = offsetX + c * brickWidth;
         const brickY = r * brickHeight;
 
-        // Positie bewaren
         b.x = brickX;
         b.y = brickY;
 
-        // Afbeelding kiezen
         switch (b.type) {
           case "rocket":
             ctx.drawImage(rocketImg, brickX, brickY, brickWidth, brickHeight);
@@ -190,6 +188,7 @@ function drawBricks() {
     }
   }
 }
+
 
 
 
