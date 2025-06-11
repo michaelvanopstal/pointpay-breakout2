@@ -703,32 +703,11 @@ function startBikeAnimation() {
   const bike = document.getElementById("bikeFlyer");
   bike.style.display = "block";
 
-  const startX = window.innerWidth;
-  const endX = -200;
-  const startY = window.innerHeight - 150;
-  const duration = 20000; // 20 seconden
-  let startTime = null;
-
-  function startBikeAnimation() {
-  const bike = document.getElementById("bikeFlyer");
-  bike.style.display = "block";
-
-  const startX = window.innerWidth + 100; // rechts uit beeld
-  const endX = -200;                      // links uit beeld
-  const startY = window.innerHeight + 100; // onder uit beeld
-  const endY = -150;                       // boven uit beeld
-  const duration = 20000;
-  let startTime = null;
-
-  function startBikeAnimation() {
-  const bike = document.getElementById("bikeFlyer");
-  bike.style.display = "block";
-
-  const startX = window.innerWidth + 100; // rechts uit beeld
-  const endX = -200;                      // links uit beeld
-  const startY = window.innerHeight + 100; // onder uit beeld
-  const endY = -150;                       // boven uit beeld
-  const duration = 20000;
+  const startX = window.innerWidth + 100;   // rechts uit beeld
+  const endX = -200;                        // links uit beeld
+  const startY = window.innerHeight + 100;  // onder uit beeld
+  const endY = -150;                        // boven uit beeld
+  const duration = 20000;                   // 20 seconden
   let startTime = null;
 
   function animateBike(timestamp) {
@@ -760,8 +739,8 @@ function startBikeAnimation() {
   requestAnimationFrame(animateBike);
 }
 
-// Start elke 2 minuten
-setInterval(startBikeAnimation, 20000);
-
-// Start direct bij het laden
+// Start direct na laden
 setTimeout(startBikeAnimation, 1000);
+
+// Start daarna elke 2 minuten
+setInterval(startBikeAnimation, 20000);
