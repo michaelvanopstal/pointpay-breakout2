@@ -30,7 +30,7 @@ let explosions = [];
 let secondBallActive = false;
 let secondBall = { x: 0, y: 0, dx: 0, dy: 0 };
 let secondBallDuration = 60000; // 1 minuut in ms
-let rocketAmmo = 3; // aantal raketten dat nog afgevuurd mag worden
+let rocketAmmo = ; // aantal raketten dat nog afgevuurd mag worden
 
 
 
