@@ -28,11 +28,12 @@ let rocketSpeed = 10;
 let smokeParticles = [];
 let explosions = [];
 
-const bonusBricks = [
-  { row: 2, col: 4, type: 'power' },
-  { row: 3, col: 6, type: 'rocket' }
-];
 
+
+const bonusBricks = [
+  { col: 3, row: 5, type: "rocket" },
+  { col: 4, row: 6, type: "power" }
+];
 
 
 const customBrickWidth = 70;   // pas aan zoals jij wilt
@@ -47,9 +48,25 @@ const bricks = [];
 for (let c = 0; c < brickColumnCount; c++) {
   bricks[c] = [];
   for (let r = 0; r < brickRowCount; r++) {
-    bricks[c][r] = { x: 0, y: 0, status: 1, type: "normal" };
+    // standaardtype
+    let type = "normal";
+
+    // check of deze positie een bonusblok is
+    const bonus = bonusBricks.find(b => b.col === c && b.row === r);
+    if (bonus) type = bonus.type;
+
+    // blok aanmaken met extra gegevens
+    bricks[c][r] = {
+      x: 0,
+      y: 0,
+      col: c,    // ← kolompositie (voor gedrag of debug)
+      row: r,    // ← rijpositie
+      status: 1,
+      type: type
+    };
   }
 }
+
 
 const blockImg = new Image();
 blockImg.src = "block_logo.png";
