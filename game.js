@@ -504,9 +504,11 @@ function draw() {
 
   if (
   y + dy > canvas.height - paddleHeight - ballRadius &&
-  y + dy < canvas.height - ballRadius && // voorkomt doorschieten
+  y + dy < canvas.height + 2 && // iets meer speling
   x > paddleX &&
   x < paddleX + paddleWidth
+)
+
 ) {
   const hitPos = (x - paddleX) / paddleWidth;
   const angle = (hitPos - 0.5) * Math.PI / 2;
