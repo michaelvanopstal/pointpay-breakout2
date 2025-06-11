@@ -15,7 +15,7 @@ body {
   height: 595px;
   background-color: transparent;
   border: 3px solid transparent;
-  z-index: 5; /* komt boven achtergrond, onder overlays */
+  z-index: 10; /* komt boven achtergrond, onder overlays */
 }
 
 #scoreDisplay {
@@ -29,6 +29,12 @@ body {
 }
 
 
+
+body {
+  background-attachment: fixed;
+  background-size: cover;
+  font-family: Arial, sans-serif;
+}
 
 #highscore-overlay {
   position: absolute;
@@ -184,52 +190,29 @@ body {
 #bikeFlyby {
   width: 120px; /* pas aan naar grootte */
   height: auto;
-  z-index: 7;
+  z-index: 1;
+}
+
+#bikeFlyer {
   position: absolute;
   width: 150px;
   height: auto;
   display: none;
   will-change: transform, left, top;
+  z-index: 1; /* hoger dan andere lagen */
   pointer-events: none;
 }
 
+#bikeFlyer {
+  position: absolute;
+  width: 150px;
+  height: auto;
+  display: none;
+}
 
 #bike-layer {
   pointer-events: none;
   overflow: hidden;
-}
-#bikeSmokeLayer {
-  position: absolute;
-  z-index: 7; /* boven canvas, onder fiets */
-  pointer-events: none;
-}
-
-.smokePuff {
-  position: absolute;
-  font-family: Arial, sans-serif;
-  font-weight: bold;
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.9);
-  background: radial-gradient(circle, rgba(200,200,200,0.5) 0%, transparent 70%);
-  padding: 10px;
-  border-radius: 50%;
-  transform: scale(0.8);
-  animation: puffFade 2s ease-out forwards;
-  z-index: 7; /* Hoger dan bikeSmokeLayer */
-}
-
-@keyframes puffFade {
-  0% { opacity: 1; transform: scale(0.8) translateY(0); }
-  100% { opacity: 0; transform: scale(1.5) translateY(-20px); }
-}
-#bikeSmokeLayer {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 7; /* Hoger dan canvas */
 }
 
 
