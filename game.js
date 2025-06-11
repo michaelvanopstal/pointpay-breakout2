@@ -417,19 +417,19 @@ function checkRocketCollision() {
         ];
 
         targets.forEach(([col, row]) => {
-          if (
-            col >= 0 && col < brickColumnCount &&
-            row >= 0 && row < brickRowCount &&
-            bricks[col][row].status === 1
-          ) {
-            bricks[col][row].status = 0;
-            score += 10;
-          
-          }if (rocketAmmo <= 0) {
-            rocketActive = false;
-          }
+  if (
+    col >= 0 && col < brickColumnCount &&
+    row >= 0 && row < brickRowCount &&
+    bricks[col][row].status === 1
+  ) {
+    bricks[col][row].status = 0;
+    score += 10;
 
-        });
+    if (rocketAmmo <= 0) {
+      rocketActive = false;
+    }
+  }
+});
 
         document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
         rocketFired = false;
