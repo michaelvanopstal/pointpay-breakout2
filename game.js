@@ -254,52 +254,6 @@ function collisionDetection() {
     }
   }
 
-  if (powerBlock.active && powerBlock.visible) {
-    if (
-      x > powerBlock.x &&
-      x < powerBlock.x + powerBlock.width &&
-      y > powerBlock.y &&
-      y < powerBlock.y + powerBlock.height
-    ) {
-      dy = -dy;
-      powerBlock.active = false;
-      powerBlock.visible = false;
-      clearInterval(blinkInterval);
-      powerBlockUsed = true;
-      flagsOnPaddle = true;
-      flagTimer = Date.now();
-      powerBlockHitTime = Date.now();
-
-      if (bricks[powerBlockCol] && bricks[powerBlockCol][powerBlockRow]) {
-        bricks[powerBlockCol][powerBlockRow].status = 0;
-      }
-
-      score += 10;
-      document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
-    }
-  }
-
-  
-  if (powerBlock2.active && powerBlock2.visible) {
-    if (
-      x > powerBlock2.x &&
-      x < powerBlock2.x + powerBlock2.width &&
-      y > powerBlock2.y &&
-      y < powerBlock2.y + powerBlock2.height
-    ) {
-      dy = -dy;
-      powerBlock2.active = false;
-      powerBlock2.visible = false;
-      clearInterval(blinkInterval2);
-      powerBlock2HitTime = Date.now();
-
-      score += 20;
-      rocketActive = true;
-      document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
-    }
-  }
-}
-
   function saveHighscore() {
   const timeText = document.getElementById("timeDisplay").textContent.replace("time ", "");
   const highscore = {
