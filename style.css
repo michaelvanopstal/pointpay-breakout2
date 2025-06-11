@@ -186,6 +186,12 @@ body {
   margin-top: 5px;
 }
 
+#bikeFlyby {
+  width: 120px; /* pas aan naar grootte */
+  height: auto;
+  z-index: 100;
+}
+
 #login-btn:hover,
 #logout-btn:hover {
   background-color: #0056b3;  /* donkerder blauw bij hover */
