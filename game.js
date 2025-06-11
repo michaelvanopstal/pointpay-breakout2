@@ -27,12 +27,17 @@ let rocketFired = false;
 let rocketSpeed = 10;
 let smokeParticles = [];
 let explosions = [];
+let secondBallActive = false;
+let secondBall = { x: 0, y: 0, dx: 0, dy: 0 };
+let secondBallDuration = 60000; // 1 minuut in ms
 
 
 
 const bonusBricks = [
   { col: 3, row: 5, type: "rocket" },
   { col: 4, row: 6, type: "power" }
+  { col: 2, row: 7, type: "doubleball" }
+
 ];
 
 
@@ -66,6 +71,10 @@ for (let c = 0; c < brickColumnCount; c++) {
     };
   }
 }
+
+
+const doubleBallImg = new Image();
+doubleBallImg.src = "2 balls.png";  // upload dit naar dezelfde map
 
 
 const blockImg = new Image();
@@ -153,6 +162,14 @@ function keyUpHandler(e) {
   else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = false;
 }
 
+function spawnSecondBall() {
+  secondBall.x = x;
+  secondBall.y = y;
+  secondBall.dx = dx;
+  secondBall.dy = dy;
+  secondBallActive = true;
+}
+
 function mouseMoveHandler(e) {
   const relativeX = e.clientX - canvas.offsetLeft;
   if (relativeX > 0 && relativeX < canvas.width) {
@@ -181,8 +198,12 @@ function drawBricks() {
           case "power":
             ctx.drawImage(powerBlockImg, brickX, brickY, brickWidth, brickHeight);
             break;
-          default:
-            ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight);
+           ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight)
+           ;case "doubleball":
+           ctx.drawImage(doubleBallImg, brickX, brickY, brickWidth, brickHeight);
+           break;  
+           default:
+       
         }
       }
     }
@@ -302,6 +323,13 @@ function collisionDetection() {
               dx = 0;
               setTimeout(() => { dx = 4; }, 1000);
               break;
+              case "doubleball":
+              spawnSecondBall();
+              setTimeout(() => {
+              secondBallActive = false;
+           }, secondBallDuration);
+              break;
+
           }
 
           b.status = 0;
@@ -500,6 +528,13 @@ function draw() {
   // 👇 Voeg dit toe:
   resetBall();
   resetBricks();
+}
+
+  if (secondBallActive) {
+  secondBall.x += secondBall.dx;
+  secondBall.y += secondBall.dy;
+  ctx.drawImage(ballImg, secondBall.x, secondBall.y, ballRadius * 2, ballRadius * 2);
+  // Voeg hier botsing en paddle logica toe net zoals bij de eerste bal
 }
 
 
