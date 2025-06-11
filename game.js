@@ -417,11 +417,7 @@ function draw() {
       const speed = Math.sqrt(dx * dx + dy * dy);
       dx = speed * Math.sin(angle);
       dy = -Math.abs(speed * Math.cos(angle)); // omhoog
-    if (powerBlockHit) {
-      spawnPowerBlock();
-      powerBlockHit = false;
-    }
-
+    
 }
 
     if (y + dy > canvas.height - ballRadius) {
