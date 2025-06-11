@@ -706,31 +706,37 @@ function startBikeAnimation() {
   const bike = document.getElementById("bikeFlyer");
   bike.style.display = "block";
 
-  let x = window.innerWidth; // start rechts
-  let y = window.innerHeight - 150; // onderaan
-  let step = 0;
+  const startX = window.innerWidth;
+  const endX = -200;
+  const startY = window.innerHeight - 150;
+  const duration = 20000; // 20 seconden
+  let startTime = null;
 
-  const interval = setInterval(() => {
-    x -= 1.5;        // beweegt naar links
-    y -= 0.5;        // langzaam omhoog
-    step += 1;
+  function animateBike(timestamp) {
+    if (!startTime) startTime = timestamp;
+    const elapsed = timestamp - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const x = startX + (endX - startX) * progress;
 
-    const wobble = Math.sin(step / 10) * 3; // fietsbeweging
+    const step = elapsed / 16;
+    const wobble = Math.sin(step / 10) * 3;
+    const y = startY + wobble;
 
-    bike.style.left = x + "px";
-    bike.style.top = (y + wobble) + "px";
+    bike.style.left = `${x}px`;
+    bike.style.top = `${y}px`;
 
-    if (x < -200) {
+    if (progress < 1) {
+      requestAnimationFrame(animateBike);
+    } else {
       bike.style.display = "none";
-      clearInterval(interval);
     }
-  }, 16); // ~60 FPS
+  }
+
+  requestAnimationFrame(animateBike);
 }
 
-// Start automatisch elke 2 minuten
-setInterval(startBikeAnimation, 20000);
+// Start elke 2 minuten
+setInterval(startBikeAnimation, 120000);
 
-// Start 1 keer kort na laden voor test
-setTimeout(startBikeAnimation, 1000)
-  ;startFlybyAnimation(); 
-
+// Start direct bij het laden
+setTimeout(startBikeAnimation, 1000);
