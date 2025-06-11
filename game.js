@@ -729,7 +729,8 @@ function startBikeAnimation() {
     bike.style.left = `${x}px`;
     bike.style.top = `${y}px`;
 
-    if (progress < 1) {
+
+      if (progress < 1) {
       requestAnimationFrame(animateBike);
     } else {
       bike.style.display = "none";
@@ -744,3 +745,4 @@ setTimeout(startBikeAnimation, 1000);
 
 // Start daarna elke 2 minuten
 setInterval(startBikeAnimation, 20000);
+
