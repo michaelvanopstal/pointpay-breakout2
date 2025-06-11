@@ -662,25 +662,6 @@ smokeParticles = smokeParticles.filter(p => p.alpha > 0);
 
 }
 
-smokeParticles.forEach(p => {
-  ctx.beginPath();
-  ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-
-  if (p.type === "puff") {
-    ctx.fillStyle = `rgba(200, 200, 200, ${p.alpha})`;
-    p.y -= 0.5;
-    p.radius += 0.5;
-    p.alpha -= 0.01;
-  } else {
-    ctx.fillStyle = `rgba(150, 150, 150, ${p.alpha})`;
-    p.y += 1;
-    p.radius += 0.3;
-    p.alpha -= 0.02;
-  }
-
-  ctx.fill();
-});
-
 
 function startFlybyAnimation() {
   const bike = document.getElementById("bikeFlyby");
