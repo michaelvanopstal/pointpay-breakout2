@@ -558,10 +558,9 @@ if (secondBallActive) {
     secondBall.dy = -Math.abs(speed * Math.cos(angle));
   }
 
-  // Onderaan het canvas
 
 
-  // Raket tekenen
+
   if (rocketActive && !rocketFired) {
     rocketX = paddleX + paddleWidth / 2 - 12;
     rocketY = canvas.height - paddleHeight - 48;
