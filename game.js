@@ -30,6 +30,7 @@ let explosions = [];
 let secondBallActive = false;
 let secondBall = { x: 0, y: 0, dx: 0, dy: 0 };
 let secondBallDuration = 60000; // 1 minuut in ms
+let rocketAmmo = 3; // aantal raketten dat nog afgevuurd mag worden
 
 
 
@@ -129,9 +130,10 @@ function keyDownHandler(e) {
     document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
   }
 
-  if ((e.code === "ArrowUp" || e.code === "Space") && rocketActive && !rocketFired) {
-    rocketFired = true;
-  }
+  if ((e.code === "ArrowUp" || e.code === "Space") && rocketActive && rocketAmmo > 0 && !rocketFired) {
+  rocketFired = true;
+  rocketAmmo--;
+}
 
   if (flagsOnPaddle && (e.code === "Space" || e.code === "ArrowUp")) {
     shootFromFlags();
@@ -315,8 +317,9 @@ function collisionDetection() {
               break;
             case "rocket":
               rocketActive = true;
+              rocketAmmo = 3; // geef 3 raketten
               break;
-            case "freeze":
+              case "freeze":
               dx = 0;
               setTimeout(() => { dx = 4; }, 1000);
               break;
@@ -421,7 +424,11 @@ function checkRocketCollision() {
           ) {
             bricks[col][row].status = 0;
             score += 10;
+          
+          }if (rocketAmmo <= 0) {
+            rocketActive = false;
           }
+
         });
 
         document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
@@ -659,9 +666,10 @@ powerBlock2Img.onload = onImageLoad;
 rocketImg.onload = onImageLoad;
 
 document.addEventListener("mousedown", function () {
-  if (rocketActive && !rocketFired) {
-    rocketFired = true;
-  } else if (flagsOnPaddle) {
+  if (rocketActive && rocketAmmo > 0 && !rocketFired) {
+  rocketFired = true;
+  rocketAmmo--;
+ } else if (flagsOnPaddle) {
     shootFromFlags();
   }
 });
