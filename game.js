@@ -747,6 +747,12 @@ function startBikeAnimation() {
 }
 
 
+// 🚴 Start eerste animatie 1 seconde na laden
+setTimeout(startBikeAnimation, 1000);
+
+// 🚴 Herhaal elke 2 minuten
+setInterval(startBikeAnimation, 20000); // 2 min = 120.000 ms
+  
   const bike = document.getElementById("bikeFlyer");
   if (!bike) return; // Safety check
 
@@ -789,8 +795,3 @@ function startBikeAnimation() {
 }
 
 
-// 🚴 Start eerste animatie 1 seconde na laden
-setTimeout(startBikeAnimation, 1000);
-
-// 🚴 Herhaal elke 2 minuten
-setInterval(startBikeAnimation, 20000); // 2 min = 120.000 ms
