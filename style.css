@@ -171,12 +171,16 @@ body {
   to   { transform: translateX(-100%); }
 }
 
-.positive { color: #00ff77; }
-.negative { color: #ff4444; }
+.positive {
+  color: #00ff77;
+}
+
+.negative {
+  color: #ff4444;
+}
+
 #login-btn,
 #logout-btn {
-
-{
   background-color: #007bff;   /* helder blauw */
   color: white;
   border: none;
@@ -188,10 +192,11 @@ body {
 }
 
 #bikeFlyby {
-  width: 120px; /* pas aan naar grootte */
+  width: 120px;
   height: auto;
   z-index: 1;
 }
+
 
 #bikeFlyer {
   position: absolute;
