@@ -9,7 +9,7 @@ body {
 /* Canvas = speelscherm op middenlaag */
 #gameCanvas {
   position: absolute;
-  top: 10px;
+  top: 2px;
   left: 0;
   width: 650px;
   height: 595px;
@@ -45,7 +45,7 @@ body {
   padding: 10px;
   color: white;
   font-size: 16px;
-  z-index: 99;
+  z-index: 200;
 }
 #highscore-overlay h2 {
   text-align: center;
@@ -203,7 +203,7 @@ body {
   position: absolute;
   display: none;
   will-change: transform, left, top;
-  z-index: 10; /* verhoogd zodat hij boven canvas zit */
+  z-index: 2; /* verhoogd zodat hij boven canvas zit */
   pointer-events: none;
 }
 
@@ -215,7 +215,7 @@ body {
   height: 100%;
   top: 0;
   left: 0;
-  z-index: 5;
+  z-index: 2;
 }
 
 
