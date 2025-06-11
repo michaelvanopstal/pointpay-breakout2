@@ -209,6 +209,10 @@ body {
   display: none;
 }
 
+
+
+
+
 #login-btn:hover,
 #logout-btn:hover {
   background-color: #0056b3;  /* donkerder blauw bij hover */
