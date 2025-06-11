@@ -495,7 +495,7 @@ if (ballLaunched) {
     ballLaunched = false;
     dx = 4;
     dy = -4;
-    elapsedTime =0
+    elapsedTime =0;
 
   }
 
