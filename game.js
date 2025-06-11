@@ -704,4 +704,36 @@ document.addEventListener("mousedown", function () {
   } else if (flagsOnPaddle) {
     shootFromFlags();
   }
-});
+}); 
+
+function startBikeAnimation() {
+  const bike = document.getElementById("bikeFlyer");
+  bike.style.display = "block";
+
+  let x = window.innerWidth; // start rechts
+  let y = window.innerHeight - 150; // onderaan
+  let step = 0;
+
+  const interval = setInterval(() => {
+    x -= 1.5;        // beweegt naar links
+    y -= 0.5;        // langzaam omhoog
+    step += 1;
+
+    const wobble = Math.sin(step / 10) * 3; // fietsbeweging
+
+    bike.style.left = x + "px";
+    bike.style.top = (y + wobble) + "px";
+
+    if (x < -200) {
+      bike.style.display = "none";
+      clearInterval(interval);
+    }
+  }, 16); // ~60 FPS
+}
+
+// Start automatisch elke 2 minuten
+setInterval(startBikeAnimation, 120000);
+
+// Start 1 keer kort na laden voor test
+setTimeout(startBikeAnimation, 1000);
+
