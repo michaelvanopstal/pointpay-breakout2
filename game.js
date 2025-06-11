@@ -470,13 +470,9 @@ function resetBricks() {
     for (let r = 0; r < brickRowCount; r++) {
       bricks[c][r].status = 1;
 
-      // Zet opnieuw het juiste type als het een bonusblok is
+      // Bonusblok opnieuw instellen
       const bonus = bonusBricks.find(b => b.col === c && b.row === r);
-      if (bonus) {
-        bricks[c][r].type = bonus.type;
-      } else {
-        bricks[c][r].type = "normal";
-      }
+      bricks[c][r].type = bonus ? bonus.type : "normal";
     }
   }
 }
