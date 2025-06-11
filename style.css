@@ -199,15 +199,8 @@ body {
   height: auto;
   display: none;
   will-change: transform, left, top;
-  z-index: 1; /* hoger dan andere lagen */
+  z-index: 10; /* eventueel hoger dan 1 voor veiligheid */
   pointer-events: none;
-}
-
-#bikeFlyer {
-  position: absolute;
-  width: 150px;
-  height: auto;
-  display: none;
 }
 
 #bike-layer {
