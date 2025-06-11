@@ -109,6 +109,7 @@ function keyDownHandler(e) {
  
   if ((e.key === "ArrowUp" || e.key === "Up") && !ballLaunched) {
     ballLaunched = true;
+    ballMoving = true; 
     dx = 0;
     dy = -4;
     if (!timerRunning) startTimer();
