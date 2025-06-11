@@ -622,30 +622,44 @@ if (secondBallActive) {
     }
   }
 
-  explosions.forEach(e => {
-    ctx.beginPath();
-    ctx.arc(e.x, e.y, e.radius, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(255, 165, 0, ${e.alpha})`;
-    ctx.fill();
-    e.radius += 2;
-    e.alpha -= 0.05;
-  });
-  explosions = explosions.filter(e => e.alpha > 0);
 
-  smokeParticles.forEach(p => {
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(150, 150, 150, ${p.alpha})`;
-    ctx.fill();
-    p.y += 1;
-    p.radius += 0.3;
-    p.alpha -= 0.02;
-  });
-  smokeParticles = smokeParticles.filter(p => p.alpha > 0);
+ explosions.forEach(e => {
+  ctx.beginPath();
+  ctx.arc(e.x, e.y, e.radius, 0, Math.PI * 2);
+  ctx.fillStyle = `rgba(255, 165, 0, ${e.alpha})`;
+  ctx.fill();
+  e.radius += 2;
+  e.alpha -= 0.05;
+});
+explosions = explosions.filter(e => e.alpha > 0);
+
+smokeParticles.forEach(p => {
+  ctx.beginPath();
+  ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+  ctx.fillStyle = `rgba(150, 150, 150, ${p.alpha})`;
+  ctx.fill();
+  p.y += 1;
+  p.radius += 0.3;
+  p.alpha -= 0.02;
+});
+smokeParticles = smokeParticles.filter(p => p.alpha > 0);
+ 
 
   requestAnimationFrame(draw);
 }
 
+// ✅ BUITEN draw()
+function createSmokePuff(x, y) {
+  const puff = document.createElement("div");
+  puff.className = "smokePuff";
+  puff.style.left = `${x}px`;
+  puff.style.top = `${y}px`;
+  puff.innerText = "PointPay";
+
+  document.getElementById("bikeSmokeLayer").appendChild(puff);
+
+  setTimeout(() => puff.remove(), 2000);
+}
 
 function startFlybyAnimation() {
   const bike = document.getElementById("bikeFlyby");
@@ -667,9 +681,6 @@ function startFlybyAnimation() {
   }, 30);
 }
 
-
-
-
 let imagesLoaded = 0;
 
 function onImageLoad() {
@@ -683,13 +694,14 @@ function onImageLoad() {
   }
 }
 
-// Koppel alle images aan onImageLoad
+// ✅ Koppel alle images
 blockImg.onload = onImageLoad;
 ballImg.onload = onImageLoad;
 powerBlockImg.onload = onImageLoad;
 powerBlock2Img.onload = onImageLoad;
 rocketImg.onload = onImageLoad;
 
+// ✅ Raket of vlag schieten
 document.addEventListener("mousedown", function () {
   if (rocketActive && rocketAmmo > 0 && !rocketFired) {
     rocketFired = true;
@@ -697,17 +709,17 @@ document.addEventListener("mousedown", function () {
   } else if (flagsOnPaddle) {
     shootFromFlags();
   }
-}); 
+});
 
 function startBikeAnimation() {
   const bike = document.getElementById("bikeFlyer");
   bike.style.display = "block";
 
-  const startX = window.innerWidth + 100;   // rechts uit beeld
-  const endX = -200;                        // links uit beeld
-  const startY = window.innerHeight + 100;  // onder uit beeld
-  const endY = -150;                        // boven uit beeld
-  const duration = 20000;                   // 20 seconden
+  const startX = window.innerWidth + 100;
+  const endX = -200;
+  const startY = window.innerHeight + 100;
+  const endY = -150;
+  const duration = 20000;
   let startTime = null;
 
   function animateBike(timestamp) {
@@ -729,8 +741,13 @@ function startBikeAnimation() {
     bike.style.left = `${x}px`;
     bike.style.top = `${y}px`;
 
+    // ✅ rookpufjes
+    if (!bike.lastPuffTime || timestamp - bike.lastPuffTime > 3000) {
+      bike.lastPuffTime = timestamp;
+      createSmokePuff(x + 60, y + 20);
+    }
 
-      if (progress < 1) {
+    if (progress < 1) {
       requestAnimationFrame(animateBike);
     } else {
       bike.style.display = "none";
@@ -740,9 +757,6 @@ function startBikeAnimation() {
   requestAnimationFrame(animateBike);
 }
 
-// Start direct na laden
+// ✅ Start animatie
 setTimeout(startBikeAnimation, 1000);
-
-// Start daarna elke 2 minuten
 setInterval(startBikeAnimation, 20000);
-
