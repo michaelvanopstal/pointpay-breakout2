@@ -15,7 +15,7 @@ body {
   height: 595px;
   background-color: transparent;
   border: 3px solid transparent;
-  z-index: 10; /* komt boven achtergrond, onder overlays */
+  z-index: 1; /* komt boven achtergrond, onder overlays */
 }
 
 #scoreDisplay {
@@ -244,7 +244,7 @@ body {
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: 10; /* Hoger dan canvas */
+  z-index: 1; /* Hoger dan canvas */
 }
 
 .smokePuff {
@@ -253,7 +253,7 @@ body {
   color: white;
   font-size: 14px;
   opacity: 0.9;
-  z-index: 11; /* Hoger dan bikeSmokeLayer */
+  z-index: 1; /* Hoger dan bikeSmokeLayer */
   pointer-events: none;
 }
 
