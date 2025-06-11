@@ -527,9 +527,13 @@ function draw() {
   resetBricks();
 }
 
- if (secondBallActive) {
+if (secondBallActive) {
   secondBall.x += secondBall.dx;
   secondBall.y += secondBall.dy;
+  ctx.drawImage(ballImg, secondBall.x, secondBall.y, ballRadius * 2, ballRadius * 2);
+  // Voeg hier botsing en paddle logica toe net zoals bij de eerste bal
+}
+
 
   // Randen
   if (secondBall.x + secondBall.dx > canvas.width - ballRadius || secondBall.x + secondBall.dx < ballRadius) {
