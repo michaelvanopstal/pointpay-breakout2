@@ -67,15 +67,7 @@ let rocketActive = false; // Voor nu altijd zichtbaar om te testen
 let rocketX = 0;
 let rocketY = 0;
 
-  
-let powerBlock2 = {
-  x: 0,
-  y: 0,
-  width: brickWidth,
-  height: brickHeight,
-  active: false,
-  visible: true
-};
+
 
 
 document.addEventListener("keydown", keyDownHandler);
@@ -116,12 +108,7 @@ function keyDownHandler(e) {
       document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
       document.getElementById("timeDisplay").textContent = "time 00:00";
 
-      powerBlockUsed = false;
-      powerBlockHitTime = null;
-      powerBlock.active = false;
-      powerBlock.visible = false;
-      clearInterval(blinkInterval);
-
+     
       flagsOnPaddle = false;
       flyingCoins = [];
     }
