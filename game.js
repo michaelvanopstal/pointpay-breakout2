@@ -489,14 +489,19 @@ if (ballLaunched) {
     dy = -Math.abs(speed * Math.cos(angle));
   }
 
-  if (y + dy > canvas.height - ballRadius) {
-    // Bal onder geraakt
-    saveHighscore();
-    ballLaunched = false;
-    dx = 4;
-    dy = -4;
-    elapsedTime =0;
-  }
+ if (y + dy > canvas.height - ballRadius) {
+  // Bal onder geraakt
+  saveHighscore();
+  ballLaunched = false;
+  dx = 4;
+  dy = -4;
+  elapsedTime = 0;
+}
+
+} // sluit if (ballLaunched)
+} // sluit draw()
+
+
 
 
 // 🧨 Raket tekenen (als bonus geactiveerd)
