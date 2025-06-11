@@ -554,11 +554,9 @@ smokeParticles.forEach(p => {
 });
 smokeParticles = smokeParticles.filter(p => p.alpha > 0);
 
-// 🚀 Frame herhalen
-requestAnimationFrame(draw);
-} // 👈 Sluiting van de draw() functie hier!
 
-// ----------------------------------------------------
+requestAnimationFrame(draw);
+
 
 let imagesLoaded = 0;
 
