@@ -496,7 +496,6 @@ if (ballLaunched) {
     dx = 4;
     dy = -4;
     elapsedTime =0;
-
   }
 
 
