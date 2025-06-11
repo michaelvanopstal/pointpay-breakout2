@@ -433,38 +433,41 @@ function draw() {
   else if (leftPressed && paddleX > 0) paddleX -= 7;
 
   if (ballLaunched) {
-    x += dx;
-    y += dy;
+  x += dx;
+  y += dy;
 
-    if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) dx = -dx;
-    if (y + dy < ballRadius) dy = -dy;
+  if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) dx = -dx;
+  if (y + dy < ballRadius) dy = -dy;
 
-    if (y + dy > canvas.height - paddleHeight - ballRadius && x > paddleX && x < paddleX + paddleWidth) {
-      const hitPos = (x - paddleX) / paddleWidth; // 0 = links, 1 = rechts
-      const angle = (hitPos - 0.5) * Math.PI / 2; // van -45° tot 45°
-      const speed = Math.sqrt(dx * dx + dy * dy);
-      dx = speed * Math.sin(angle);
-      dy = -Math.abs(speed * Math.cos(angle)); // omhoog
-    }
+  if (y + dy > canvas.height - paddleHeight - ballRadius &&
+      x > paddleX && x < paddleX + paddleWidth) {
+    const hitPos = (x - paddleX) / paddleWidth;
+    const angle = (hitPos - 0.5) * Math.PI / 2;
+    const speed = Math.sqrt(dx * dx + dy * dy);
+    dx = speed * Math.sin(angle);
+    dy = -Math.abs(speed * Math.cos(angle));
+  }
 
+  if (y + dy > canvas.height - ballRadius) {
+    // Bal onder geraakt
+    saveHighscore();
+    ballLaunched = false;
+    dx = 4;
+    dy = -4;
+    elapsedTime = 0;
+    timerRunning = false;
+    clearInterval(timerInterval);
+    flagsOnPaddle = false;
+    flyingCoins = [];
+  }
 
-    if (y + dy > canvas.height - ballRadius) {
-  // Bal is onderaan geraakt → leven verliezen
-  saveHighscore();
-  ballLaunched = false;
-  dx = 4;
-  dy = -4;
-  elapsedTime = 0;
-  timerRunning = false;
-  clearInterval(timerInterval);
-  flagsOnPaddle = false;
-  flyingCoins = [];
 } else {
-  // Voor het starten: bal blijft op paddle
+  // Bal is nog niet gelanceerd → op paddle houden
   x = paddleX + paddleWidth / 2 - ballRadius;
   resetBricks();
   y = canvas.height - paddleHeight - ballRadius * 2;
 }
+
 
 // 🧨 Raket tekenen (als bonus geactiveerd)
 if (rocketActive && !rocketFired) {
@@ -503,6 +506,7 @@ explosions.forEach(e => {
 });
 explosions = explosions.filter(e => e.alpha > 0);
 
+
 // 💨 Rook tekenen
 smokeParticles.forEach(p => {
   ctx.beginPath();
@@ -517,39 +521,22 @@ smokeParticles = smokeParticles.filter(p => p.alpha > 0);
 
 // 🚀 Frame herhalen
 requestAnimationFrame(draw);
+} // 👈 Sluiting van de draw() functie hier!
 
+// ----------------------------------------------------
 
-  
-  smokeParticles.forEach(p => {
-  ctx.beginPath();
-  ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-  ctx.fillStyle = `rgba(150, 150, 150, ${p.alpha})`;
-  ctx.fill();
-  p.y += 1;
-  p.radius += 0.3;
-  p.alpha -= 0.02;
-});
-  
-smokeParticles = smokeParticles.filter(p => p.alpha > 0);
-
-}
-
-
-let imagesLoaded = 0; 
+let imagesLoaded = 0;
 
 function onImageLoad() {
   imagesLoaded++;
-  console.log("Afbeelding geladen:", imagesLoaded); // ← mag hier
+  console.log("Afbeelding geladen:", imagesLoaded);
 
   if (imagesLoaded === 5) {
     x = paddleX + paddleWidth / 2 - ballRadius;
     y = canvas.height - paddleHeight - ballRadius * 2;
-    startPowerBlockJumping();
-    spawnPowerBlock2();
     draw();
   }
 }
-
 
 // Koppel alle images aan onImageLoad
 blockImg.onload = onImageLoad;
@@ -565,4 +552,3 @@ document.addEventListener("mousedown", function () {
     shootFromFlags();
   }
 });
-
