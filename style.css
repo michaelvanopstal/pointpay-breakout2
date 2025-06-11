@@ -9,13 +9,13 @@ body {
 /* Canvas = speelscherm op middenlaag */
 #gameCanvas {
   position: absolute;
-  top: 5px;
+  top: 10px;
   left: 0;
   width: 650px;
   height: 595px;
   background-color: transparent;
   border: 3px solid transparent;
-  z-index: 10; /* komt boven achtergrond, onder overlays */
+  z-index: 999; /* komt boven achtergrond, onder overlays */
 }
 
 #scoreDisplay {
@@ -45,7 +45,7 @@ body {
   padding: 10px;
   color: white;
   font-size: 16px;
-  z-index: 99;
+  z-index: 999;
 }
 #highscore-overlay h2 {
   text-align: center;
