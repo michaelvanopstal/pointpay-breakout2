@@ -539,6 +539,7 @@ explosions.forEach(e => {
   e.radius += 2;
   e.alpha -= 0.05;
 });
+
 explosions = explosions.filter(e => e.alpha > 0);
 
 
