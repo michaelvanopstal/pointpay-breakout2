@@ -552,6 +552,8 @@ smokeParticles.forEach(p => {
   p.radius += 0.3;
   p.alpha -= 0.02;
 });
+
+
 smokeParticles = smokeParticles.filter(p => p.alpha > 0);
 
 
