@@ -129,24 +129,24 @@ function keyDownHandler(e) {
   }
 
   if (!ballMoving && (e.code === "ArrowUp" || e.code === "Space")) {
-    if (lives <= 0) {
-      lives = 3;
-      score = 0;
-      level = 1;
-      resetBricks();
-      resetBall();
-      resetPaddle();
-      startTime = new Date();
-      gameOver = false;
-      document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
-      document.getElementById("timeDisplay").textContent = "time 00:00";
+  if (lives <= 0) {
+    lives = 3;
+    score = 0;
+    level = 1;
+    resetBricks();
+    resetBall();    // ✅ Zorg dat dit hier staat
+    resetPaddle();
+    startTime = new Date();
+    gameOver = false;
+    document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+    document.getElementById("timeDisplay").textContent = "time 00:00";
 
-      flagsOnPaddle = false;
-      flyingCoins = [];
-    }
-    ballMoving = true;
+    flagsOnPaddle = false;
+    flyingCoins = [];
   }
+  ballMoving = true;
 }
+
 
 function keyUpHandler(e) {
   if (e.key === "Right" || e.key === "ArrowRight") rightPressed = false;
@@ -486,13 +486,16 @@ function draw() {
   }
 
   if (y + dy > canvas.height - ballRadius) {
-    saveHighscore();
-    ballLaunched = false;
-    ballMoving = false;
-    dx = 4;
-    dy = -4;
-    elapsedTime = 0;
-  }
+  saveHighscore();
+  ballLaunched = false;
+  ballMoving = false;
+  dx = 4;
+  dy = -4;
+  elapsedTime = 0;
+  // 👇 Voeg dit toe:
+  resetBall();
+}
+
 
   // Raket tekenen
   if (rocketActive && !rocketFired) {
