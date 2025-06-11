@@ -416,14 +416,6 @@ function resetBricks() {
 }
 
 
-
-
-const powerBlockImg = new Image();
-powerBlockImg.src = "power_block_logo.png";
-
-
-
-
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   collisionDetection();
