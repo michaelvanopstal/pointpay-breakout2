@@ -509,7 +509,7 @@ function draw() {
     dy = -dy;
   }
 
-  if 
+ if (
   y + dy > canvas.height - paddleHeight - ballRadius &&
   y + dy < canvas.height + 2 && // iets meer speling
   x > paddleX &&
@@ -521,6 +521,7 @@ function draw() {
   dx = speed * Math.sin(angle);
   dy = -Math.abs(speed * Math.cos(angle));
 }
+
 
   if (y + dy > canvas.height - ballRadius) {
   saveHighscore();
