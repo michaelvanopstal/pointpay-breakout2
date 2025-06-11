@@ -441,126 +441,72 @@ function resetBricks() {
   }
 }
 
-
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  collisionDetection();
-  drawCoins();
-  checkCoinCollision();
-  drawBricks();
-  drawBall();
-  drawPaddle();
-  drawPaddleFlags();
-  drawFlyingCoins();
-  checkFlyingCoinHits();
+  // ... al je tekenfuncties ...
 
-  
+  // Paddle besturing
   if (rightPressed && paddleX < canvas.width - paddleWidth) {
-  paddleX += 7;
-} else if (leftPressed && paddleX > 0) {
-  paddleX -= 7;
-}
-
-if (ballMoving) {
-  x += dx;
-  y += dy;
-
-}
-
-
-  if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
-    dx = -dx;
+    paddleX += 7;
+  } else if (leftPressed && paddleX > 0) {
+    paddleX -= 7;
   }
 
-  if (y + dy < ballRadius) {
-    dy = -dy;
+  // Bal beweging
+  if (ballMoving) {
+    x += dx;
+    y += dy;
   }
 
-  if (
-    y + dy > canvas.height - paddleHeight - ballRadius &&
-    x > paddleX &&
-    x < paddleX + paddleWidth
-  ) {
-    const hitPos = (x - paddleX) / paddleWidth;
-    const angle = (hitPos - 0.5) * Math.PI / 2;
-    const speed = Math.sqrt(dx * dx + dy * dy);
-    dx = speed * Math.sin(angle);
-    dy = -Math.abs(speed * Math.cos(angle));
-  }
-
-   if (y + dy > canvas.height - ballRadius) {
-    saveHighscore();
-    ballLaunched = false;
-    ballMoving = false;
-    dx = 4;
-    dy = -4;
-    elapsedTime = 0;
-  }
-
-} // sluit draw()
-
-
-
-if (rocketActive && !rocketFired) {
-  // Volgt paddle
-  rocketX = paddleX + paddleWidth / 2 - 12;
-  rocketY = canvas.height - paddleHeight - 48;
-  ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
-} else if (rocketFired) {
-  rocketY -= rocketSpeed;
-
-  // Voeg rookdeeltje toe
-  smokeParticles.push({
-    x: rocketX + 15,
-    y: rocketY + 65,
-    radius: Math.random() * 6 + 4,
-    alpha: 1
-  });
-
-  if (rocketY < -48) {
-    rocketFired = false;
-    rocketActive = false; // Eénmalige raket
-  } else {
+  // Raket tekenen
+  if (rocketActive && !rocketFired) {
+    rocketX = paddleX + paddleWidth / 2 - 12;
+    rocketY = canvas.height - paddleHeight - 48;
     ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
-    checkRocketCollision();
+  } else if (rocketFired) {
+    rocketY -= rocketSpeed;
+    smokeParticles.push({
+      x: rocketX + 15,
+      y: rocketY + 65,
+      radius: Math.random() * 6 + 4,
+      alpha: 1
+    });
+
+    if (rocketY < -48) {
+      rocketFired = false;
+      rocketActive = false;
+    } else {
+      ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
+      checkRocketCollision();
+    }
   }
+
+  // Rook en explosies
+  explosions.forEach(e => {
+    ctx.beginPath();
+    ctx.arc(e.x, e.y, e.radius, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255, 165, 0, ${e.alpha})`;
+    ctx.fill();
+    e.radius += 2;
+    e.alpha -= 0.05;
+  });
+  explosions = explosions.filter(e => e.alpha > 0);
+
+  smokeParticles.forEach(p => {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(150, 150, 150, ${p.alpha})`;
+    ctx.fill();
+    p.y += 1;
+    p.radius += 0.3;
+    p.alpha -= 0.02;
+  });
+  smokeParticles = smokeParticles.filter(p => p.alpha > 0);
+
+  // Frame herhalen
+  requestAnimationFrame(draw);
 }
 
-
-explosions.forEach(e => {
-  ctx.beginPath();
-  ctx.arc(e.x, e.y, e.radius, 0, Math.PI * 2);
-  ctx.fillStyle = `rgba(255, 165, 0, ${e.alpha})`;
-  ctx.fill();
-  e.radius += 2;
-  e.alpha -= 0.05;
-});
-
-explosions = explosions.filter(e => e.alpha > 0);
-
-
-
-smokeParticles.forEach(p => {
-  ctx.beginPath();
-  ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-  ctx.fillStyle = `rgba(150, 150, 150, ${p.alpha})`;
-  ctx.fill();
-  p.y += 1;
-  p.radius += 0.3;
-  p.alpha -= 0.02;
-});
-
-
-smokeParticles = smokeParticles.filter(p => p.alpha > 0);
-
-
-function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  // ... al je teken- en update-logica ...
-
-  requestAnimationFrame(draw); // ← deze moet echt hierbinnen staan!
-}
 
 
 
