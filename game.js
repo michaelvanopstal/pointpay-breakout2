@@ -35,8 +35,8 @@ let secondBallDuration = 60000; // 1 minuut in ms
 
 const bonusBricks = [
   { col: 3, row: 5, type: "rocket" },
-  { col: 4, row: 6, type: "power" }
-  { col: 2, row: 7, type: "doubleball" }
+  { col: 4, row: 6, type: "power" },
+  { col: 2, row: 7, type: "doubleball" },
 
 ];
 
@@ -190,7 +190,7 @@ function drawBricks() {
 
         b.x = brickX;
         b.y = brickY;
-
+                
         switch (b.type) {
           case "rocket":
             ctx.drawImage(rocketImg, brickX, brickY, brickWidth, brickHeight);
@@ -198,20 +198,17 @@ function drawBricks() {
           case "power":
             ctx.drawImage(powerBlockImg, brickX, brickY, brickWidth, brickHeight);
             break;
-           ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight)
-           ;case "doubleball":
-           ctx.drawImage(doubleBallImg, brickX, brickY, brickWidth, brickHeight);
-           break;  
-           default:
-       
+          case "doubleball":
+            ctx.drawImage(doubleBallImg, brickX, brickY, brickWidth, brickHeight);
+            break;
+          default:
+            ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight);
         }
       }
     }
   }
 }
-
-
-
+       
 
 function drawBall() {
   ctx.drawImage(ballImg, x, y, ballRadius * 2, ballRadius * 2);
