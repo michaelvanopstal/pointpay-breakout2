@@ -192,14 +192,14 @@ body {
   z-index: 1100;
 }
 
-#bike-layer {
+#bikeFlyer {
   position: absolute;
-  top: 0;
-  left: 0;
+  width: 150px;
+  height: auto;
+  display: none;
+  will-change: transform, left, top;
+  z-index: 1100; /* hoger dan andere lagen */
   pointer-events: none;
-  width: 100%;
-  height: 100%;
-  z-index: 1100; /* boven het canvas */
 }
 
 #bikeFlyer {
@@ -207,6 +207,11 @@ body {
   width: 150px;
   height: auto;
   display: none;
+}
+
+#bike-layer {
+  pointer-events: none;
+  overflow: hidden;
 }
 
 
