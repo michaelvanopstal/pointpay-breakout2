@@ -530,10 +530,6 @@ function draw() {
 if (secondBallActive) {
   secondBall.x += secondBall.dx;
   secondBall.y += secondBall.dy;
-  ctx.drawImage(ballImg, secondBall.x, secondBall.y, ballRadius * 2, ballRadius * 2);
-  // Voeg hier botsing en paddle logica toe net zoals bij de eerste bal
-}
-
 
   // Randen
   if (secondBall.x + secondBall.dx > canvas.width - ballRadius || secondBall.x + secondBall.dx < ballRadius) {
@@ -544,7 +540,7 @@ if (secondBallActive) {
     secondBall.dy = -secondBall.dy;
   }
 
-  // Paddle-botsing
+  
   if (
     secondBall.y + secondBall.dy > canvas.height - paddleHeight - ballRadius &&
     secondBall.y + secondBall.dy < canvas.height - ballRadius &&
@@ -558,6 +554,35 @@ if (secondBallActive) {
     secondBall.dy = -Math.abs(speed * Math.cos(angle));
   }
 
+  // Onderaan geraakt
+  if (secondBall.y + secondBall.dy > canvas.height - ballRadius) {
+    secondBallActive = false;
+  }
+
+  // Blokken-botsing
+  for (let c = 0; c < brickColumnCount; c++) {
+    for (let r = 0; r < brickRowCount; r++) {
+      const b = bricks[c][r];
+      if (
+        b.status === 1 &&
+        secondBall.x > b.x &&
+        secondBall.x < b.x + brickWidth &&
+        secondBall.y > b.y &&
+        secondBall.y < b.y + brickHeight
+      ) {
+        secondBall.dy = -secondBall.dy;
+        b.status = 0;
+        b.type = "normal";
+        score += 10;
+        spawnCoin(b.x, b.y);
+        document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+      }
+    }
+  }
+
+  // Teken tweede bal
+  ctx.drawImage(ballImg, secondBall.x, secondBall.y, ballRadius * 2, ballRadius * 2);
+}
 
 
 
