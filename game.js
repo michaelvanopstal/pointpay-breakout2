@@ -98,18 +98,25 @@ let rocketY = 0;
 
   
 
-
+console.log("keydown-handler wordt nu actief");
 document.addEventListener("keydown", keyDownHandler);
 document.addEventListener("keyup", keyUpHandler);
 document.addEventListener("mousemove", mouseMoveHandler);
 
-function keyDownHandler(e) {
-  if (e.key === "Right" || e.key === "ArrowRight") rightPressed = true;
-  else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = true;
  
+function keyDownHandler(e) {
+  console.log("Toets ingedrukt:", e.key);
+
+  if (e.key === "Right" || e.key === "ArrowRight") {
+    rightPressed = true;
+  } else if (e.key === "Left" || e.key === "ArrowLeft") {
+    leftPressed = true;
+  }
+
+  // Start bal (éénmalige lancering)
   if ((e.key === "ArrowUp" || e.key === "Up") && !ballLaunched) {
     ballLaunched = true;
-    ballMoving = true; 
+    ballMoving = true;
     dx = 0;
     dy = -4;
     if (!timerRunning) startTimer();
@@ -117,16 +124,19 @@ function keyDownHandler(e) {
     document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
   }
 
+  // Raket afvuren (één keer)
   if ((e.code === "ArrowUp" || e.code === "Space") && rocketActive && !rocketFired) {
-  rocketFired = true;
-}
+    rocketFired = true;
+  }
 
+  // Vlaggetjes schieten (indien actief)
   if (flagsOnPaddle && (e.code === "Space" || e.code === "ArrowUp")) {
     shootFromFlags();
   }
 
+  // Herstarten bij game over
   if (!ballMoving && (e.code === "ArrowUp" || e.code === "Space")) {
-   if (lives <= 0) {
+    if (lives <= 0) {
       lives = 3;
       score = 0;
       level = 1;
@@ -135,65 +145,15 @@ function keyDownHandler(e) {
       resetPaddle();
       startTime = new Date();
       gameOver = false;
-      document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+      document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
       document.getElementById("timeDisplay").textContent = "time 00:00";
-
-      powerBlockUsed = false;
-      powerBlockHitTime = null;
-      powerBlock.active = false;
-      powerBlock.visible = false;
-      clearInterval(blinkInterval);
-
       flagsOnPaddle = false;
       flyingCoins = [];
     }
     ballMoving = true;
   }
 }
- 
-function keyUpHandler(e) {
-  if (e.key === "Right" || e.key === "ArrowRight") rightPressed = false;
-  else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = false;
-}
 
-
-
-function mouseMoveHandler(e) {
-  const relativeX = e.clientX - canvas.offsetLeft;
-  if (relativeX > 0 && relativeX < canvas.width) paddleX = relativeX - paddleWidth / 2;
-}
-
-
-function drawBricks() {
-  const totalBricksWidth = brickColumnCount * brickWidth;
-  const offsetX = (canvas.width - totalBricksWidth) / 2;
-
-  for (let c = 0; c < brickColumnCount; c++) {
-    for (let r = 0; r < brickRowCount; r++) {
-      const b = bricks[c][r];
-      if (b.status === 1) {
-        const brickX = offsetX + c * brickWidth;
-        const brickY = r * brickHeight;
-
-        // Positie bewaren voor botsing
-        b.x = brickX;
-        b.y = brickY;
-
-        // Kies afbeelding op basis van type
-        switch (b.type) {
-          case "rocket":
-            ctx.drawImage(rocketImg, brickX, brickY, brickWidth, brickHeight);
-            break;
-          case "power":
-            ctx.drawImage(powerBlockImg, brickX, brickY, brickWidth, brickHeight);
-            break;
-          default:
-            ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight);
-        }
-      }
-    }
-  }
-}
 
 
 
