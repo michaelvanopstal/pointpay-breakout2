@@ -668,7 +668,7 @@ function startFlybyAnimation() {
 }
 
 // Start elke 2 minuten
-setInterval(startFlybyAnimation, 120000);
+setInterval(startFlybyAnimation, 1000);
 
 
 
