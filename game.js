@@ -466,9 +466,12 @@ function draw() {
   paddleX -= 7;
 }
 
-if (ballLaunched) {
+if (ballMoving) {
   x += dx;
   y += dy;
+
+}
+
 
   if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
     dx = -dx;
@@ -494,6 +497,7 @@ if (ballLaunched) {
   // Bal onder geraakt
   saveHighscore();
   ballLaunched = false;
+  ballMoving = false;
   dx = 4;
   dy = -4;
   elapsedTime = 0;
