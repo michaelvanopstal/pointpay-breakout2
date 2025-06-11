@@ -460,10 +460,14 @@ function draw() {
     paddleX -= 7;
   }
 
-  if (ballMoving) {
-    x += dx;
-    y += dy;
-  }
+  if (ballLaunched) {
+  x += dx;
+  y += dy;
+} else {
+  x = paddleX + paddleWidth / 2 - ballRadius;
+  y = canvas.height - paddleHeight - ballRadius * 2;
+}
+
 
   if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
     dx = -dx;
