@@ -745,6 +745,12 @@ function startBikeAnimation() {
   requestAnimationFrame(animateBike);
 }
 
+function startBikeAnimation() {
+  console.log("🚴 Animatie gestart op", new Date().toLocaleTimeString());
+
+  // ... rest van de animatie
+}
+
 // 🚴 Start eerste animatie 1 seconde na laden
 setTimeout(startBikeAnimation, 1000);
 
