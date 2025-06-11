@@ -162,25 +162,38 @@ function mouseMoveHandler(e) {
   if (relativeX > 0 && relativeX < canvas.width) paddleX = relativeX - paddleWidth / 2;
 }
 
+
 function drawBricks() {
   const totalBricksWidth = brickColumnCount * brickWidth;
-  const offsetX = (canvas.width - totalBricksWidth) / 2; // midden uitlijnen
+  const offsetX = (canvas.width - totalBricksWidth) / 2;
 
   for (let c = 0; c < brickColumnCount; c++) {
     for (let r = 0; r < brickRowCount; r++) {
-      if (bricks[c][r].status === 1) {
-        const brickX = offsetX + c * brickWidth;  // gecentreerd
+      const b = bricks[c][r];
+      if (b.status === 1) {
+        const brickX = offsetX + c * brickWidth;
         const brickY = r * brickHeight;
-        bricks[c][r].x = brickX;
-        bricks[c][r].y = brickY;
 
-        // tijdelijke rode blokken (vervangen voor je afbeelding als je wilt)
-        ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight);
+        // Positie bewaren voor botsing
+        b.x = brickX;
+        b.y = brickY;
 
+        // Kies afbeelding op basis van type
+        switch (b.type) {
+          case "rocket":
+            ctx.drawImage(rocketImg, brickX, brickY, brickWidth, brickHeight);
+            break;
+          case "power":
+            ctx.drawImage(powerBlockImg, brickX, brickY, brickWidth, brickHeight);
+            break;
+          default:
+            ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight);
+        }
       }
     }
   }
 }
+
 
 
 function drawBall() {
