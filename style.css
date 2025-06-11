@@ -189,7 +189,7 @@ body {
 #bikeFlyby {
   width: 120px; /* pas aan naar grootte */
   height: auto;
-  z-index: 100;
+  z-index: 1100;
 }
 
 #bike-layer {
@@ -199,7 +199,7 @@ body {
   pointer-events: none;
   width: 100%;
   height: 100%;
-  z-index: 99; /* boven het canvas */
+  z-index: 1100; /* boven het canvas */
 }
 
 #bikeFlyer {
