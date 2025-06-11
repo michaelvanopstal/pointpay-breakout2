@@ -443,19 +443,55 @@ function resetBricks() {
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  // ... al je tekenfuncties ...
 
-  // Paddle besturing
+  collisionDetection();
+  drawCoins();
+  checkCoinCollision();
+  drawBricks();
+  drawBall();
+  drawPaddle();
+  drawPaddleFlags();
+  drawFlyingCoins();
+  checkFlyingCoinHits();
+
   if (rightPressed && paddleX < canvas.width - paddleWidth) {
     paddleX += 7;
   } else if (leftPressed && paddleX > 0) {
     paddleX -= 7;
   }
 
-  // Bal beweging
   if (ballMoving) {
     x += dx;
     y += dy;
+  }
+
+  if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
+    dx = -dx;
+  }
+
+  if (y + dy < ballRadius) {
+    dy = -dy;
+  }
+
+  if (
+    y + dy > canvas.height - paddleHeight - ballRadius &&
+    x > paddleX &&
+    x < paddleX + paddleWidth
+  ) {
+    const hitPos = (x - paddleX) / paddleWidth;
+    const angle = (hitPos - 0.5) * Math.PI / 2;
+    const speed = Math.sqrt(dx * dx + dy * dy);
+    dx = speed * Math.sin(angle);
+    dy = -Math.abs(speed * Math.cos(angle));
+  }
+
+  if (y + dy > canvas.height - ballRadius) {
+    saveHighscore();
+    ballLaunched = false;
+    ballMoving = false;
+    dx = 4;
+    dy = -4;
+    elapsedTime = 0;
   }
 
   // Raket tekenen
@@ -481,7 +517,6 @@ function draw() {
     }
   }
 
-  // Rook en explosies
   explosions.forEach(e => {
     ctx.beginPath();
     ctx.arc(e.x, e.y, e.radius, 0, Math.PI * 2);
@@ -503,7 +538,6 @@ function draw() {
   });
   smokeParticles = smokeParticles.filter(p => p.alpha > 0);
 
-  // Frame herhalen
   requestAnimationFrame(draw);
 }
 
