@@ -632,19 +632,54 @@ if (secondBallActive) {
   });
   explosions = explosions.filter(e => e.alpha > 0);
 
-  smokeParticles.forEach(p => {
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+
+smokeParticles.forEach(p => {
+  ctx.beginPath();
+  ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+
+  if (p.type === "puff") {
+    // zachtere rook voor puff
+    ctx.fillStyle = `rgba(200, 200, 200, ${p.alpha})`;
+    p.y -= 0.5;       // langzaam omhoog
+    p.radius += 0.5;  // langzaam groter
+    p.alpha -= 0.01;  // langzaam verdwijnen
+  } else {
+    // gewone raketrook
     ctx.fillStyle = `rgba(150, 150, 150, ${p.alpha})`;
-    ctx.fill();
     p.y += 1;
     p.radius += 0.3;
     p.alpha -= 0.02;
-  });
-  smokeParticles = smokeParticles.filter(p => p.alpha > 0);
+  }
+
+  ctx.fill();
+});
+
+// 
+smokeParticles = smokeParticles.filter(p => p.alpha > 0);
+
 
   requestAnimationFrame(draw);
+
 }
+
+smokeParticles.forEach(p => {
+  ctx.beginPath();
+  ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+
+  if (p.type === "puff") {
+    ctx.fillStyle = `rgba(200, 200, 200, ${p.alpha})`;
+    p.y -= 0.5;
+    p.radius += 0.5;
+    p.alpha -= 0.01;
+  } else {
+    ctx.fillStyle = `rgba(150, 150, 150, ${p.alpha})`;
+    p.y += 1;
+    p.radius += 0.3;
+    p.alpha -= 0.02;
+  }
+
+  ctx.fill();
+});
 
 
 function startFlybyAnimation() {
@@ -669,7 +704,6 @@ function startFlybyAnimation() {
 
 
 
-
 let imagesLoaded = 0;
 
 function onImageLoad() {
@@ -679,7 +713,7 @@ function onImageLoad() {
   if (imagesLoaded === 5) {
     x = paddleX + paddleWidth / 2 - ballRadius;
     y = canvas.height - paddleHeight - ballRadius * 2;
-    draw();
+    draw(); // Start de game-loop pas als alle afbeeldingen geladen zijn
   }
 }
 
@@ -690,6 +724,7 @@ powerBlockImg.onload = onImageLoad;
 powerBlock2Img.onload = onImageLoad;
 rocketImg.onload = onImageLoad;
 
+// 🔫 Muis klikken: raket afvuren of vlag-munten schieten
 document.addEventListener("mousedown", function () {
   if (rocketActive && rocketAmmo > 0 && !rocketFired) {
     rocketFired = true;
@@ -697,24 +732,24 @@ document.addEventListener("mousedown", function () {
   } else if (flagsOnPaddle) {
     shootFromFlags();
   }
-}); 
+});
 
+// 🚲 Fietsanimatie (zweeft van rechts-onder naar links-boven)
 function startBikeAnimation() {
   const bike = document.getElementById("bikeFlyer");
   bike.style.display = "block";
 
-  const startX = window.innerWidth + 100;   // rechts uit beeld
-  const endX = -200;                        // links uit beeld
-  const startY = window.innerHeight + 100;  // onder uit beeld
-  const endY = -150;                        // boven uit beeld
-  const duration = 20000;                   // 20 seconden
+  const startX = window.innerWidth + 100;
+  const endX = -200;
+  const startY = window.innerHeight + 100;
+  const endY = -150;
+  const duration = 20000; // 20 seconden
   let startTime = null;
 
   function animateBike(timestamp) {
     if (!startTime) startTime = timestamp;
     const elapsed = timestamp - startTime;
     const progress = Math.min(elapsed / duration, 1);
-
     const step = elapsed / 16;
 
     const baseX = startX + (endX - startX) * progress;
@@ -729,8 +764,7 @@ function startBikeAnimation() {
     bike.style.left = `${x}px`;
     bike.style.top = `${y}px`;
 
-
-      if (progress < 1) {
+    if (progress < 1) {
       requestAnimationFrame(animateBike);
     } else {
       bike.style.display = "none";
@@ -740,9 +774,21 @@ function startBikeAnimation() {
   requestAnimationFrame(animateBike);
 }
 
-// Start direct na laden
+// 🚀 Om de 3 seconden een rookpuf uit de raket (alleen als afgevuurd)
+setInterval(() => {
+  if (rocketFired) {
+    smokeParticles.push({
+      x: rocketX + 15,
+      y: rocketY + 65,
+      radius: Math.random() * 10 + 10,
+      alpha: 0.6,
+      type: "puff"
+    });
+  }
+}, 3000);
+
+// Start de fietsanimatie eenmalig na 1 seconde...
 setTimeout(startBikeAnimation, 1000);
 
-// Start daarna elke 2 minuten
+// ...en vervolgens elke 20 seconden opnieuw
 setInterval(startBikeAnimation, 20000);
-
