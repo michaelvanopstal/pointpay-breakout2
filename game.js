@@ -134,15 +134,18 @@ function keyDownHandler(e) {
     document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
   }
 
+ document.addEventListener("keydown", function (e) {
   if ((e.code === "ArrowUp" || e.code === "Space") && rocketActive && rocketAmmo > 0 && !rocketFired) {
-  rocketFired = true;
-  rocketAmmo--;
-}
+    rocketFired = true;
+    rocketAmmo--;
+  }
+
 
   if (flagsOnPaddle && (e.code === "Space" || e.code === "ArrowUp")) {
     shootFromFlags();
   }
-
+});
+  
   if (!ballMoving && (e.code === "ArrowUp" || e.code === "Space")) {
   if (lives <= 0) {
     lives = 3;
@@ -604,27 +607,38 @@ if (secondBallActive) {
 
 
 
-  if (rocketActive && !rocketFired) {
-    rocketX = paddleX + paddleWidth / 2 - 12;
-    rocketY = canvas.height - paddleHeight - 48;
-    ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
-  } else if (rocketFired) {
-    rocketY -= rocketSpeed;
-    smokeParticles.push({
-      x: rocketX + 15,
-      y: rocketY + 65,
-      radius: Math.random() * 6 + 4,
-      alpha: 1
-    });
+  // 🚀 TEKEN DE RAKET
+if (rocketActive && rocketAmmo > 0 && !rocketFired) {
+  // Raket staat klaar op de paddle
+  rocketX = paddleX + paddleWidth / 2 - 15;
+  rocketY = canvas.height - paddleHeight - 65;
+  ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
+} else if (rocketFired) {
+  // Raket is afgevuurd en vliegt omhoog
+  rocketY -= rocketSpeed;
 
-    if (rocketY < -48) {
-      rocketFired = false;
+  // Teken rookspoor
+  smokeParticles.push({
+    x: rocketX + 15,
+    y: rocketY + 65,
+    radius: Math.random() * 6 + 4,
+    alpha: 1
+  });
+
+  if (rocketY < -65) {
+    rocketFired = false;
+
+    // ❗️Alleen raketsysteem uitschakelen als ammo op is
+    if (rocketAmmo <= 0) {
       rocketActive = false;
-    } else {
-      ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
-      checkRocketCollision();
     }
+  } else {
+    // Raket blijft zichtbaar in vlucht
+    ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
+    checkRocketCollision();
   }
+}
+
 
   explosions.forEach(e => {
     ctx.beginPath();
@@ -701,7 +715,8 @@ document.addEventListener("mousedown", function () {
   } else if (flagsOnPaddle) {
     shootFromFlags();
   }
-}); 
+});
+
 
 function startBikeAnimation() {
   const bike = document.getElementById("bikeFlyer");
