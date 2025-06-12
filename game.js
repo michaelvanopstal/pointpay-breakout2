@@ -73,6 +73,7 @@ for (let c = 0; c < brickColumnCount; c++) {
   }
 }
 
+
 const doubleBallImg = new Image();
 doubleBallImg.src = "2 balls.png";  // upload dit naar dezelfde map
 
@@ -129,18 +130,15 @@ function keyDownHandler(e) {
     document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
   }
 
- document.addEventListener("keydown", function (e) {
   if ((e.code === "ArrowUp" || e.code === "Space") && rocketActive && rocketAmmo > 0 && !rocketFired) {
-    rocketFired = true;
-    rocketAmmo--;
-  }
-
+  rocketFired = true;
+  rocketAmmo--;
+}
 
   if (flagsOnPaddle && (e.code === "Space" || e.code === "ArrowUp")) {
     shootFromFlags();
   }
-});
-  
+
   if (!ballMoving && (e.code === "ArrowUp" || e.code === "Space")) {
   if (lives <= 0) {
     lives = 3;
@@ -194,31 +192,25 @@ function drawBricks() {
 
         b.x = brickX;
         b.y = brickY;
-
-         
-         switch (b.type) {
-         case "rocket":
-         ctx.drawImage(rocketImg, brickX, brickY, brickWidth, brickHeight);
-         break;
-         case "power":
-         ctx.drawImage(powerBlockImg, brickX, brickY, brickWidth, brickHeight);
-         break;
-         case "doubleball":
-         ctx.drawImage(doubleBallImg, brickX, brickY, brickWidth, brickHeight);
-         break;
-         case "signal":
-         ctx.drawImage(signalBlockImg, brickX, brickY, brickWidth, brickHeight);
-         break;
-         default:
-         ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight);
-         break;
-        
-        } 
-      } 
-    }   
-  }     
-}       
-   
+                
+        switch (b.type) {
+          case "rocket":
+            ctx.drawImage(rocketImg, brickX, brickY, brickWidth, brickHeight);
+            break;
+          case "power":
+            ctx.drawImage(powerBlockImg, brickX, brickY, brickWidth, brickHeight);
+            break;
+          case "doubleball":
+            ctx.drawImage(doubleBallImg, brickX, brickY, brickWidth, brickHeight);
+            break;
+          default:
+            ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight);
+        }
+      }
+    }
+  }
+}
+       
 
 function drawBall() {
   ctx.drawImage(ballImg, x, y, ballRadius * 2, ballRadius * 2);
@@ -608,38 +600,27 @@ if (secondBallActive) {
 
 
 
-  // 🚀 TEKEN DE RAKET
-if (rocketActive && rocketAmmo > 0 && !rocketFired) {
-  // Raket staat klaar op de paddle
-  rocketX = paddleX + paddleWidth / 2 - 15;
-  rocketY = canvas.height - paddleHeight - 65;
-  ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
-} else if (rocketFired) {
-  // Raket is afgevuurd en vliegt omhoog
-  rocketY -= rocketSpeed;
-
-  // Teken rookspoor
-  smokeParticles.push({
-    x: rocketX + 15,
-    y: rocketY + 65,
-    radius: Math.random() * 6 + 4,
-    alpha: 1
-  });
-
-  if (rocketY < -65) {
-    rocketFired = false;
-
-    // ❗️Alleen raketsysteem uitschakelen als ammo op is
-    if (rocketAmmo <= 0) {
-      rocketActive = false;
-    }
-  } else {
-    // Raket blijft zichtbaar in vlucht
+  if (rocketActive && !rocketFired) {
+    rocketX = paddleX + paddleWidth / 2 - 12;
+    rocketY = canvas.height - paddleHeight - 48;
     ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
-    checkRocketCollision();
-  }
-}
+  } else if (rocketFired) {
+    rocketY -= rocketSpeed;
+    smokeParticles.push({
+      x: rocketX + 15,
+      y: rocketY + 65,
+      radius: Math.random() * 6 + 4,
+      alpha: 1
+    });
 
+    if (rocketY < -48) {
+      rocketFired = false;
+      rocketActive = false;
+    } else {
+      ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
+      checkRocketCollision();
+    }
+  }
 
   explosions.forEach(e => {
     ctx.beginPath();
@@ -686,6 +667,9 @@ function startFlybyAnimation() {
   }, 30);
 }
 
+// Start elke 2 minuten
+setInterval(startFlybyAnimation, 1000);
+
 
 
 
@@ -716,53 +700,37 @@ document.addEventListener("mousedown", function () {
   } else if (flagsOnPaddle) {
     shootFromFlags();
   }
-});
-
+}); 
 
 function startBikeAnimation() {
   const bike = document.getElementById("bikeFlyer");
   bike.style.display = "block";
 
-  const startX = window.innerWidth + 100;   // rechts uit beeld
-  const endX = -200;                        // links uit beeld
-  const startY = window.innerHeight + 100;  // onder uit beeld
-  const endY = -150;                        // boven uit beeld
-  const duration = 20000;                   // 20 seconden
-  let startTime = null;
+  let x = window.innerWidth; // start rechts
+  let y = window.innerHeight - 150; // onderaan
+  let step = 0;
 
-  function animateBike(timestamp) {
-    if (!startTime) startTime = timestamp;
-    const elapsed = timestamp - startTime;
-    const progress = Math.min(elapsed / duration, 1);
+  const interval = setInterval(() => {
+    x -= 1.5;        // beweegt naar links
+    y -= 0.5;        // langzaam omhoog
+    step += 1;
 
-    const step = elapsed / 16;
+    const wobble = Math.sin(step / 10) * 3; // fietsbeweging
 
-    const baseX = startX + (endX - startX) * progress;
-    const baseY = startY + (endY - startY) * progress;
+    bike.style.left = x + "px";
+    bike.style.top = (y + wobble) + "px";
 
-    const wobbleX = Math.sin(step / 10) * 3;
-    const wobbleY = Math.cos(step / 15) * 3;
-
-    const x = baseX + wobbleX;
-    const y = baseY + wobbleY;
-
-    bike.style.left = `${x}px`;
-    bike.style.top = `${y}px`;
-
-
-      if (progress < 1) {
-      requestAnimationFrame(animateBike);
-    } else {
+    if (x < -200) {
       bike.style.display = "none";
+      clearInterval(interval);
     }
-  }
-
-  requestAnimationFrame(animateBike);
+  }, 16); // ~60 FPS
 }
 
-// Start direct na laden
-setTimeout(startBikeAnimation, 1000);
-
-// Start daarna elke 2 minuten
+// Start automatisch elke 2 minuten
 setInterval(startBikeAnimation, 20000);
+
+// Start 1 keer kort na laden voor test
+setTimeout(startBikeAnimation, 1000)
+  ;startFlybyAnimation(); 
 

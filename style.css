@@ -3,19 +3,18 @@ body {
   background: url('wandljk_kl_png_V1.jpeg') no-repeat center center;
   background-size: cover;
   overflow: hidden;
+  
   position: relative;
 }
 
-/* Canvas = speelscherm op middenlaag */
 #gameCanvas {
   position: absolute;
   top: 10px;
-  left: 0;
+  left: 0px;
   width: 650px;
   height: 595px;
   background-color: transparent;
-  border: 3px solid transparent;
-  z-index: 10; /* komt boven achtergrond, onder overlays */
+  border: 3px solid "transparent"
 }
 
 #scoreDisplay {
@@ -171,8 +170,8 @@ body {
   to   { transform: translateX(-100%); }
 }
 
-.positive { color:#008CFF; }
-.negative { color: #008CFF; }
+.positive { color: #00ff77; }
+.negative { color: #ff4444; }
 #login-btn,
 #logout-btn {
 
@@ -190,29 +189,24 @@ body {
 #bikeFlyby {
   width: 120px; /* pas aan naar grootte */
   height: auto;
-  z-index: 1;
-}
-
-#bikeFlyer {
-  position: absolute;
-  width: 150px;
-  height: auto;
-  display: none;
-  will-change: transform, left, top;
-  z-index: 1; /* hoger dan andere lagen */
-  pointer-events: none;
-}
-
-#bikeFlyer {
-  position: absolute;
-  width: 150px;
-  height: auto;
-  display: none;
+  z-index: 1100;
 }
 
 #bike-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
   pointer-events: none;
-  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  z-index: 1100; /* boven het canvas */
+}
+
+#bikeFlyer {
+  position: absolute;
+  width: 150px;
+  height: auto;
+  display: none;
 }
 
 
