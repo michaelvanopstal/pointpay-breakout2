@@ -215,7 +215,6 @@ function drawBricks() {
     }
   }
 }
-       
 
 function drawBall() {
   ctx.drawImage(ballImg, x, y, ballRadius * 2, ballRadius * 2);
@@ -672,9 +671,6 @@ function startFlybyAnimation() {
   }, 30);
 }
 
-// Start elke 2 minuten
-setInterval(startFlybyAnimation, 1000);
-
 
 
 
@@ -711,31 +707,46 @@ function startBikeAnimation() {
   const bike = document.getElementById("bikeFlyer");
   bike.style.display = "block";
 
-  let x = window.innerWidth; // start rechts
-  let y = window.innerHeight - 150; // onderaan
-  let step = 0;
+  const startX = window.innerWidth + 100;   // rechts uit beeld
+  const endX = -200;                        // links uit beeld
+  const startY = window.innerHeight + 100;  // onder uit beeld
+  const endY = -150;                        // boven uit beeld
+  const duration = 20000;                   // 20 seconden
+  let startTime = null;
 
-  const interval = setInterval(() => {
-    x -= 1.5;        // beweegt naar links
-    y -= 0.5;        // langzaam omhoog
-    step += 1;
+  function animateBike(timestamp) {
+    if (!startTime) startTime = timestamp;
+    const elapsed = timestamp - startTime;
+    const progress = Math.min(elapsed / duration, 1);
 
-    const wobble = Math.sin(step / 10) * 3; // fietsbeweging
+    const step = elapsed / 16;
 
-    bike.style.left = x + "px";
-    bike.style.top = (y + wobble) + "px";
+    const baseX = startX + (endX - startX) * progress;
+    const baseY = startY + (endY - startY) * progress;
 
-    if (x < -200) {
+    const wobbleX = Math.sin(step / 10) * 3;
+    const wobbleY = Math.cos(step / 15) * 3;
+
+    const x = baseX + wobbleX;
+    const y = baseY + wobbleY;
+
+    bike.style.left = `${x}px`;
+    bike.style.top = `${y}px`;
+
+
+      if (progress < 1) {
+      requestAnimationFrame(animateBike);
+    } else {
       bike.style.display = "none";
-      clearInterval(interval);
     }
-  }, 16); // ~60 FPS
+  }
+
+  requestAnimationFrame(animateBike);
 }
 
-// Start automatisch elke 2 minuten
-setInterval(startBikeAnimation, 20000);
+// Start direct na laden
+setTimeout(startBikeAnimation, 1000);
 
-// Start 1 keer kort na laden voor test
-setTimeout(startBikeAnimation, 1000)
-  ;startFlybyAnimation(); 
+// Start daarna elke 2 minuten
+setInterval(startBikeAnimation, 20000);
 
