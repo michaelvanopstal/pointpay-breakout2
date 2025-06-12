@@ -172,13 +172,6 @@ body {
 }
 
 
-#login-btn,
-#logout-btn 
-.positive { color: #00ff77; }
-.negative { color: #ff4444; }
-
-{
-
 
 #bikeFlyby {
   width: 120px; /* pas aan naar grootte */
@@ -209,6 +202,7 @@ body {
 }
 
 
+#login-btn,
 #logout-btn {
   background-color: #008CFF; /* PointPay-blauw */
   color: white;
@@ -218,6 +212,11 @@ body {
   border-radius: 4px;
   cursor: pointer;
   margin-top: 5px;
+}
+
+.positive { color: #00ff77; }
+.negative { color: #ff4444; }
+
 }
 
 
