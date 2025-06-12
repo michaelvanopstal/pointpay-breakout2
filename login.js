@@ -5,6 +5,13 @@ document.addEventListener("DOMContentLoaded", function () {
   const nameInput = document.getElementById("player-name");
   const playerDisplay = document.getElementById("player-display");
 
+  
+  loginBtn.style.backgroundColor = "#008CFF"; // PointPay-blauw
+  loginBtn.style.color = "white";
+  loginBtn.style.border = "none";
+  loginBtn.style.borderRadius = "6px";
+  loginBtn.style.padding = "6px 12px";
+
   const savedName = sessionStorage.getItem("currentPlayer");
   if (savedName) {
     window.currentPlayer = savedName;
