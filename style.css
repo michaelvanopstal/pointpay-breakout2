@@ -171,8 +171,8 @@ body {
   to   { transform: translateX(-100%); }
 }
 
-.positive { color: #00ff77; }
-.negative { color: #ff4444; }
+.positive { color:#008CFF; }
+.negative { color: #008CFF; }
 #login-btn,
 #logout-btn {
 
