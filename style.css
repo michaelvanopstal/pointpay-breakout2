@@ -158,6 +158,10 @@ body {
   border-radius: 6px;
   z-index: 1020;
 }
+.positive { color: #00ff77; }
+.negative { color: #ff4444; }
+
+}
 
 
 #pxp-scroll-text {
@@ -214,10 +218,6 @@ body {
   margin-top: 5px;
 }
 
-.positive { color: #00ff77; }
-.negative { color: #ff4444; }
-
-}
 
 
 
