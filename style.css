@@ -171,10 +171,13 @@ body {
   to   { transform: translateX(-100%); }
 }
 
+
+#login-btn,
+#logout-btn 
 .positive { color: #00ff77; }
 .negative { color: #ff4444; }
-#login-btn,
-#logout-btn {
+
+{
 
 
 #bikeFlyby {
