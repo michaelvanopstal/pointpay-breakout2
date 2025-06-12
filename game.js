@@ -96,8 +96,12 @@ shootCoinImg.src = "3.png";
 const powerBlockImg = new Image(); // Voor bonusblok type 'power'
 powerBlockImg.src = "power_block_logo.png";
 
-const powerBlock2Img = new Image(); // Voor bonusblok type 'rocket'
-powerBlock2Img.src = "signalblock2.png";
+const fullImg = new Image();
+fullImg.src = "signalblock2.png"; // of je eigen pad
+
+fullImg.onload = () => {
+  ctx.drawImage(fullImg, 0, 0, canvas.width, canvas.height);
+};
 
 const rocketImg = new Image();
 rocketImg.src = "raket1.png";
