@@ -43,7 +43,7 @@ body {
   width: 200px;
   border-radius: 10px;
   padding: 10px;
-  color: #008CFF; 
+  color: white
   font-size: 16px;
   z-index: 99;
 }
@@ -107,7 +107,7 @@ body {
   position: absolute;
   top: 20px;
   right: 100px; 
-  color: #008CFF; 
+  color:#008CFF;
   font-size: 20px;
   font-family: Arial, sans-serif;
   z-index: 999;
@@ -117,7 +117,7 @@ body {
   position: absolute;
   top: 72px;
   right: 20px; 
-  color: #008CFF; 
+  color: white 
   font-size: 20px;
   font-family: Arial, sans-serif;
   z-index: 999;
