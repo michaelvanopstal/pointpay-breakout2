@@ -193,18 +193,23 @@ function drawBricks() {
         b.x = brickX;
         b.y = brickY;
                 
-        switch (b.type) {
-          case "rocket":
-            ctx.drawImage(rocketImg, brickX, brickY, brickWidth, brickHeight);
-            break;
-          case "power":
-            ctx.drawImage(powerBlockImg, brickX, brickY, brickWidth, brickHeight);
-            break;
-          case "doubleball":
-            ctx.drawImage(doubleBallImg, brickX, brickY, brickWidth, brickHeight);
-            break;
-          default:
-            ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight);
+         switch (b.type) {
+         case "rocket":
+         ctx.drawImage(rocketImg, brickX, brickY, brickWidth, brickHeight);
+         break;
+         case "power":
+         ctx.drawImage(powerBlockImg, brickX, brickY, brickWidth, brickHeight);
+         break;
+         case "doubleball":
+         ctx.drawImage(doubleBallImg, brickX, brickY, brickWidth, brickHeight);
+         break;
+         case "signal":
+         ctx.drawImage(signalBlockImg, brickX, brickY, brickWidth, brickHeight);
+         break;
+         default:
+         ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight);
+         break;
+        
         }
       }
     }
