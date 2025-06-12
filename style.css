@@ -23,7 +23,7 @@ body {
   top: 72px;
   right: 110px;
   margin-right: 15px;
-  color: white;
+  color: #008CFF; 
   font-size: 20px;
   font-family: Arial, sans-serif;
 }
@@ -43,7 +43,7 @@ body {
   width: 200px;
   border-radius: 10px;
   padding: 10px;
-  color: white;
+  color: #008CFF; 
   font-size: 16px;
   z-index: 99;
 }
