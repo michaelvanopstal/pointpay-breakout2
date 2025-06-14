@@ -46,6 +46,7 @@ const bonusBricks = [
   { col: 6, row: 8, type: "rocket" },
   { col: 8, row: 6, type: "power" },
   { col: 2, row: 9, type: "doubleball" },
+  { col: 4, row: 2, type: "boot" },
 
 ];
 
@@ -80,6 +81,9 @@ for (let c = 0; c < brickColumnCount; c++) {
     };
   }
 }
+
+const bootBlockImg = new Image();
+bootBlockImg.src = "images/boot_block_logo.png";
 
 const boatImg = new Image();
 boatImg.src = 'images/pointpay_bood.png';
@@ -228,7 +232,10 @@ function drawBricks() {
          default:
          ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight);
          break;
-        
+        case "boot":
+        ctx.drawImage(bootBlockImg, brickX, brickY, brickWidth, brickHeight);
+        break;
+
         }
       }
     }
@@ -737,7 +744,7 @@ function onImageLoad() {
   imagesLoaded++;
   console.log("Afbeelding geladen:", imagesLoaded);
 
-  if (imagesLoaded === 5) {
+  if (imagesLoaded === 12) {
     x = paddleX + paddleWidth / 2 - ballRadius;
     y = canvas.height - paddleHeight - ballRadius * 2;
     draw();
@@ -750,6 +757,11 @@ ballImg.onload = onImageLoad;
 powerBlockImg.onload = onImageLoad;
 powerBlock2Img.onload = onImageLoad;
 rocketImg.onload = onImageLoad;
+
+bootBlockImg.onload = onImageLoad;        // ✅ NIEUW: blokje met bootlogo
+boatImg.onload = onImageLoad;             // ✅ NIEUW: de boot zelf
+waterOverlayImg.onload = onImageLoad;     // ✅ NIEUW: het water
+
 
 document.addEventListener("mousedown", function () {
   if (rocketActive && rocketAmmo > 0 && !rocketFired) {
