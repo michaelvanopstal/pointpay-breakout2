@@ -621,7 +621,7 @@ function resetAfterBootBonus() {
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-}
+
 
   collisionDetection();
   drawCoins();
@@ -773,6 +773,7 @@ if (secondBallActive) {
     e.radius += 2;
     e.alpha -= 0.05;
   });
+ 
   explosions = explosions.filter(e => e.alpha > 0);
 
   smokeParticles.forEach(p => {
@@ -784,7 +785,8 @@ if (secondBallActive) {
     p.radius += 0.3;
     p.alpha -= 0.02;
   });
-  smokeParticles = smokeParticles.filter(p => p.alpha > 0);
+  
+smokeParticles = smokeParticles.filter(p => p.alpha > 0);
 
   requestAnimationFrame(draw);
 }
