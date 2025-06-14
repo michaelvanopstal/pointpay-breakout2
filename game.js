@@ -615,9 +615,6 @@ function resetAfterBootBonus() {
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-function resetAfterBootBonus() {
-  resetBall();
-  resetPaddle();
 }
 
   collisionDetection();
@@ -629,15 +626,7 @@ function resetAfterBootBonus() {
   drawPaddleFlags();
   drawFlyingCoins();
   checkFlyingCoinHits();
-  collisionDetection();
-  drawCoins();
-  checkCoinCollision();
-  drawBricks();
-  drawBall();
-  drawPaddle();
-  drawPaddleFlags();
-  drawFlyingCoins();
-  checkFlyingCoinHits();
+  
 
   if (rightPressed && paddleX < canvas.width - paddleWidth) {
     paddleX += 7;
