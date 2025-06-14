@@ -86,10 +86,10 @@ const bootBlockImg = new Image();
 bootBlockImg.src = "boot_block_logo.png";
 
 const boatImg = new Image();
-boatImg.src = 'images/pointpay_bood.png';
+boatImg.src = "pointpay_bood.png";
 
 const waterOverlayImg = new Image();
-waterOverlayImg.src = 'images/water1.png';
+waterOverlayImg.src = "water1.png";
 
 const doubleBallImg = new Image();
 doubleBallImg.src = "2 balls.png";  // upload dit naar dezelfde map
