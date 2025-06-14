@@ -242,6 +242,40 @@ function drawBricks() {
   }
 }
 
+
+if (bootBonusActive) {
+  // Waterbeweging
+  if (waterState === 'rising') {
+    waterY -= 1;
+    if (waterY <= canvas.height - 100) {
+      waterState = 'holding';
+      waterTimer = 0;
+    }
+  } else if (waterState === 'holding') {
+    waterTimer++;
+    if (waterTimer > 120) { // 2 seconden
+      waterState = 'falling';
+    }
+  } else if (waterState === 'falling') {
+    waterY += 1;
+    if (waterY >= canvas.height) {
+      bootBonusActive = false;
+      waterState = 'idle';
+      resetAfterBootBonus();
+    }
+  }
+
+  // Boot besturing
+  if (rightPressed && boatX < canvas.width - paddleWidth) boatX += boatSpeed;
+  if (leftPressed && boatX > 0) boatX -= boatSpeed;
+
+  // Boot tekenen
+  ctx.drawImage(boatImg, boatX, boatY, paddleWidth, paddleHeight * 2);
+
+  // Water-overlay tekenen
+  ctx.drawImage(waterOverlayImg, 0, waterY, canvas.width, canvas.height - waterY);
+}
+
 function drawBall() {
   ctx.drawImage(ballImg, x, y, ballRadius * 2, ballRadius * 2);
 }
@@ -416,6 +450,7 @@ function collisionDetection() {
               case "boot":
               startBootBonus();
               break;
+              
 
           }
 
@@ -564,10 +599,36 @@ function resetBricks() {
   }
 }
 
+function resetAfterBootBonus() {
+  // Reset bootpositie
+  boatX = 0;
+  boatY = 0;
+
+  // Reset paddle zoals gewoonlijk
+  resetPaddle();
+
+  // Reset bal
+  resetBall();
+}
+
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+function resetAfterBootBonus() {
+  resetBall();
+  resetPaddle();
+}
+
+  collisionDetection();
+  drawCoins();
+  checkCoinCollision();
+  drawBricks();
+  drawBall();
+  drawPaddle();
+  drawPaddleFlags();
+  drawFlyingCoins();
+  checkFlyingCoinHits();
   collisionDetection();
   drawCoins();
   checkCoinCollision();
