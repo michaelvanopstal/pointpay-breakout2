@@ -134,8 +134,11 @@ document.addEventListener("mousemove", mouseMoveHandler);
 function keyDownHandler(e) {
   console.log("Toets ingedrukt:", e.key);
 
-  if (e.key === "Right" || e.key === "ArrowRight") rightPressed = true;
-  else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = true;
+  if (e.key === "Right" || e.key === "ArrowRight") {
+    rightPressed = true;
+  } else if (e.key === "Left" || e.key === "ArrowLeft") {
+    leftPressed = true;
+  }
 
   if ((e.key === "ArrowUp" || e.key === "Up") && !ballLaunched) {
     ballLaunched = true;
@@ -147,35 +150,38 @@ function keyDownHandler(e) {
     document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
   }
 
-  if ((e.code === "ArrowUp" || e.code === "Space") && rocketActive && rocketAmmo > 0 && !rocketFired) {
-  rocketFired = true;
-  rocketAmmo--;
-}
+  if (
+    (e.code === "ArrowUp" || e.code === "Space") &&
+    rocketActive &&
+    rocketAmmo > 0 &&
+    !rocketFired
+  ) {
+    rocketFired = true;
+    rocketAmmo--;
+  }
 
   if (flagsOnPaddle && (e.code === "Space" || e.code === "ArrowUp")) {
     shootFromFlags();
   }
 
   if (!ballMoving && (e.code === "ArrowUp" || e.code === "Space")) {
-  if (lives <= 0) {
-    lives = 3;
-    score = 0;
-    level = 1;
-    resetBricks();
-    resetBall();    // ✅ Zorg dat dit hier staat
-    resetPaddle();
-    startTime = new Date();
-    gameOver = false;
-    document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
-    document.getElementById("timeDisplay").textContent = "time 00:00";
-
-    flagsOnPaddle = false;
-    flyingCoins = [];
+    if (lives <= 0) {
+      lives = 3;
+      score = 0;
+      level = 1;
+      resetBricks();
+      resetBall(); // ✅ Zorg dat dit hier staat
+      resetPaddle();
+      startTime = new Date();
+      gameOver = false;
+      document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+      document.getElementById("timeDisplay").textContent = "time 00:00";
+      flagsOnPaddle = false;
+      flyingCoins = [];
+    }
+    ballMoving = true;
   }
-  ballMoving = true;
-}
 
-  // 👇 VOEG DEZE TOE om de bootbonus handmatig te starten met toets B
   if (e.code === "KeyB") {
     startBootBonus();
   }
