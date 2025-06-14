@@ -83,7 +83,7 @@ for (let c = 0; c < brickColumnCount; c++) {
 }
 
 const bootBlockImg = new Image();
-bootBlockImg.src = "images/boot_block_logo.png";
+bootBlockImg.src = "boot_block_logo.png";
 
 const boatImg = new Image();
 boatImg.src = 'images/pointpay_bood.png';
