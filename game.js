@@ -751,16 +751,18 @@ function onImageLoad() {
   }
 }
 
-// Koppel alle images aan onImageLoad
+bootBlockImg.onload = onImageLoad;
+boatImg.onload = onImageLoad;
+waterOverlayImg.onload = onImageLoad;
+doubleBallImg.onload = onImageLoad;
 blockImg.onload = onImageLoad;
 ballImg.onload = onImageLoad;
+vlagImgLeft.onload = onImageLoad;
+vlagImgRight.onload = onImageLoad;
+shootCoinImg.onload = onImageLoad;
 powerBlockImg.onload = onImageLoad;
 powerBlock2Img.onload = onImageLoad;
 rocketImg.onload = onImageLoad;
-
-bootBlockImg.onload = onImageLoad;        // ✅ NIEUW: blokje met bootlogo
-boatImg.onload = onImageLoad;             // ✅ NIEUW: de boot zelf
-waterOverlayImg.onload = onImageLoad;     // ✅ NIEUW: het water
 
 
 document.addEventListener("mousedown", function () {
