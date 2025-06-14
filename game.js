@@ -266,6 +266,23 @@ function resetBall() {
 
 function resetPaddle() {
   paddleX = (canvas.width - paddleWidth) / 2;
+
+}
+function startBootBonus() {
+  bootBonusActive = true;
+  waterY = canvas.height;
+  waterState = 'rising';
+
+  // Zet de boot in het midden op juiste hoogte
+  boatX = paddleX;
+  boatY = canvas.height - paddleHeight * 3;
+
+  // Reset rocket, vlaggen en ballen voor zuiverheid
+  rocketActive = false;
+  rocketAmmo = 0;
+  flagsOnPaddle = false;
+  flyingCoins = [];
+  secondBallActive = false;
 }
 
 
@@ -377,7 +394,6 @@ function collisionDetection() {
         ) {
           dy = -dy;
 
-          // Activeer bonuseffect op basis van type
           switch (b.type) {
             case "power":
               flagsOnPaddle = true;
@@ -396,6 +412,9 @@ function collisionDetection() {
               setTimeout(() => {
               secondBallActive = false;
            }, secondBallDuration);
+              break;
+              case "boot":
+              startBootBonus();
               break;
 
           }
