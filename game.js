@@ -621,9 +621,6 @@ function resetAfterBootBonus() {
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-
-
-  collisionDetection();
   drawCoins();
   checkCoinCollision();
   drawBricks();
@@ -632,7 +629,6 @@ function draw() {
   drawPaddleFlags();
   drawFlyingCoins();
   checkFlyingCoinHits();
-  
 
   if (rightPressed && paddleX < canvas.width - paddleWidth) {
     paddleX += 7;
@@ -641,13 +637,14 @@ function draw() {
   }
 
   if (ballLaunched) {
-  x += dx;
-  y += dy;
-} else {
-  x = paddleX + paddleWidth / 2 - ballRadius;
-  y = canvas.height - paddleHeight - ballRadius * 2;
-}
+    x += dx;
+    y += dy;
+  } else {
+    x = paddleX + paddleWidth / 2 - ballRadius;
+    y = canvas.height - paddleHeight - ballRadius * 2;
+  }
 
+  collisionDetection(); // ← Verplaatst naar hier, NA balpositie update
 
   if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
     dx = -dx;
@@ -657,91 +654,81 @@ function draw() {
     dy = -dy;
   }
 
- if (
-  y + dy > canvas.height - paddleHeight - ballRadius &&
-  y + dy < canvas.height + 2 && // iets meer speling
-  x > paddleX &&
-  x < paddleX + paddleWidth
-) {
-  const hitPos = (x - paddleX) / paddleWidth;
-  const angle = (hitPos - 0.5) * Math.PI / 2;
-  const speed = Math.sqrt(dx * dx + dy * dy);
-  dx = speed * Math.sin(angle);
-  dy = -Math.abs(speed * Math.cos(angle));
-}
-
+  if (
+    y + dy > canvas.height - paddleHeight - ballRadius &&
+    y + dy < canvas.height + 2 &&
+    x > paddleX &&
+    x < paddleX + paddleWidth
+  ) {
+    const hitPos = (x - paddleX) / paddleWidth;
+    const angle = (hitPos - 0.5) * Math.PI / 2;
+    const speed = Math.sqrt(dx * dx + dy * dy);
+    dx = speed * Math.sin(angle);
+    dy = -Math.abs(speed * Math.cos(angle));
+  }
 
   if (y + dy > canvas.height - ballRadius) {
-  saveHighscore();
-  ballLaunched = false;
-  ballMoving = false;
-  dx = 4;
-  dy = -4;
-  elapsedTime = 0;
-  resetBall();
-  resetBricks();
-}
-
-
-
-if (secondBallActive) {
-  secondBall.x += secondBall.dx;
-  secondBall.y += secondBall.dy;
-
-  // Randen
-  if (secondBall.x + secondBall.dx > canvas.width - ballRadius || secondBall.x + secondBall.dx < ballRadius) {
-    secondBall.dx = -secondBall.dx;
+    saveHighscore();
+    ballLaunched = false;
+    ballMoving = false;
+    dx = 4;
+    dy = -4;
+    elapsedTime = 0;
+    resetBall();
+    resetBricks();
   }
 
-  if (secondBall.y + secondBall.dy < ballRadius) {
-    secondBall.dy = -secondBall.dy;
-  }
+  if (secondBallActive) {
+    secondBall.x += secondBall.dx;
+    secondBall.y += secondBall.dy;
 
-  
-  if (
-    secondBall.y + secondBall.dy > canvas.height - paddleHeight - ballRadius &&
-    secondBall.y + secondBall.dy < canvas.height - ballRadius &&
-    secondBall.x > paddleX &&
-    secondBall.x < paddleX + paddleWidth
-  ) {
-    const hitPos = (secondBall.x - paddleX) / paddleWidth;
-    const angle = (hitPos - 0.5) * Math.PI / 2;
-    const speed = Math.sqrt(secondBall.dx * secondBall.dx + secondBall.dy * secondBall.dy);
-    secondBall.dx = speed * Math.sin(angle);
-    secondBall.dy = -Math.abs(speed * Math.cos(angle));
-  }
+    if (secondBall.x + secondBall.dx > canvas.width - ballRadius || secondBall.x + secondBall.dx < ballRadius) {
+      secondBall.dx = -secondBall.dx;
+    }
 
-  // Onderaan geraakt
-  if (secondBall.y + secondBall.dy > canvas.height - ballRadius) {
-    secondBallActive = false;
-  }
+    if (secondBall.y + secondBall.dy < ballRadius) {
+      secondBall.dy = -secondBall.dy;
+    }
 
-  // Blokken-botsing
-  for (let c = 0; c < brickColumnCount; c++) {
-    for (let r = 0; r < brickRowCount; r++) {
-      const b = bricks[c][r];
-      if (
-        b.status === 1 &&
-        secondBall.x > b.x &&
-        secondBall.x < b.x + brickWidth &&
-        secondBall.y > b.y &&
-        secondBall.y < b.y + brickHeight
-      ) {
-        secondBall.dy = -secondBall.dy;
-        b.status = 0;
-        b.type = "normal";
-        score += 10;
-        spawnCoin(b.x, b.y);
-        document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+    if (
+      secondBall.y + secondBall.dy > canvas.height - paddleHeight - ballRadius &&
+      secondBall.y + secondBall.dy < canvas.height - ballRadius &&
+      secondBall.x > paddleX &&
+      secondBall.x < paddleX + paddleWidth
+    ) {
+      const hitPos = (secondBall.x - paddleX) / paddleWidth;
+      const angle = (hitPos - 0.5) * Math.PI / 2;
+      const speed = Math.sqrt(secondBall.dx * secondBall.dx + secondBall.dy * secondBall.dy);
+      secondBall.dx = speed * Math.sin(angle);
+      secondBall.dy = -Math.abs(speed * Math.cos(angle));
+    }
+
+    if (secondBall.y + secondBall.dy > canvas.height - ballRadius) {
+      secondBallActive = false;
+    }
+
+    for (let c = 0; c < brickColumnCount; c++) {
+      for (let r = 0; r < brickRowCount; r++) {
+        const b = bricks[c][r];
+        if (
+          b.status === 1 &&
+          secondBall.x > b.x &&
+          secondBall.x < b.x + brickWidth &&
+          secondBall.y > b.y &&
+          secondBall.y < b.y + brickHeight
+        ) {
+          secondBall.dy = -secondBall.dy;
+          b.status = 0;
+          b.type = "normal";
+          score += 10;
+          spawnCoin(b.x, b.y);
+          document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+        }
       }
     }
+
+    ctx.drawImage(ballImg, secondBall.x, secondBall.y, ballRadius * 2, ballRadius * 2);
   }
-
-  // Teken tweede bal
-  ctx.drawImage(ballImg, secondBall.x, secondBall.y, ballRadius * 2, ballRadius * 2);
-}
-
-
 
   if (rocketActive && !rocketFired) {
     rocketX = paddleX + paddleWidth / 2 - 12;
@@ -773,7 +760,7 @@ if (secondBallActive) {
     e.radius += 2;
     e.alpha -= 0.05;
   });
- 
+
   explosions = explosions.filter(e => e.alpha > 0);
 
   smokeParticles.forEach(p => {
@@ -785,12 +772,11 @@ if (secondBallActive) {
     p.radius += 0.3;
     p.alpha -= 0.02;
   });
-  
-smokeParticles = smokeParticles.filter(p => p.alpha > 0);
+
+  smokeParticles = smokeParticles.filter(p => p.alpha > 0);
 
   requestAnimationFrame(draw);
 }
-
 
 function startFlybyAnimation() {
   const bike = document.getElementById("bikeFlyby");
@@ -811,9 +797,6 @@ function startFlybyAnimation() {
     }
   }, 30);
 }
-
-
-
 
 let imagesLoaded = 0;
 
@@ -841,7 +824,6 @@ powerBlockImg.onload = onImageLoad;
 powerBlock2Img.onload = onImageLoad;
 rocketImg.onload = onImageLoad;
 
-
 document.addEventListener("mousedown", function () {
   if (rocketActive && rocketAmmo > 0 && !rocketFired) {
     rocketFired = true;
@@ -849,5 +831,4 @@ document.addEventListener("mousedown", function () {
   } else if (flagsOnPaddle) {
     shootFromFlags();
   }
-}); 
-
+});
