@@ -588,7 +588,7 @@ function draw() {
  
   // Boot wordt opgeduwd door water
  
-  boatY = waterY - paddleHeight * 2;
+  boatY = waterY - paddleHeight * 1.6;
   ctx.drawImage(boatImg, boatX, boatY, paddleWidth, paddleHeight * 2);
   ctx.drawImage(waterOverlayImg, 0, waterY, canvas.width, canvas.height - waterY);
 }
