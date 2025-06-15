@@ -561,7 +561,6 @@ function draw() {
 
   
  if (bootBonusActive) {
-  // Water stijgt
   if (waterState === 'rising') {
     waterY -= 1;
     if (waterY <= canvas.height - 100) {
@@ -570,7 +569,7 @@ function draw() {
     }
   }
 
-  // Water wacht boven
+  
   else if (waterState === 'holding') {
     waterTimer++;
     if (waterTimer > 120) {
@@ -578,7 +577,7 @@ function draw() {
     }
   }
 
-  // Water zakt
+
   else if (waterState === 'falling') {
     waterY += 1;
     if (waterY >= canvas.height + 30) {
