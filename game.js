@@ -593,7 +593,7 @@ function draw() {
   if (rightPressed) boatX += boatSpeed;
 
   // Boot wordt opgeduwd door water
-  boatY = waterY - paddleHeight * 1.4;
+  boatY = waterY - paddleHeight * 5;)
   ctx.drawImage(boatImg, boatX, boatY, paddleWidth, paddleHeight * 5);
   ctx.drawImage(waterOverlayImg, 0, waterY, canvas.width, canvas.height - waterY);
 } // ✅ sluit hier pas af
