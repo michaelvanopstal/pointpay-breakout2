@@ -40,7 +40,7 @@ let waterState = 'idle'; // 'rising' | 'holding' | 'falling' | 'idle'
 let boatSpeed = 2;
 let boatTimer = 0;
 let waterTimer = 0;
-
+let resetBricksOnDeath = false; // ← voeg deze hier toe
 
 const bonusBricks = [
   { col: 6, row: 8, type: "rocket" },
