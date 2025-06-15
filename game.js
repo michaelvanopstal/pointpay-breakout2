@@ -285,6 +285,7 @@ function resetPaddle() {
   paddleX = (canvas.width - paddleWidth) / 2;
 
 }
+
 function startBootBonus() {
   bootBonusActive = true;
   waterY = canvas.height;
@@ -299,13 +300,13 @@ function startBootBonus() {
   rocketAmmo = 0;
   flagsOnPaddle = false;
   flyingCoins = [];
-  secondBallActive = false
+  secondBallActive = false;
 
-   // ✅ Activeer video
+  // ✅ Activeer de video
   waterVideo.style.display = "block";
-
-  
+  waterVideo.style.opacity = "1";
 }
+
 
 function drawPaddleFlags() {
   if (flagsOnPaddle && Date.now() - flagTimer < 20000) {
