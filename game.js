@@ -744,7 +744,7 @@ function onImageLoad() {
   imagesLoaded++;
   console.log("Afbeelding geladen:", imagesLoaded);
 
-  if (imagesLoaded === 12) {
+  if (imagesLoaded === 11) {
     x = paddleX + paddleWidth / 2 - ballRadius;
     y = canvas.height - paddleHeight - ballRadius * 2;
     draw();
@@ -753,7 +753,6 @@ function onImageLoad() {
 
 bootBlockImg.onload = onImageLoad;
 boatImg.onload = onImageLoad;
-waterOverlayImg.onload = onImageLoad;
 doubleBallImg.onload = onImageLoad;
 blockImg.onload = onImageLoad;
 ballImg.onload = onImageLoad;
