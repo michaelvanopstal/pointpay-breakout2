@@ -580,15 +580,15 @@ function draw() {
       resetAfterBootBonus();
     }
   }
-
-  // Boot wordt opgeduwd door water
-  boatY = waterY - paddleHeight * 2;
+ 
 
   // Alleen boot beweegt nu
   if (leftPressed) boatX -= boatSpeed;
   if (rightPressed) boatX += boatSpeed;
-
-  // Boot en water tekenen
+ 
+  // Boot wordt opgeduwd door water
+ 
+  boatY = waterY - paddleHeight * 2;
   ctx.drawImage(boatImg, boatX, boatY, paddleWidth, paddleHeight * 2);
   ctx.drawImage(waterOverlayImg, 0, waterY, canvas.width, canvas.height - waterY);
 }
