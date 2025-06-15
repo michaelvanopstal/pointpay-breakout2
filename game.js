@@ -537,17 +537,15 @@ function resetBricks() {
 }
 
 function resetAfterBootBonus() {
-  // Reset bootpositie
   boatX = 0;
   boatY = 0;
-
-  // Reset paddle zoals gewoonlijk
   resetPaddle();
 
-  // Reset bal
-  resetBall();
+  // Alleen resetBall uitvoeren als de bal niet in beweging is
+  if (!ballLaunched && !ballMoving) {
+    resetBall();
+  }
 }
-
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
