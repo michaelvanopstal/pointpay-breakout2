@@ -561,6 +561,7 @@ function draw() {
 
   
  if (bootBonusActive) {
+  // Water stijgt
   if (waterState === 'rising') {
     waterY -= 1;
     if (waterY <= canvas.height - 100) {
@@ -569,7 +570,7 @@ function draw() {
     }
   }
 
-  
+  // Water wacht boven
   else if (waterState === 'holding') {
     waterTimer++;
     if (waterTimer > 120) {
@@ -577,7 +578,7 @@ function draw() {
     }
   }
 
-
+  // Water zakt
   else if (waterState === 'falling') {
     waterY += 1;
     if (waterY >= canvas.height + 30) {
@@ -586,24 +587,20 @@ function draw() {
       resetAfterBootBonus();
     }
   }
-}
-
-
- 
 
   // Alleen boot beweegt nu
   if (leftPressed) boatX -= boatSpeed;
   if (rightPressed) boatX += boatSpeed;
- 
+
   // Boot wordt opgeduwd door water
- 
   boatY = waterY - paddleHeight * 1.4;
   ctx.drawImage(boatImg, boatX, boatY, paddleWidth, paddleHeight * 5);
   ctx.drawImage(waterOverlayImg, 0, waterY, canvas.width, canvas.height - waterY);
-}
+} // ✅ sluit hier pas af
 
-  drawBall();
-  drawPaddle();
+// Paddle en bal tekenen
+drawBall();
+drawPaddle();
 
   // ⬇️ ALLES VANAF HIER NAAR BINNEN VERPLAATST
  if (!bootBonusActive) {
@@ -700,6 +697,7 @@ function draw() {
     e.radius += 2;
     e.alpha -= 0.05;
   });
+  
   explosions = explosions.filter(e => e.alpha > 0);
 
   smokeParticles.forEach(p => {
@@ -711,7 +709,8 @@ function draw() {
     p.radius += 0.3;
     p.alpha -= 0.02;
   });
-  smokeParticles = smokeParticles.filter(p => p.alpha > 0);
+ 
+smokeParticles = smokeParticles.filter(p => p.alpha > 0);
 
   requestAnimationFrame(draw);
 }
