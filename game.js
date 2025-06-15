@@ -563,9 +563,11 @@ function resetAfterBootBonus() {
     resetBall();
   }
 
-  // ✅ Verberg altijd de video
+  // ✅ Verberg altijd de video netjes
+  waterVideo.style.opacity = "0";
   waterVideo.style.display = "none";
 }
+
 
 
 
