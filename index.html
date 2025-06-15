@@ -6,9 +6,7 @@
   <title>PointPay Breakout</title>
   <link rel="preload" href="vlaggetje1.png" as="image">
   <link rel="preload" href="vlaggetje2.png" as="image">
- <link rel="preload" href="signalblock2.png" as="image">
-
-
+  <link rel="preload" href="signalblock2.png" as="image">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -20,17 +18,14 @@
 
   <div id="game-container">
     <canvas id="gameCanvas" width="645" height="600"></canvas>
-<img id="bikeFlyer" src="pointpay-bike.png" style="position:absolute; display:none; width:180px;" />
 
     <div id="login-overlay">
-      
-<div id="login-box">
-  <label for="player-name">Inlog:</label><br />
-  <input type="text" id="player-name" placeholder="Voer je naam in" />
-  <button id="login-btn">Login</button>
-  <button id="logout-btn" style="display: none;">Logout</button>
-</div>
-
+      <div id="login-box">
+        <label for="player-name">Inlog:</label><br />
+        <input type="text" id="player-name" placeholder="Voer je naam in" />
+        <button id="login-btn">Login</button>
+        <button id="logout-btn" style="display: none;">Logout</button>
+      </div>
     </div>
 
     <div id="highscore-overlay">
@@ -43,147 +38,131 @@
     </div>
   </div>
 
+  <img id="balloonFlyer" src="luchtballon.png" alt="Flying Balloon" style="display:none; position:absolute; width:20%;" />
+  <img id="bikeFlyer" src="pointpay-bike.png" alt="Flying Bike" style="position:absolute; display:none; width:180px;" />
+
+  <!-- PXP Coin Banner -->
+  <div id="pxp-banner-overlay">
+    <div id="pxp-scroll-text">
+      $0.01731 <span class="positive">+2.91%</span> &nbsp;
+      Market Cap: $517.92K &nbsp;
+      Volume: $145.52K &nbsp;
+      Total Supply: 100M PXP &nbsp;
+      Circulating: 30M PXP
+    </div>
+  </div>
+
+  <!-- Water Video -->
+  <video id="waterVideo" src="water-3d.mp4" autoplay loop muted playsinline style="
+    position: absolute;
+    left: 0;
+    top: 100%;
+    width: 100%;
+    height: auto;
+    z-index: 9999;
+    pointer-events: none;
+    display: none;
+    opacity: 0;
+    transition: opacity 1s ease;
+  "></video>
+
   <script src="login.js"></script>
   <script src="game.js"></script>
 
-<script>
-  let highscores = JSON.parse(localStorage.getItem("highscores")) || [
-    { name: "—", score: 0, time: "00:00" },
-    { name: "—", score: 0, time: "00:00" },
-    { name: "—", score: 0, time: "00:00" },
-    { name: "—", score: 0, time: "00:00" },
-    { name: "—", score: 0, time: "00:00" },
-    { name: "—", score: 0, time: "00:00" },
-    { name: "—", score: 0, time: "00:00" },
-    { name: "—", score: 0, time: "00:00" },
-    { name: "—", score: 0, time: "00:00" },
-    { name: "—", score: 0, time: "00:00" }
-  ];
+  <script>
+    let highscores = JSON.parse(localStorage.getItem("highscores")) || Array(10).fill({ name: "—", score: 0, time: "00:00" });
 
-  function updateHighscoreBoard() {
-    const highscoreList = document.getElementById("highscore-list");
-    if (!highscoreList) return;
-    highscoreList.innerHTML = "";
-    highscores.forEach((entry, index) => {
-      const li = document.createElement("li");
-      li.textContent = `${index + 1}. ${entry.name} — ${entry.score} PXP — ${entry.time}`;
-      highscoreList.appendChild(li);
+    function updateHighscoreBoard() {
+      const highscoreList = document.getElementById("highscore-list");
+      if (!highscoreList) return;
+      highscoreList.innerHTML = "";
+      highscores.forEach((entry, index) => {
+        const li = document.createElement("li");
+        li.textContent = `${index + 1}. ${entry.name} — ${entry.score} PXP — ${entry.time}`;
+        highscoreList.appendChild(li);
+      });
+    }
+
+    function checkAndUpdateHighscores(name, score, time) {
+      const newEntry = { name, score, time };
+      highscores.push(newEntry);
+      highscores.sort((a, b) => b.score - a.score || a.time.localeCompare(b.time));
+      highscores = highscores.slice(0, 10);
+      localStorage.setItem("highscores", JSON.stringify(highscores));
+      updateHighscoreBoard();
+    }
+
+    window.addEventListener("load", () => {
+      updateHighscoreBoard();
     });
-  }
 
-  function checkAndUpdateHighscores(name, score, time) {
-    const newEntry = { name, score, time };
-    highscores.push(newEntry);
-    highscores.sort((a, b) => b.score - a.score || a.time.localeCompare(b.time));
-    highscores = highscores.slice(0, 10);
-    localStorage.setItem("highscores", JSON.stringify(highscores));
-    updateHighscoreBoard();
-  }
+    function animateFlyer(flyerId, duration, delay) {
+      setTimeout(() => {
+        const flyer = document.getElementById(flyerId);
+        flyer.style.display = "block";
 
-  window.addEventListener("load", () => {
-    updateHighscoreBoard();
-  });
-</script>
-<style>
-  #game-container {
-    position: relative; /* nodig voor absolute positionering binnenin */
-  }
+        const startX = window.innerWidth + 100;
+        const endX = -200;
+        const startY = window.innerHeight + 100;
+        const endY = -150;
+        let startTime = null;
 
-  #gameCanvas {
-    position: relative;
-    z-index: 99;
-  }
+        function animate(timestamp) {
+          if (!startTime) startTime = timestamp;
+          const elapsed = timestamp - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          const step = elapsed / 16;
 
-  #bikeFlyer {
-    position: absolute;
-    left: 100%;  /* buiten scherm starten */
-    top: 100%;   /* buiten onderkant starten */
-    width: 180px;
-    display: none;
-    z-index: 4; /* boven canvas, onder blokken */
-    pointer-events: none; /* niet klikbaar */
-  }
-</style>
-  
-<img id="balloonFlyer" src="luchtballon.png" alt="Flying Balloon" style="display:none; position:absolute; width:20%;" />
-<img id="bikeFlyer" src="pointpay-bike.png" alt="Flying Bike" />
+          const baseX = startX + (endX - startX) * progress;
+          const baseY = startY + (endY - startY) * progress;
 
-<script>
-  function animateFlyer(flyerId, duration, delay) {
-    setTimeout(() => {
-      const flyer = document.getElementById(flyerId);
-      flyer.style.display = "block";
+          const wobbleX = Math.sin(step / 10) * 3;
+          const wobbleY = Math.cos(step / 15) * 3;
 
-      const startX = window.innerWidth + 100;
-      const endX = -200;
-      const startY = window.innerHeight + 100;
-      const endY = -150;
-      let startTime = null;
+          flyer.style.left = `${baseX + wobbleX}px`;
+          flyer.style.top = `${baseY + wobbleY}px`;
 
-      function animate(timestamp) {
-        if (!startTime) startTime = timestamp;
-        const elapsed = timestamp - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        const step = elapsed / 16;
-
-        const baseX = startX + (endX - startX) * progress;
-        const baseY = startY + (endY - startY) * progress;
-
-        const wobbleX = Math.sin(step / 10) * 3;
-        const wobbleY = Math.cos(step / 15) * 3;
-
-        const x = baseX + wobbleX;
-        const y = baseY + wobbleY;
-
-        flyer.style.left = `${x}px`;
-        flyer.style.top = `${y}px`;
-
-        if (progress < 1) {
-          requestAnimationFrame(animate);
-        } else {
-          flyer.style.display = "none";
+          if (progress < 1) {
+            requestAnimationFrame(animate);
+          } else {
+            flyer.style.display = "none";
+          }
         }
-      }
 
-      requestAnimationFrame(animate);
-    }, delay);
-  }
+        requestAnimationFrame(animate);
+      }, delay);
+    }
 
-  // Start eerste run
-  animateFlyer("bikeFlyer", 20000, 1000);     // fiets na 1 sec, 20 sec lang
-  animateFlyer("balloonFlyer", 30000, 1000);  // ballon na 2 sec, 28 sec lang
+    // Start eerste run
+    animateFlyer("bikeFlyer", 20000, 1000);
+    animateFlyer("balloonFlyer", 30000, 1000);
 
-  // Herhaal elke 30 sec
-  setInterval(() => animateFlyer("bikeFlyer",  20000, 1000); 
-  setInterval(() => animateFlyer("balloonFlyer",  30000, 0), 1000);
-</script>
+    // Herhaal elke 30 sec
+    setInterval(() => animateFlyer("bikeFlyer", 20000, 1000), 30000);
+    setInterval(() => animateFlyer("balloonFlyer", 30000, 0), 30000);
+  </script>
 
-<!-- PXP Coin Banner -->
-<div id="pxp-banner-overlay">
-  <div id="pxp-scroll-text"> $0.01731 <span class="positive">+2.91%</span> &nbsp;
-    Market Cap: $517.92K &nbsp;
-    Volume: $145.52K &nbsp;
-    Total Supply: 100M PXP &nbsp;
-    Circulating: 30M PXP;   $0.01731 <span class="positive">+2.91%</span> &nbsp;
-    Market Cap: $517.92K &nbsp;
-    Volume: $145.52K &nbsp;
-    Total Supply: 100M PXP &nbsp;
-    Circulating: 30M PXP
-  </div>
-</div>
+  <style>
+    #game-container {
+      position: relative;
+    }
 
-  
-<video id="waterVideo" src="water-3d.mp4" autoplay loop muted playsinline style="
-  position: absolute;
-  left: 0;
-  top: 100%;
-  width: 100%;
-  height: auto;
-  z-index: 9999;
-  pointer-events: none;
-  display: none;
-  opacity: 0;
-  transition: opacity 1s ease;
-"></video>
+    #gameCanvas {
+      position: relative;
+      z-index: 99;
+    }
+
+    #bikeFlyer {
+      position: absolute;
+      left: 100%;
+      top: 100%;
+      width: 180px;
+      display: none;
+      z-index: 4;
+      pointer-events: none;
+    }
+  </style>
+</body>
+</html>
 
  
