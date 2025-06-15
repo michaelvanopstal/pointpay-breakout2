@@ -48,8 +48,8 @@ window.onload = function () {
   waterVideo = document.getElementById("waterVideo");
   console.log("waterVideo geladen?", waterVideo);
 
-  // Start eventueel spel of initialisaties hier
-  draw(); // of een functie die alles opstart
+ 
+  draw(); 
 }
 
 
