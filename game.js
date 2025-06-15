@@ -378,21 +378,15 @@ function collisionDetection() {
               rocketActive = true;
               rocketAmmo = 3; // geef 3 raketten
               break;
-              case "freeze":
-              dx = 0;
-              setTimeout(() => { dx = 4; }, 1000);
-              break;
-              case "doubleball":
+            case "doubleball":
               spawnSecondBall();
               setTimeout(() => {
-              secondBallActive = false;
-           }, secondBallDuration);
+                secondBallActive = false;
+              }, secondBallDuration);
               break;
-              case "boot":
+            case "boot":
               startBootBonus();
               break;
-              
-
           }
 
           b.status = 0;
