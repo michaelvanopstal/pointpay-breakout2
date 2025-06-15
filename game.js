@@ -42,6 +42,15 @@ let boatTimer = 0;
 let waterTimer = 0;
 let resetBricksOnDeath = false; // ← voeg deze hier toe
 let waterOffsetX = 0; // horizontale schuiving
+let waterVideo;
+
+window.onload = function () {
+  waterVideo = document.getElementById("waterVideo");
+  console.log("waterVideo geladen?", waterVideo);
+
+  // Start eventueel spel of initialisaties hier
+  draw(); // of een functie die alles opstart
+}
 
 
 
@@ -60,10 +69,6 @@ const brickRowCount = 15;
 const brickColumnCount = 9;
 const brickWidth = customBrickWidth;
 const brickHeight = customBrickHeight;
-const waterVideo = document.getElementById("waterVideo");
-const waterVideo = document.getElementById("waterVideo");
-console.log("waterVideo geladen?", waterVideo);  // ← debug
-
 
 
 const bricks = [];
