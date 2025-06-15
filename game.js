@@ -539,13 +539,16 @@ function resetBricks() {
 function resetAfterBootBonus() {
   boatX = 0;
   boatY = 0;
-  resetPaddle();
 
-  // Alleen resetBall uitvoeren als de bal niet in beweging is
+  // Paddle neemt positie van de boot over
+  paddleX = boatX;
+
+  // Alleen resetBall als bal nog niet beweegt
   if (!ballLaunched && !ballMoving) {
     resetBall();
   }
 }
+
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -576,15 +579,22 @@ function draw() {
     }
   }
 
-  // Water zakt
-  else if (waterState === 'falling') {
-    waterY += 1;
-    if (waterY >= canvas.height + 30) {
-      bootBonusActive = false;
-      waterState = 'idle';
-      resetAfterBootBonus();
-    }
+ else if (waterState === 'falling') {
+  waterY += 1;
+
+  // 🟡 Paddle komt terug VOORDAT het water helemaal weg is
+  if (waterY >= canvas.height - 30 && bootBonusActive) {
+    bootBonusActive = false;
+    paddleX = boatX; // paddle op plek van boot
   }
+
+  // 🔴 Als water helemaal gezakt is → alles resetten
+  if (waterY >= canvas.height + 30) {
+    waterState = 'idle';
+    resetAfterBootBonus();
+  }
+}
+
 
   // Alleen boot beweegt nu
   if (leftPressed) boatX -= boatSpeed;
