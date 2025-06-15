@@ -46,7 +46,7 @@ const bonusBricks = [
   { col: 6, row: 8, type: "rocket" },
   { col: 8, row: 6, type: "power" },
   { col: 2, row: 9, type: "doubleball" },
-  { col: 4, row: 12, type: "boot" },
+  { col: 4, row: 14, type: "boot" },
 
 ];
 
