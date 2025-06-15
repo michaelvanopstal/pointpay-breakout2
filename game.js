@@ -61,6 +61,8 @@ const brickColumnCount = 9;
 const brickWidth = customBrickWidth;
 const brickHeight = customBrickHeight;
 const waterVideo = document.getElementById("waterVideo");
+const waterVideo = document.getElementById("waterVideo");
+console.log("waterVideo geladen?", waterVideo);  // ← debug
 
 
 
@@ -301,7 +303,9 @@ function startBootBonus() {
 
   // ✅ Activeer de video
   waterVideo.style.display = "block";
-  waterVideo.style.opacity = "1";
+  waterVideo.style.opacity = "1"; 
+  waterVideo.style.top = canvas.height + "px"; // tijdelijk onderin starten
+
 }
 
 
