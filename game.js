@@ -41,6 +41,9 @@ let boatSpeed = 2;
 let boatTimer = 0;
 let waterTimer = 0;
 let resetBricksOnDeath = false; // ← voeg deze hier toe
+let waterOffsetX = 0; // horizontale schuiving
+
+
 
 const bonusBricks = [
   { col: 6, row: 8, type: "rocket" },
@@ -598,15 +601,22 @@ function draw() {
   }
 }
 
+// Alleen boot beweegt nu
+if (leftPressed) boatX -= boatSpeed;
+if (rightPressed) boatX += boatSpeed;
 
-  // Alleen boot beweegt nu
-  if (leftPressed) boatX -= boatSpeed;
-  if (rightPressed) boatX += boatSpeed;
+// Boot wordt opgeduwd door water
+boatY = waterY - paddleHeight * 3.5;
+ctx.drawImage(boatImg, boatX, boatY, paddleWidth, paddleHeight * 5);
 
-  // Boot wordt opgeduwd door water
-  boatY = waterY - paddleHeight * 3.5;
-  ctx.drawImage(boatImg, boatX, boatY, paddleWidth, paddleHeight * 5);
-  ctx.drawImage(waterOverlayImg, 0, waterY, canvas.width, canvas.height - waterY);
+// Golven horizontaal laten bewegen
+waterOffsetX += 0.5; // schuifsnelheid
+if (waterOffsetX > canvas.width) waterOffsetX = 0;
+
+// Teken herhalend water voor naadloos effect
+ctx.drawImage(waterOverlayImg, -waterOffsetX, waterY, canvas.width, canvas.height - waterY);
+ctx.drawImage(waterOverlayImg, canvas.width - waterOffsetX, waterY, canvas.width, canvas.height - waterY);
+
 } // ✅ sluit hier pas af
 
 // Paddle en bal tekenen
