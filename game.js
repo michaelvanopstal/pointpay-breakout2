@@ -560,26 +560,33 @@ function draw() {
   checkFlyingCoinHits();
 
   
-  if (bootBonusActive) {
+ if (bootBonusActive) {
+  // Water stijgt
   if (waterState === 'rising') {
     waterY -= 1;
     if (waterY <= canvas.height - 100) {
       waterState = 'holding';
       waterTimer = 0;
     }
+
+  // Water wacht boven
   } else if (waterState === 'holding') {
     waterTimer++;
     if (waterTimer > 120) {
       waterState = 'falling';
     }
+
+  // Water zakt
   } else if (waterState === 'falling') {
     waterY += 1;
-    if (waterY >= canvas.height) {
+    if (waterY >= canvas.height + 30) {  // ← verlengde grens voor vloeiende overgang
       bootBonusActive = false;
       waterState = 'idle';
       resetAfterBootBonus();
     }
   }
+}
+
  
 
   // Alleen boot beweegt nu
