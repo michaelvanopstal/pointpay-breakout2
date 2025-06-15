@@ -254,12 +254,14 @@ function drawBall() {
 }
 
 function drawPaddle() {
+  if (bootBonusActive) return; // ⛔ Niet tekenen tijdens bootbonus
+
   ctx.beginPath();
   ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
   ctx.fillStyle = "#0095DD";
   ctx.fill();
   ctx.closePath();
-} 
+}
 
 function resetBall() {
   if (bootBonusActive) {
@@ -557,43 +559,51 @@ function draw() {
   drawFlyingCoins();
   checkFlyingCoinHits();
 
+  
   if (bootBonusActive) {
-    if (waterState === 'rising') {
-      waterY -= 1;
-      if (waterY <= canvas.height - 100) {
-        waterState = 'holding';
-        waterTimer = 0;
-      }
-    } else if (waterState === 'holding') {
-      waterTimer++;
-      if (waterTimer > 120) {
-        waterState = 'falling';
-      }
-    } else if (waterState === 'falling') {
-      waterY += 1;
-      if (waterY >= canvas.height) {
-        bootBonusActive = false;
-        waterState = 'idle';
-        resetAfterBootBonus();
-      }
+  if (waterState === 'rising') {
+    waterY -= 1;
+    if (waterY <= canvas.height - 100) {
+      waterState = 'holding';
+      waterTimer = 0;
     }
-
-    if (leftPressed) boatX -= boatSpeed;
-    if (rightPressed) boatX += boatSpeed;
-
-    ctx.drawImage(boatImg, boatX, boatY, paddleWidth, paddleHeight * 2);
-    ctx.drawImage(waterOverlayImg, 0, waterY, canvas.width, canvas.height - waterY);
+  } else if (waterState === 'holding') {
+    waterTimer++;
+    if (waterTimer > 120) {
+      waterState = 'falling';
+    }
+  } else if (waterState === 'falling') {
+    waterY += 1;
+    if (waterY >= canvas.height) {
+      bootBonusActive = false;
+      waterState = 'idle';
+      resetAfterBootBonus();
+    }
   }
+
+  // Boot wordt opgeduwd door water
+  boatY = waterY - paddleHeight * 2;
+
+  // Alleen boot beweegt nu
+  if (leftPressed) boatX -= boatSpeed;
+  if (rightPressed) boatX += boatSpeed;
+
+  // Boot en water tekenen
+  ctx.drawImage(boatImg, boatX, boatY, paddleWidth, paddleHeight * 2);
+  ctx.drawImage(waterOverlayImg, 0, waterY, canvas.width, canvas.height - waterY);
+}
 
   drawBall();
   drawPaddle();
 
   // ⬇️ ALLES VANAF HIER NAAR BINNEN VERPLAATST
+ if (!bootBonusActive) {
   if (rightPressed && paddleX < canvas.width - paddleWidth) {
     paddleX += 7;
   } else if (leftPressed && paddleX > 0) {
     paddleX -= 7;
   }
+}
 
   if (ballLaunched) {
     x += dx;
@@ -680,25 +690,6 @@ function draw() {
 }
 
 
-function startFlybyAnimation() {
-  const bike = document.getElementById("bikeFlyby");
-  bike.style.display = "block";
-
-  let x = window.innerWidth;
-  let y = window.innerHeight;
-  const interval = setInterval(() => {
-    x -= 4;
-    y -= 2;
-
-    bike.style.left = x + "px";
-    bike.style.top = y + "px";
-
-    if (x < -150 || y < -100) {
-      clearInterval(interval);
-      bike.style.display = "none";
-    }
-  }, 30);
-}
 
 let imagesLoaded = 0;
 
