@@ -307,10 +307,26 @@ function startBootBonus() {
   secondBallActive = false;
 
   // ✅ Activeer de video
-  waterVideo.style.display = "block";
-  waterVideo.style.opacity = "1"; 
-  waterVideo.style.top = canvas.height + "px"; // tijdelijk onderin starten
+  const waterVideo = document.getElementById("waterVideo");
+  if (waterVideo) {
+    waterVideo.style.display = "block";
+    waterVideo.style.opacity = "1";
+    waterVideo.style.top = "0"; // zet terug bovenaan
+    waterVideo.currentTime = 0;
+    waterVideo.play();
+  }
 
+  // ⏱️ Na 4 seconden video verbergen
+  setTimeout(() => {
+    bootBonusActive = false;
+    if (waterVideo) {
+      waterVideo.style.opacity = "0";
+      setTimeout(() => {
+        waterVideo.style.display = "none";
+        waterVideo.pause();
+      }, 1000); // wacht tot fading klaar is
+    }
+  }, 4000);
 }
 
 
