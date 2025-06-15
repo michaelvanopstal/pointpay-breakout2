@@ -60,6 +60,8 @@ const brickRowCount = 15;
 const brickColumnCount = 9;
 const brickWidth = customBrickWidth;
 const brickHeight = customBrickHeight;
+const waterVideo = document.getElementById("waterVideo");
+
 
 
 const bricks = [];
@@ -297,7 +299,12 @@ function startBootBonus() {
   rocketAmmo = 0;
   flagsOnPaddle = false;
   flyingCoins = [];
-  secondBallActive = false;
+  secondBallActive = false
+
+   // ✅ Activeer video
+  waterVideo.style.display = "block";
+
+  
 }
 
 function drawPaddleFlags() {
@@ -553,7 +560,11 @@ function resetAfterBootBonus() {
   if (!ballLaunched && !ballMoving) {
     resetBall();
   }
+
+  // ✅ Verberg altijd de video
+  waterVideo.style.display = "none";
 }
+
 
 
 function draw() {
@@ -585,39 +596,29 @@ function draw() {
     }
   }
 
- else if (waterState === 'falling') {
-  waterY += 1;
-
-  // 🟡 Paddle komt terug VOORDAT het water helemaal weg is
-  if (waterY >= canvas.height - 30 && bootBonusActive) {
-    bootBonusActive = false;
-    paddleX = boatX; // paddle op plek van boot
+  // Water zakt
+  else if (waterState === 'falling') {
+    waterY += 1;
+    if (waterY >= canvas.height + 30) {
+      bootBonusActive = false;
+      waterState = 'idle';
+      resetAfterBootBonus();
+    }
   }
 
-  // 🔴 Als water helemaal gezakt is → alles resetten
-  if (waterY >= canvas.height + 30) {
-    waterState = 'idle';
-    resetAfterBootBonus();
-  }
+  // Alleen boot beweegt nu
+  if (leftPressed) boatX -= boatSpeed;
+  if (rightPressed) boatX += boatSpeed;
+
+  // Boot wordt opgeduwd door water
+  boatY = waterY - paddleHeight * 3.5;
+  ctx.drawImage(boatImg, boatX, boatY, paddleWidth, paddleHeight * 5);
+
+  // ✅ Laat de video meebewegen
+  waterVideo.style.top = waterY + "px";
+  waterVideo.style.height = (canvas.height - waterY) + "px";
 }
 
-// Alleen boot beweegt nu
-if (leftPressed) boatX -= boatSpeed;
-if (rightPressed) boatX += boatSpeed;
-
-// Boot wordt opgeduwd door water
-boatY = waterY - paddleHeight * 3.5;
-ctx.drawImage(boatImg, boatX, boatY, paddleWidth, paddleHeight * 5);
-
-// Golven horizontaal laten bewegen
-waterOffsetX += 0.5; // schuifsnelheid
-if (waterOffsetX > canvas.width) waterOffsetX = 0;
-
-// Teken herhalend water voor naadloos effect
-ctx.drawImage(waterOverlayImg, -waterOffsetX, waterY, canvas.width, canvas.height - waterY);
-ctx.drawImage(waterOverlayImg, canvas.width - waterOffsetX, waterY, canvas.width, canvas.height - waterY);
-
-} // ✅ sluit hier pas af
 
 // Paddle en bal tekenen
 drawBall();
