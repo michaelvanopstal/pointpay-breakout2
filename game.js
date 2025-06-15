@@ -292,40 +292,6 @@ function startBootBonus() {
   secondBallActive = false;
 }
 
-
-if (bootBonusActive) {
-  // Waterbeweging: stijgen → wachten → zakken
-  if (waterState === 'rising') {
-    waterY -= 1;
-    if (waterY <= canvas.height - 100) {
-      waterState = 'holding';
-      waterTimer = 0;
-    }
-  } else if (waterState === 'holding') {
-    waterTimer++;
-    if (waterTimer > 120) { // ongeveer 2 seconden
-      waterState = 'falling';
-    }
-  } else if (waterState === 'falling') {
-    waterY += 1;
-    if (waterY >= canvas.height) {
-      bootBonusActive = false;
-      waterState = 'idle';
-      resetAfterBootBonus();
-    }
-  }
-
-  // Boot bewegen met pijltjes, met vertraging
-  if (keys['ArrowLeft']) boatX -= boatSpeed;
-  if (keys['ArrowRight']) boatX += boatSpeed;
-
-  // Teken de boot
-  ctx.drawImage(boatImg, boatX, boatY, paddleWidth, paddleHeight * 2);
-
-  // Teken het water eroverheen als overlay
-  ctx.drawImage(waterOverlayImg, 0, waterY, canvas.width, canvas.height - waterY);
-}
-
 function drawPaddleFlags() {
   if (flagsOnPaddle && Date.now() - flagTimer < 20000) {
     ctx.drawImage(vlagImgLeft, paddleX - 5, canvas.height - paddleHeight - 40, 45, 45);
@@ -334,6 +300,7 @@ function drawPaddleFlags() {
     flagsOnPaddle = false;
   }
 }
+
 function shootFromFlags() {
   const coinSpeed = 8;
 
@@ -353,6 +320,7 @@ function shootFromFlags() {
     active: true
   });
 }
+
 function checkFlyingCoinHits() {
   flyingCoins.forEach((coin) => {
     if (!coin.active) return;
@@ -582,6 +550,39 @@ function resetAfterBootBonus() {
 
   // Reset bal
   resetBall();
+}
+
+if (bootBonusActive) {
+  // Waterbeweging: stijgen → wachten → zakken
+  if (waterState === 'rising') {
+    waterY -= 1;
+    if (waterY <= canvas.height - 100) {
+      waterState = 'holding';
+      waterTimer = 0;
+    }
+  } else if (waterState === 'holding') {
+    waterTimer++;
+    if (waterTimer > 120) { // ongeveer 2 seconden
+      waterState = 'falling';
+    }
+  } else if (waterState === 'falling') {
+    waterY += 1;
+    if (waterY >= canvas.height) {
+      bootBonusActive = false;
+      waterState = 'idle';
+      resetAfterBootBonus();
+    }
+  }
+
+  // Boot bewegen met pijltjes, met vertraging
+  if (keys['ArrowLeft']) boatX -= boatSpeed;
+  if (keys['ArrowRight']) boatX += boatSpeed;
+
+  // Teken de boot
+  ctx.drawImage(boatImg, boatX, boatY, paddleWidth, paddleHeight * 2);
+
+  // Teken het water eroverheen als overlay
+  ctx.drawImage(waterOverlayImg, 0, waterY, canvas.width, canvas.height - waterY);
 }
 
 
