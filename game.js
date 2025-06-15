@@ -588,7 +588,7 @@ function draw() {
  
   // Boot wordt opgeduwd door water
  
-  boatY = waterY - paddleHeight * 2;
+  boatY = waterY - paddleHeight * 0.9;
   ctx.drawImage(boatImg, boatX, boatY, paddleWidth, paddleHeight * 2);
   ctx.drawImage(waterOverlayImg, 0, waterY, canvas.width, canvas.height - waterY);
 }
@@ -618,6 +618,8 @@ function draw() {
   if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) dx = -dx;
   if (y + dy < ballRadius) dy = -dy;
 
+ if (!bootBonusActive) {
+  // normale paddle botsing
   if (
     y + dy > canvas.height - paddleHeight - ballRadius &&
     y + dy < canvas.height + 2 &&
@@ -630,6 +632,22 @@ function draw() {
     dx = speed * Math.sin(angle);
     dy = -Math.abs(speed * Math.cos(angle));
   }
+} else {
+  // botsing met de boot
+  if (
+    y + dy > boatY - ballRadius &&
+    y + dy < boatY + paddleHeight * 2 &&
+    x > boatX &&
+    x < boatX + paddleWidth
+  ) {
+    const hitPos = (x - boatX) / paddleWidth;
+    const angle = (hitPos - 0.5) * Math.PI / 2;
+    const speed = Math.sqrt(dx * dx + dy * dy);
+    dx = speed * Math.sin(angle);
+    dy = -Math.abs(speed * Math.cos(angle));
+  }
+}
+
 
   if (y + dy > canvas.height - ballRadius) {
     saveHighscore();
