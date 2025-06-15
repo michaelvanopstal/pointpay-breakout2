@@ -568,24 +568,27 @@ function draw() {
       waterState = 'holding';
       waterTimer = 0;
     }
+  }
 
   // Water wacht boven
-  } else if (waterState === 'holding') {
+  else if (waterState === 'holding') {
     waterTimer++;
     if (waterTimer > 120) {
       waterState = 'falling';
     }
+  }
 
   // Water zakt
-  } else if (waterState === 'falling') {
+  else if (waterState === 'falling') {
     waterY += 1;
-    if (waterY >= canvas.height + 30) {  // ← verlengde grens voor vloeiende overgang
+    if (waterY >= canvas.height + 30) {
       bootBonusActive = false;
       waterState = 'idle';
       resetAfterBootBonus();
     }
   }
 }
+
 
  
 
