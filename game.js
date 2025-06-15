@@ -265,13 +265,16 @@ function drawPaddle() {
 
 function resetBall() {
   if (bootBonusActive) {
+    // Center de bal op de boot
     x = boatX + paddleWidth / 2 - ballRadius;
     y = boatY - ballRadius * 2;
   } else {
+    // Center de bal op de paddle
     x = paddleX + paddleWidth / 2 - ballRadius;
     y = canvas.height - paddleHeight - ballRadius * 2;
   }
 }
+
 
 function resetPaddle() {
   paddleX = (canvas.width - paddleWidth) / 2;
@@ -664,15 +667,16 @@ drawPaddle();
 
 
   if (y + dy > canvas.height - ballRadius) {
-    saveHighscore();
-    ballLaunched = false;
-    ballMoving = false;
-    dx = 4;
-    dy = -4;
-    elapsedTime = 0;
-    resetBall();
-    resetBricks();
-  }
+  saveHighscore();
+  ballLaunched = false;
+  ballMoving = false;
+  dx = 4;
+  dy = -4;
+  elapsedTime = 0;
+  resetBall();
+  resetBricks();
+}
+
 
   if (secondBallActive) {
     secondBall.x += secondBall.dx;
