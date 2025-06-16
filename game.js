@@ -314,6 +314,7 @@ function startBootBonus() {
     waterVideo.style.top = "0"; // zet terug bovenaan
     waterVideo.currentTime = 0;
     waterVideo.play();
+    waterVideo.style.left = "0";
   }
 
   // ⏱️ Na 4 seconden video verbergen
