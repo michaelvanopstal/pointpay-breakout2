@@ -17,26 +17,43 @@
   </div>
 
   <div id="game-container">
-    <canvas id="gameCanvas" width="645" height="600"></canvas>
+  <video id="waterVideo" src="water-3d.mp4" autoplay loop muted playsinline style="
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 645px;
+    height: 600px;
+    z-index: 25;
+    pointer-events: none;
+    display: none;
+    opacity: 0;
+    transition: opacity 1s ease;
+  "></video>
 
-    <div id="login-overlay">
-      <div id="login-box">
-        <label for="player-name">Inlog:</label><br />
-        <input type="text" id="player-name" placeholder="Voer je naam in" />
-        <button id="login-btn">Login</button>
-        <button id="logout-btn" style="display: none;">Logout</button>
-      </div>
-    </div>
+  <canvas id="gameCanvas" width="645" height="600"></canvas>
 
-    <div id="highscore-overlay">
-      <img src="beker_clipped_rev_2.png" id="trophy" alt="Trophy" />
-      <h2>High score</h2>
-      <ol id="highscore-list">
-        <li></li><li></li><li></li><li></li><li></li>
-        <li></li><li></li><li></li><li></li><li></li>
-      </ol>
+  <div id="login-overlay">
+    <div id="login-box">
+      <label for="player-name">Inlog:</label><br />
+      <input type="text" id="player-name" placeholder="Voer je naam in" />
+      <button id="login-btn">Login</button>
+      <button id="logout-btn" style="display: none;">Logout</button>
     </div>
   </div>
+
+  <div id="highscore-overlay">
+    <img src="beker_clipped_rev_2.png" id="trophy" alt="Trophy" />
+    <h2>High score</h2>
+    <ol id="highscore-list">
+      <li></li><li></li><li></li><li></li><li></li>
+      <li></li><li></li><li></li><li></li><li></li>
+    </ol>
+  </div>
+</div>
+
+ 
+
+  
 
   <img id="balloonFlyer" src="luchtballon.png" alt="Flying Balloon" style="display:none; position:absolute; width:20%;" />
   <img id="bikeFlyer" src="pointpay-bike.png" alt="Flying Bike" style="position:absolute; display:none; width:180px;" />
@@ -52,22 +69,7 @@
     </div>
   </div>
 
-<div id="game-container">
-  <video id="waterVideo" src="water-3d.mp4" autoplay loop muted playsinline style="
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 645px;
-    height: 600px;
-    z-index: 25;
-    pointer-events: none;
-    display: none;
-    opacity: 0;
-    transition: opacity 1s ease;
-  "></video>
 
-  <canvas id="gameCanvas" width="645" height="600"></canvas>
-</div>
 
 
 
