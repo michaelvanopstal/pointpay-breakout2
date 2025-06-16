@@ -48,8 +48,6 @@ window.onload = function () {
   waterVideo = document.getElementById("waterVideo");
   console.log("waterVideo geladen?", waterVideo);
 
- 
-  draw(); 
 }
 
 
