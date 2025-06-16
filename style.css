@@ -224,9 +224,6 @@ body {
   transition: opacity 1s ease;
 }
 
-#gameCanvas {
-  z-index: 10;
-}
 
 
 
