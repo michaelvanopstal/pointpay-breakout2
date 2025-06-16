@@ -52,21 +52,23 @@
     </div>
   </div>
 
-<!-- Water video voor bootbonus -->
-<video id="waterVideo" src="water-3d.mp4" autoplay muted playsinline loop
-  style="
+<div id="game-container">
+  <video id="waterVideo" src="water-3d.mp4" autoplay loop muted playsinline style="
     position: absolute;
-    top: 0;
     left: 0;
+    top: 0;
     width: 645px;
     height: 600px;
-    z-index: 100;
+    z-index: 10;
     pointer-events: none;
     display: none;
     opacity: 0;
     transition: opacity 1s ease;
-  ">
-</video>
+  "></video>
+
+  <canvas id="gameCanvas" width="645" height="600"></canvas>
+</div>
+
 
 
   <script src="login.js"></script>
