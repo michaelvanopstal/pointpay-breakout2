@@ -73,6 +73,10 @@ body {
   margin-top: 60px;
 }
 
+#game-container {
+  position: relative;
+}
+
 
 #top-info {
   position: absolute;
