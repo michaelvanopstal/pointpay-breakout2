@@ -211,6 +211,19 @@ body {
   overflow: hidden;
 }
 
+#waterVideo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 645px;
+  height: 600px;
+  z-index: 20;
+}
+#gameCanvas {
+  z-index: 10;
+}
+
+
 
 
 
