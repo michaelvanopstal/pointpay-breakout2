@@ -42,7 +42,8 @@ let boatTimer = 0;
 let waterTimer = 0;
 let resetBricksOnDeath = false; // ← voeg deze hier toe
 let waterOffsetX = 0; // horizontale schuiving
-let waterVideo;
+let waterOffset = 0;
+
 
 window.onload = function () {
   waterVideo = document.getElementById("waterVideo");
