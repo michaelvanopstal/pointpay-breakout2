@@ -45,11 +45,6 @@ let waterOffsetX = 0; // horizontale schuiving
 let waterOffset = 0;
 
 
-window.onload = function () {
-  waterVideo = document.getElementById("waterVideo");
-  console.log("waterVideo geladen?", waterVideo);
-
-}
 
 
 
