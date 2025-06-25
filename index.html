@@ -29,15 +29,6 @@
     </div>
   </div>
 
-  <div id="highscore-overlay">
-    <img src="beker_clipped_rev_2.png" id="trophy" alt="Trophy" />
-    <h2>High score</h2>
-    <ol id="highscore-list">
-      <li></li><li></li><li></li><li></li><li></li>
-      <li></li><li></li><li></li><li></li><li></li>
-    </ol>
-  </div>
-</div>
 
  
 
@@ -64,19 +55,6 @@
   <script src="login.js"></script>
   <script src="game.js"></script>
 
-  <script>
-    let highscores = JSON.parse(localStorage.getItem("highscores")) || Array(10).fill({ name: "—", score: 0, time: "00:00" });
-
-    function updateHighscoreBoard() {
-      const highscoreList = document.getElementById("highscore-list");
-      if (!highscoreList) return;
-      highscoreList.innerHTML = "";
-      highscores.forEach((entry, index) => {
-        const li = document.createElement("li");
-        li.textContent = `${index + 1}. ${entry.name} — ${entry.score} PXP — ${entry.time}`;
-        highscoreList.appendChild(li);
-      });
-    }
 
     function checkAndUpdateHighscores(name, score, time) {
       const newEntry = { name, score, time };
