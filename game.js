@@ -87,7 +87,7 @@ for (let c = 0; c < brickColumnCount; c++) {
 
 const boatPaddleImg = new Image();
 boatPaddleImg.src = "pointpay_bood.png";
-boatPaddleImg.onload = onImageLoad;
+
 
 
 const bootBlockImg = new Image();
@@ -812,7 +812,7 @@ function onImageLoad() {
     draw();
   }
 }
-
+boatPaddleImg.onload = onImageLoad;
 bootBlockImg.onload = onImageLoad;
 boatImg.onload = onImageLoad;
 doubleBallImg.onload = onImageLoad;
