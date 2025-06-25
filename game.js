@@ -509,7 +509,7 @@ function draw() {
   drawCoins();
   checkCoinCollision();
   drawBricks();
-  drawBalls();
+  drawBall();
   drawPaddle();
   drawPaddleFlags();
   drawFlyingCoins();
