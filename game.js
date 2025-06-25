@@ -31,6 +31,16 @@ let secondBallActive = false;
 let secondBall = { x: 0, y: 0, dx: 0, dy: 0 };
 let secondBallDuration = 60000; // 1 minuut in ms
 let rocketAmmo = 0; // aantal raketten dat nog afgevuurd mag worden
+let balls = []; // vervangt ball en ball2
+
+balls.push({
+  x: canvas.width / 2,
+  y: paddle.y - 10,
+  dx: 3,
+  dy: -3,
+  radius: 8,
+  isMain: true
+});
 
 
 
