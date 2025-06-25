@@ -798,7 +798,7 @@ smokeParticles = smokeParticles.filter(p => p.alpha > 0);
 
 
 let imagesLoaded = 0;
-const totalImages = 12; // pas aan op basis van jouw echte aantal .src's
+const totalImages = 13; // pas aan op basis van jouw echte aantal .src's
 
 function onImageLoad() {
   imagesLoaded++;
