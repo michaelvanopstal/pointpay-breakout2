@@ -28,7 +28,8 @@ let rocketAmmo = 0; // aantal raketten dat nog afgevuurd mag worden
 let balls = []; // array van actieve ballen
 let doublePointsActive = false;
 let doublePointsStartTime = 0;
-let doublePointsDuration = 60000; // 1 minuut in milliseconden
+let doublePointsDuration = 60000; // 1 minuut in millisecondenlet imagesLoaded = 0;
+let imagesLoaded = 0;
 
 
 balls.push({
@@ -684,7 +685,7 @@ function onImageLoad() {
   imagesLoaded++;
   console.log("Afbeelding geladen:", imagesLoaded);
 
-  if (imagesLoaded === 8) {
+  if (imagesLoaded === 10) {
     draw();
   }
 }
@@ -696,9 +697,12 @@ ballImg.onload = onImageLoad;
 powerBlockImg.onload = onImageLoad;
 powerBlock2Img.onload = onImageLoad;
 rocketImg.onload = onImageLoad;
+doubleBallImg.onload = onImageLoad;
 doublePointsImg.onload = onImageLoad;
 vlagImgLeft.onload = onImageLoad;
 vlagImgRight.onload = onImageLoad;
+shootCoinImg.onload = onImageLoad;
+
 
 
 document.addEventListener("mousedown", function () {
