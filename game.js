@@ -26,6 +26,9 @@ let explosions = [];
 let secondBallDuration = 60000; // 1 minuut in ms
 let rocketAmmo = 0; // aantal raketten dat nog afgevuurd mag worden
 let balls = []; // array van actieve ballen
+let doublePointsActive = false;
+let doublePointsStartTime = 0;
+let doublePointsDuration = 60000; // 1 minuut in milliseconden
 
 
 balls.push({
@@ -44,6 +47,7 @@ const bonusBricks = [
   { col: 6, row: 8, type: "rocket" },
   { col: 8, row: 6, type: "power" },
   { col: 2, row: 9, type: "doubleball" },
+  { col: 4, row: 7, type: "2x" }
 
 ];
 
@@ -107,6 +111,10 @@ powerBlock2Img.src = "signalblock2.png";
 
 const rocketImg = new Image();
 rocketImg.src = "raket1.png";
+
+const doublePointsImg = new Image();
+doublePointsImg.src = "2x.png";
+
 
 let rocketActive = false; // Voor nu altijd zichtbaar om te testen
 let rocketX = 0;
@@ -192,7 +200,10 @@ function drawBricks() {
 
         b.x = brickX;
         b.y = brickY;
-                
+         
+         case "2x":
+         ctx.drawImage(doublePointsImg, brickX, brickY, brickWidth, brickHeight);
+         break;
          switch (b.type) {
          case "rocket":
          ctx.drawImage(powerBlock2Img, brickX, brickY, brickWidth, brickHeight);
@@ -354,6 +365,11 @@ function collisionDetection() {
             case "doubleball":
               spawnExtraBall(ball);  // ➕ hier spawn je de extra bal
               break;
+              case "2x":
+              doublePointsActive = true;
+              doublePointsStartTime = Date.now();
+              break;
+
           }
 
           b.status = 0;
@@ -545,7 +561,10 @@ function draw() {
   drawFlyingCoins();
   checkFlyingCoinHits();
 
-  
+  if (doublePointsActive && Date.now() - doublePointsStartTime > doublePointsDuration) {
+  doublePointsActive = false;
+}
+
   balls.forEach((ball, index) => {
   // Verplaats bal
   if (ballLaunched) {
