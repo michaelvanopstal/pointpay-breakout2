@@ -36,7 +36,7 @@ let imagesLoaded = 0;
 let speedBoostActive = false;
 let speedBoostStart = 0;
 const speedBoostDuration = 30000;
-const speedBoostMultiplier = 2;
+const speedBoostMultiplier = 1;
 
 balls.push({
   x: canvas.width / 2,
