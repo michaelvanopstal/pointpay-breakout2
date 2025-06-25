@@ -126,15 +126,16 @@ function keyDownHandler(e) {
   if (e.key === "Right" || e.key === "ArrowRight") rightPressed = true;
   else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = true;
 
-  if ((e.key === "ArrowUp" || e.key === "Up") && !ballLaunched) {
-    ballLaunched = true;
-    ballMoving = true;
-    dx = 0;
-    dy = -4;
-    if (!timerRunning) startTimer();
-    score = 0;
-    document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
-  }
+ if ((e.key === "ArrowUp" || e.key === "Up") && !ballLaunched) {
+  ballLaunched = true;
+  ballMoving = true;
+  balls[0].dx = 0;
+  balls[0].dy = -4;
+  if (!timerRunning) startTimer();
+  score = 0;
+  document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
+}
+
 
   if ((e.code === "ArrowUp" || e.code === "Space") && rocketActive && rocketAmmo > 0 && !rocketFired) {
   rocketFired = true;
@@ -562,48 +563,12 @@ function draw() {
   ctx.drawImage(ballImg, ball.x, ball.y, ball.radius * 2, ball.radius * 2);
 });
 
-  if (rightPressed && paddleX < canvas.width - paddleWidth) {
-    paddleX += 7;
-  } else if (leftPressed && paddleX > 0) {
-    paddleX -= 7;
-  }
-
-
-
-  if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
-    dx = -dx;
-  }
-
-  if (y + dy < ballRadius) {
-    dy = -dy;
-  }
-
- if (
-  y + dy > canvas.height - paddleHeight - ballRadius &&
-  y + dy < canvas.height + 2 &&
-  x + ballRadius > paddleX &&
-  x - ballRadius < paddleX + paddleWidth
-) {
-  const hitPos = (x - paddleX) / paddleWidth;
-  const angle = (hitPos - 0.5) * Math.PI / 2;
-  const speed = Math.sqrt(dx * dx + dy * dy);
-  dx = speed * Math.sin(angle);
-  dy = -Math.abs(speed * Math.cos(angle));
+ // Paddle bewegen
+if (rightPressed && paddleX < canvas.width - paddleWidth) {
+  paddleX += 7;
+} else if (leftPressed && paddleX > 0) {
+  paddleX -= 7;
 }
-
-
-
-  if (y + dy > canvas.height - ballRadius) {
-  saveHighscore();
-  ballLaunched = false;
-  ballMoving = false;
-  dx = 4;
-  dy = -4;
-  elapsedTime = 0;
-  resetBall();
-  resetBricks();
-}
-
 
 
 
@@ -627,7 +592,6 @@ if (rocketFired) {
 
   if (rocketY < -48) {
     rocketFired = false;
-
     if (rocketAmmo <= 0) {
       rocketActive = false;
     }
@@ -635,6 +599,33 @@ if (rocketFired) {
     ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
     checkRocketCollision();
   }
+}
+
+// Explosies tekenen
+explosions.forEach(e => {
+  ctx.beginPath();
+  ctx.arc(e.x, e.y, e.radius, 0, Math.PI * 2);
+  ctx.fillStyle = `rgba(255, 165, 0, ${e.alpha})`;
+  ctx.fill();
+  e.radius += 2;
+  e.alpha -= 0.05;
+});
+explosions = explosions.filter(e => e.alpha > 0);
+
+// Rook tekenen
+smokeParticles.forEach(p => {
+  ctx.beginPath();
+  ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+  ctx.fillStyle = `rgba(150, 150, 150, ${p.alpha})`;
+  ctx.fill();
+  p.y += 1;
+  p.radius += 0.3;
+  p.alpha -= 0.02;
+});
+smokeParticles = smokeParticles.filter(p => p.alpha > 0);
+
+// Volgende frame
+requestAnimationFrame(draw);
 }
 
 
