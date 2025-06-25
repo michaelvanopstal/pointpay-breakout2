@@ -30,6 +30,8 @@ let doublePointsActive = false;
 let doublePointsStartTime = 0;
 let doublePointsDuration = 60000; // 1 minuut in millisecondenlet imagesLoaded = 0;
 let imagesLoaded = 0;
+let speedBoostActive = false;
+let speedBoostStart = 0;
 
 balls.push({
   x: canvas.width / 2,
@@ -48,9 +50,11 @@ const bonusBricks = [
   { col: 8, row: 6, type: "power" },
   { col: 2, row: 9, type: "doubleball" },
   { col: 4, row: 7, type: "2x" },
+  { col: 5, row: 10, type: "speed" }
 
 ];
 
+const speedBoostDuration = 30000; // 30 seconden
 
 const customBrickWidth = 70;   // pas aan zoals jij wilt
 const customBrickHeight = 25;  // pas aan zoals jij wilt
@@ -114,6 +118,10 @@ rocketImg.src = "raket1.png";
 
 const doublePointsImg = new Image();
 doublePointsImg.src = "2x.png";
+
+const speedImg = new Image();
+speedImg.src = "speed.png";
+
 
 
 let rocketActive = false; // Voor nu altijd zichtbaar om te testen
@@ -220,6 +228,10 @@ function drawBricks() {
          default:
          ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight);
          break;
+         case "speed":
+         ctx.drawImage(speedImg, brickX, brickY, brickWidth, brickHeight);
+         break;
+
         
         }
       }
@@ -386,6 +398,11 @@ function collisionDetection() {
               doublePointsActive = true;
               doublePointsStartTime = Date.now();
               break;
+              case "speed":
+              speedBoostActive = true;
+              speedBoostStart = Date.now();
+              break;
+
 
           }
 
@@ -585,8 +602,11 @@ function draw() {
   balls.forEach((ball, index) => {
   // Verplaats bal
   if (ballLaunched) {
-    ball.x += ball.dx;
-    ball.y += ball.dy;
+  let speedMultiplier = (speedBoostActive && Date.now() - speedBoostStart < speedBoostDuration) ? 4 : 1;
+  ball.x += ball.dx * speedMultiplier;
+  ball.y += ball.dy * speedMultiplier;
+
+
   } else {
     ball.x = paddleX + paddleWidth / 2 - ballRadius;
     ball.y = canvas.height - paddleHeight - ballRadius * 2;
@@ -695,10 +715,14 @@ smokeParticles.forEach(p => {
   p.radius += 0.3;
   p.alpha -= 0.02;
 });
+  
+if (speedBoostActive && Date.now() - speedBoostStart >= speedBoostDuration) {
+  speedBoostActive = false;
+}
 
   smokeParticles = smokeParticles.filter(p => p.alpha > 0);
 
-// Volgende frame
+  // Volgende frame
 requestAnimationFrame(draw);
 }
 
