@@ -201,7 +201,7 @@ function drawBricks() {
         b.x = brickX;
         b.y = brickY;
          
-        switch (b.type) {
+         switch (b.type) {
          case "2x":
          ctx.drawImage(doublePointsImg, brickX, brickY, brickWidth, brickHeight);
          break;
