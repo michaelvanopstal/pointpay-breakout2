@@ -247,7 +247,13 @@ function resetBall() {
     radius: ballRadius,
     isMain: true
   }];
+  ballLaunched = false;
+  ballMoving = false;
+
+  // Zorg dat de game visueel opnieuw wordt getekend
+  requestAnimationFrame(draw);
 }
+
 
 
 function resetPaddle() {
@@ -594,20 +600,25 @@ function draw() {
     ball.dy = -Math.abs(speed * Math.cos(angle));
   }
 
-  // Onderaan uit beeld
-  if (ball.y + ball.dy > canvas.height) {
-    balls.splice(index, 1);
-    if (balls.length === 0) {
-      saveHighscore();
-      ballLaunched = false;
-      ballMoving = false;
-      resetBall();
-      resetBricks();
-      return;
-    } else if (ball.isMain) {
-      balls[0].isMain = true;
-    }
+
+if (ball.y + ball.dy > canvas.height) {
+  
+  balls.splice(index, 1);
+
+  // Als er geen ballen meer over zijn: level reset
+  if (balls.length === 0) {
+    saveHighscore();     
+    resetBricks();       
+    resetBall();         
+    return;              
   }
+
+  // Als hoofd-bal weg is, maak een andere de hoofd-bal
+  else if (ball.isMain) {
+    balls[0].isMain = true;
+  }
+}
+
 
   // Teken bal
   ctx.drawImage(ballImg, ball.x, ball.y, ball.radius * 2, ball.radius * 2);
