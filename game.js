@@ -352,7 +352,7 @@ function collisionDetection() {
 
           ball.dy = -ball.dy;
 
-          // ➕ Activeer bonussen
+        
           switch (b.type) {
             case "power":
               flagsOnPaddle = true;
