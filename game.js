@@ -29,7 +29,6 @@ let balls = []; // array van actieve ballen
 let doublePointsActive = false;
 let doublePointsStartTime = 0;
 let doublePointsDuration = 60000; // 1 minuut in millisecondenlet imagesLoaded = 0;
-let imagesLoaded = 0;
 
 
 balls.push({
