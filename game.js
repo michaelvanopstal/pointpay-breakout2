@@ -407,13 +407,15 @@ function checkRocketCollision() {
   for (let c = 0; c < brickColumnCount; c++) {
     for (let r = 0; r < brickRowCount; r++) {
       let b = bricks[c][r];
+
       if (b.status === 1 &&
           rocketX + 12 > b.x &&
           rocketX + 12 < b.x + brickWidth &&
           rocketY < b.y + brickHeight &&
           rocketY + 48 > b.y) {
 
-        // vernietig max 4 blokjes (center + links + rechts + onder)
+        let hitSomething = false;
+
         const targets = [
           [c, r],
           [c - 1, r],
@@ -422,33 +424,54 @@ function checkRocketCollision() {
         ];
 
         targets.forEach(([col, row]) => {
-  if (
-    col >= 0 && col < brickColumnCount &&
-    row >= 0 && row < brickRowCount &&
-    bricks[col][row].status === 1
-  ) {
-    bricks[col][row].status = 0;
-    score += 10;
+          if (
+            col >= 0 && col < brickColumnCount &&
+            row >= 0 && row < brickRowCount &&
+            bricks[col][row].status === 1
+          ) {
+            const target = bricks[col][row];
 
-    if (rocketAmmo <= 0) {
-      rocketActive = false;
-    }
-  }
-});
+            // ➕ Activeer bonus als het een bonusblok is
+            switch (target.type) {
+              case "power":
+                flagsOnPaddle = true;
+                flagTimer = Date.now();
+                break;
+              case "rocket":
+                rocketActive = true;
+                rocketAmmo += 3;
+                break;
+              case "doubleball":
+                spawnExtraBall(balls[0]); // neem eerste bal als basis
+                break;
+            }
 
-        document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
-        rocketFired = false;
-        rocketActive = false;
-       
-        explosions.push({
-          x: rocketX + 12,
-          y: rocketY,
-          radius: 10,
-          alpha: 1
-         
+            target.status = 0;
+            target.type = "normal";
+            score += 10;
+            hitSomething = true;
+          }
         });
-        
-        return; 
+
+        if (hitSomething) {
+          document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+          rocketFired = false;
+          explosions.push({
+            x: rocketX + 12,
+            y: rocketY,
+            radius: 10,
+            alpha: 1
+          });
+        } else {
+          rocketFired = false;
+        }
+
+        // Stop bonus als ammo op is
+        if (rocketAmmo <= 0) {
+          rocketActive = false;
+        }
+
+        return;
       }
     }
   }
