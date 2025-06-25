@@ -608,12 +608,14 @@ function draw() {
 
 
 
- // ✅ RAKET ACTIE EN TEKENING + EFFECTEN + DRAW LOOP
-if (rocketActive && !rocketFired) {
+// ✅ RAKET ACTIE EN TEKENING + EFFECTEN + DRAW LOOP
+if (rocketActive && !rocketFired && rocketAmmo > 0) {
   rocketX = paddleX + paddleWidth / 2 - 12;
   rocketY = canvas.height - paddleHeight - 48;
   ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
-} else if (rocketFired) {
+}
+
+if (rocketFired) {
   rocketY -= rocketSpeed;
 
   smokeParticles.push({
@@ -625,6 +627,7 @@ if (rocketActive && !rocketFired) {
 
   if (rocketY < -48) {
     rocketFired = false;
+
     if (rocketAmmo <= 0) {
       rocketActive = false;
     }
@@ -633,31 +636,6 @@ if (rocketActive && !rocketFired) {
     checkRocketCollision();
   }
 }
-
-explosions.forEach(e => {
-  ctx.beginPath();
-  ctx.arc(e.x, e.y, e.radius, 0, Math.PI * 2);
-  ctx.fillStyle = `rgba(255, 165, 0, ${e.alpha})`;
-  ctx.fill();
-  e.radius += 2;
-  e.alpha -= 0.05;
-});
-explosions = explosions.filter(e => e.alpha > 0);
-
-smokeParticles.forEach(p => {
-  ctx.beginPath();
-  ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-  ctx.fillStyle = `rgba(150, 150, 150, ${p.alpha})`;
-  ctx.fill();
-  p.y += 1;
-  p.radius += 0.3;
-  p.alpha -= 0.02;
-});
-smokeParticles = smokeParticles.filter(p => p.alpha > 0);
-
-requestAnimationFrame(draw);
-}
-
 
 
 let imagesLoaded = 0;
