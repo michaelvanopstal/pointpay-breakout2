@@ -35,7 +35,6 @@ let rocketAmmo = 0; // aantal raketten dat nog afgevuurd mag worden
 let bootBonusActive = false;
 let boatX = 0;
 let boatY = 0;
-let waterY = canvas.height; // start onderaan
 let boatSpeed = 2;
 let boatTimer = 0;
 let resetBricksOnDeath = false; // ← voeg deze hier toe
@@ -302,32 +301,8 @@ function startBootBonus() {
   flagsOnPaddle = false;
   flyingCoins = [];
   secondBallActive = false;
-
-  // ✅ Activeer de video
-  const waterVideo = document.getElementById("waterVideo");
-  if (waterVideo) {
-    waterVideo.style.display = "block";
-    waterVideo.style.opacity = "1";
-    waterVideo.style.top = "0"; // zet terug bovenaan
-    waterVideo.currentTime = 0;
-    waterVideo.play();
-    waterVideo.style.left = "0";
-  }
-
-  // ⏱️ Na 4 seconden video verbergen
-  setTimeout(() => {
-    bootBonusActive = false;
-    if (waterVideo) {
-      waterVideo.style.opacity = "0";
-      setTimeout(() => {
-        waterVideo.style.display = "none";
-        waterVideo.pause();
-      }, 1000); // wacht tot fading klaar is
-    }
-  }, 4000);
 }
-
-
+ 
 function drawPaddleFlags() {
   if (flagsOnPaddle && Date.now() - flagTimer < 20000) {
     ctx.drawImage(vlagImgLeft, paddleX - 5, canvas.height - paddleHeight - 40, 45, 45);
@@ -582,11 +557,7 @@ function resetAfterBootBonus() {
     resetBall();
   }
 
-  // ✅ Verberg altijd de video netjes
-  waterVideo.style.opacity = "0";
-  waterVideo.style.display = "none";
-}
-
+  
 
 
 
@@ -603,12 +574,6 @@ function draw() {
   if (bootBonusActive) {
   drawBoat();
   drawWater();
-
-  }
-}
-
-if (bootBonusActive) {
-  drawWater(); // komt vóór de boot op het scherm
 
   }
 }
