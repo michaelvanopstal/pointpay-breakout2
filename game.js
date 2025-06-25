@@ -682,7 +682,8 @@ smokeParticles.forEach(p => {
   p.radius += 0.3;
   p.alpha -= 0.02;
 });
-smokeParticles = smokeParticles.filter(p => p.alpha > 0);
+
+  smokeParticles = smokeParticles.filter(p => p.alpha > 0);
 
 // Volgende frame
 requestAnimationFrame(draw);
@@ -701,7 +702,7 @@ function onImageLoad() {
 }
 
 
-// Koppel alle images aan onImageLoad
+
 blockImg.onload = onImageLoad;
 ballImg.onload = onImageLoad;
 powerBlockImg.onload = onImageLoad;
