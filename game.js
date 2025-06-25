@@ -6,11 +6,7 @@ let timerInterval = null;
 let timerRunning = false;
 let score = 0;
 let ballRadius = 8;
-let dx = 4;
-let dy = -4;
 let ballLaunched = false;
-let x;
-let y;
 let paddleHeight = 10;
 let paddleWidth = 100;
 let paddleX = (canvas.width - paddleWidth) / 2;
@@ -27,8 +23,6 @@ let rocketFired = false;
 let rocketSpeed = 10;
 let smokeParticles = [];
 let explosions = [];
-let secondBallActive = false;
-let secondBall = { x: 0, y: 0, dx: 0, dy: 0 };
 let secondBallDuration = 60000; // 1 minuut in ms
 let rocketAmmo = 0; // aantal raketten dat nog afgevuurd mag worden
 let balls = []; // vervangt ball en ball2
@@ -226,9 +220,12 @@ function drawBricks() {
   }
 }
 
-function drawBall() {
-  ctx.drawImage(ballImg, x, y, ballRadius * 2, ballRadius * 2);
+function drawBalls() {
+  balls.forEach(ball => {
+    ctx.drawImage(ballImg, ball.x, ball.y, ball.radius * 2, ball.radius * 2);
+  });
 }
+
 
 function drawPaddle() {
   ctx.beginPath();
@@ -239,9 +236,16 @@ function drawPaddle() {
 } 
 
 function resetBall() {
-  x = paddleX + paddleWidth / 2 - ballRadius;
-  y = canvas.height - paddleHeight - ballRadius * 2;
+  balls = [{
+    x: paddleX + paddleWidth / 2 - ballRadius,
+    y: canvas.height - paddleHeight - ballRadius * 2,
+    dx: 0,
+    dy: -4,
+    radius: ballRadius,
+    isMain: true
+  }];
 }
+
 
 function resetPaddle() {
   paddleX = (canvas.width - paddleWidth) / 2;
@@ -343,8 +347,10 @@ function collisionDetection() {
               secondBallActive = false;
            }, secondBallDuration);
               break;
-
-          }
+              case "doubleball":
+              spawnExtraBall(ball);  // activeer extra bal met spreiding
+              break;
+            }
 
           b.status = 0;
           b.type = "normal"; // terug naar normaal type na raken
@@ -355,6 +361,28 @@ function collisionDetection() {
       }
     }
   }
+}
+
+function spawnExtraBall(originBall) {
+  const angleOffset = Math.PI / 6; // 30 graden spreiding
+  const speed = Math.sqrt(originBall.dx ** 2 + originBall.dy ** 2);
+
+  // Pas originele bal iets aan
+  const angle1 = Math.atan2(originBall.dy, originBall.dx) - angleOffset;
+  originBall.dx = speed * Math.cos(angle1);
+  originBall.dy = speed * Math.sin(angle1);
+
+  // Extra bal in tegengestelde richting
+  const angle2 = Math.atan2(originBall.dy, originBall.dx) + 2 * angleOffset;
+
+  balls.push({
+    x: originBall.x,
+    y: originBall.y,
+    dx: speed * Math.cos(angle2),
+    dy: speed * Math.sin(angle2),
+    radius: ballRadius,
+    isMain: false
+  });
 }
 
   
@@ -499,7 +527,7 @@ function draw() {
   drawCoins();
   checkCoinCollision();
   drawBricks();
-  drawBall();
+  drawBalls();
   drawPaddle();
   drawPaddleFlags();
   drawFlyingCoins();
@@ -510,14 +538,6 @@ function draw() {
   } else if (leftPressed && paddleX > 0) {
     paddleX -= 7;
   }
-
-  if (ballLaunched) {
-  x += dx;
-  y += dy;
-} else {
-  x = paddleX + paddleWidth / 2 - ballRadius;
-  y = canvas.height - paddleHeight - ballRadius * 2;
-}
 
 
   if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
@@ -662,7 +682,6 @@ if (secondBallActive) {
 }
 
 
-
 let imagesLoaded = 0;
 
 function onImageLoad() {
@@ -670,11 +689,11 @@ function onImageLoad() {
   console.log("Afbeelding geladen:", imagesLoaded);
 
   if (imagesLoaded === 5) {
-    x = paddleX + paddleWidth / 2 - ballRadius;
-    y = canvas.height - paddleHeight - ballRadius * 2;
+    resetBall(); // nieuwe bal toevoegen via balls[]
     draw();
   }
 }
+
 
 // Koppel alle images aan onImageLoad
 blockImg.onload = onImageLoad;
