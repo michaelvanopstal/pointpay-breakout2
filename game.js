@@ -797,19 +797,20 @@ if (bootBonusActive) {
 smokeParticles = smokeParticles.filter(p => p.alpha > 0);
 
 
-
 let imagesLoaded = 0;
+const totalImages = 13; // pas aan op basis van jouw echte aantal .src's
 
 function onImageLoad() {
   imagesLoaded++;
   console.log("Afbeelding geladen:", imagesLoaded);
 
-  if (imagesLoaded === 11) {
+  if (imagesLoaded === totalImages) {
     x = paddleX + paddleWidth / 2 - ballRadius;
     y = canvas.height - paddleHeight - ballRadius * 2;
-    draw();
+    draw(); // ✅ start spel pas als alles is geladen
   }
 }
+
 boatPaddleImg.onload = onImageLoad;
 bootBlockImg.onload = onImageLoad;
 boatImg.onload = onImageLoad;
