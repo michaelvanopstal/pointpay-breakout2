@@ -30,8 +30,13 @@ let doublePointsActive = false;
 let doublePointsStartTime = 0;
 let doublePointsDuration = 60000; // 1 minuut in millisecondenlet imagesLoaded = 0;
 let imagesLoaded = 0;
+
+
+
 let speedBoostActive = false;
 let speedBoostStart = 0;
+const speedBoostDuration = 30000;
+const speedBoostMultiplier = 4;
 
 balls.push({
   x: canvas.width / 2,
@@ -54,7 +59,6 @@ const bonusBricks = [
 
 ];
 
-const speedBoostDuration = 30000; // 30 seconden
 
 const customBrickWidth = 70;   // pas aan zoals jij wilt
 const customBrickHeight = 25;  // pas aan zoals jij wilt
@@ -123,6 +127,7 @@ const speedImg = new Image();
 speedImg.src = "speed.png";
 
 
+let speedMultiplier = (speedBoostActive && Date.now() - speedBoostStart < speedBoostDuration) ? speedBoostMultiplier : 1;
 
 let rocketActive = false; // Voor nu altijd zichtbaar om te testen
 let rocketX = 0;
