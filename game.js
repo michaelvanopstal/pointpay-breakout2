@@ -667,9 +667,7 @@ function draw() {
   boatY = waterY - paddleHeight * 3.5;
   ctx.drawImage(boatImg, boatX, boatY, paddleWidth, paddleHeight * 5);
 
-  // ✅ Laat de video meebewegen
-  waterVideo.style.top = waterY + "px";
-  waterVideo.style.height = (canvas.height - waterY) + "px";
+
 }
 
 
