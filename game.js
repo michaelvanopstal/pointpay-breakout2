@@ -514,36 +514,23 @@ function checkCoinCollision() {
 }
 
 function spawnExtraBall(originBall) {
-  const angleOffset = Math.PI / 6; // 30 graden
   const speed = Math.sqrt(originBall.dx ** 2 + originBall.dy ** 2);
 
-  const angle1 = Math.atan2(originBall.dy, originBall.dx) - angleOffset;
-  originBall.dx = speed * Math.cos(angle1);
-  originBall.dy = speed * Math.sin(angle1);
+  // Huidige bal krijgt een lichte afwijking
+  originBall.dx = -2;
+  originBall.dy = -Math.abs(speed);
 
-  const angle2 = Math.atan2(originBall.dy, originBall.dx) + 2 * angleOffset;
-
+  // Tweede bal gaat recht omhoog
   balls.push({
     x: originBall.x,
     y: originBall.y,
-    dx: speed * Math.cos(angle2),
-    dy: speed * Math.sin(angle2),
+    dx: 0,
+    dy: -speed,
     radius: ballRadius,
     isMain: false
   });
 }
 
-function resetBricks() {
-  for (let c = 0; c < brickColumnCount; c++) {
-    for (let r = 0; r < brickRowCount; r++) {
-      bricks[c][r].status = 1;
-
-      // Bonusblok opnieuw instellen
-      const bonus = bonusBricks.find(b => b.col === c && b.row === r);
-      bricks[c][r].type = bonus ? bonus.type : "normal";
-    }
-  }
-}
 
 
 function draw() {
