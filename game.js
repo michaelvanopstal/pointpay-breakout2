@@ -273,6 +273,7 @@ function shootFromFlags() {
     active: true
   });
 }
+
 function checkFlyingCoinHits() {
   flyingCoins.forEach((coin) => {
     if (!coin.active) return;
@@ -280,22 +281,41 @@ function checkFlyingCoinHits() {
     for (let c = 0; c < brickColumnCount; c++) {
       for (let r = 0; r < brickRowCount; r++) {
         const b = bricks[c][r];
-        if (b.status === 1 &&
-            coin.x > b.x &&
-            coin.x < b.x + brickWidth &&
-            coin.y > b.y &&
-            coin.y < b.y + brickHeight) {
+
+        if (
+          b.status === 1 &&
+          coin.x > b.x &&
+          coin.x < b.x + brickWidth &&
+          coin.y > b.y &&
+          coin.y < b.y + brickHeight
+        ) {
+          // ➕ Activeer bonus indien van toepassing
+          switch (b.type) {
+            case "power":
+              flagsOnPaddle = true;
+              flagTimer = Date.now();
+              break;
+            case "rocket":
+              rocketActive = true;
+              rocketAmmo += 3;
+              break;
+            case "doubleball":
+              spawnExtraBall(balls[0]); // gebruik eerste bal als basis
+              break;
+          }
+
           b.status = 0;
-          coin.active = false;    
+          b.type = "normal";
+          coin.active = false;
           score += 10;
+
           document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
-          return; 
+          return;
         }
       }
     }
   });
 }
-
 
 
 function startTimer() {
