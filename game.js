@@ -249,6 +249,11 @@ function drawBricks() {
   }
 }
 
+function drawBoat() {
+  let boatY = canvas.height - 60 + Math.sin((paddleX + paddleWidth / 2 + waterOffset) * 0.04) * 8 - 40;
+  ctx.drawImage(boatPaddleImg, paddleX, boatY, paddleWidth, paddleHeight + 20);
+}
+
 
 function drawBall() {
   ctx.drawImage(ballImg, x, y, ballRadius * 2, ballRadius * 2);
@@ -595,7 +600,19 @@ function draw() {
   drawFlyingCoins();
   checkFlyingCoinHits();
 
-  
+  if (bootBonusActive) {
+  drawBoat();
+  drawWater();
+
+  }
+}
+
+if (bootBonusActive) {
+  drawWater(); // komt vóór de boot op het scherm
+
+  }
+}
+
  if (bootBonusActive) {
   // Water stijgt
   if (waterState === 'rising') {
@@ -642,7 +659,11 @@ function draw() {
 drawBall();
 drawPaddle();
 
-  // ⬇️ ALLES VANAF HIER NAAR BINNEN VERPLAATST
+  function drawBoatPaddle() {
+  let boatY = canvas.height - 60 + Math.sin((paddleX + paddleWidth / 2 + waterOffset) * 0.04) * 8 - 40;
+  ctx.drawImage(boatPaddleImg, paddleX, boatY, paddleWidth, paddleHeight + 20);
+}
+
  if (!bootBonusActive) {
   if (rightPressed && paddleX < canvas.width - paddleWidth) {
     paddleX += 7;
@@ -692,8 +713,14 @@ drawPaddle();
     dx = speed * Math.sin(angle);
     dy = -Math.abs(speed * Math.cos(angle));
   }
-}
 
+if (bootBonusActive) {
+  paddleY = canvas.height - 60 + Math.sin((paddleX + paddleWidth / 2 + waterOffset) * 0.04) * 8 - 40;
+} else {
+  paddleY = canvas.height - paddleHeight - 10;
+  
+  }
+ }
 
   if (y + dy > canvas.height - ballRadius) {
   saveHighscore();
