@@ -51,69 +51,66 @@
 
 
 
+<script src="login.js"></script>
+<script src="game.js"></script>
 
-  <script src="login.js"></script>
-  <script src="game.js"></script>
+<script>
+  function checkAndUpdateHighscores(name, score, time) {
+    const newEntry = { name, score, time };
+    highscores.push(newEntry);
+    highscores.sort((a, b) => b.score - a.score || a.time.localeCompare(b.time));
+    highscores = highscores.slice(0, 10);
+    localStorage.setItem("highscores", JSON.stringify(highscores));
+    updateHighscoreBoard();
+  }
 
+  window.addEventListener("load", () => {
+    updateHighscoreBoard();
+  });
 
-    function checkAndUpdateHighscores(name, score, time) {
-      const newEntry = { name, score, time };
-      highscores.push(newEntry);
-      highscores.sort((a, b) => b.score - a.score || a.time.localeCompare(b.time));
-      highscores = highscores.slice(0, 10);
-      localStorage.setItem("highscores", JSON.stringify(highscores));
-      updateHighscoreBoard();
-    }
+  function animateFlyer(flyerId, duration, delay) {
+    setTimeout(() => {
+      const flyer = document.getElementById(flyerId);
+      flyer.style.display = "block";
 
-    window.addEventListener("load", () => {
-      updateHighscoreBoard();
-    });
+      const startX = window.innerWidth + 100;
+      const endX = -200;
+      const startY = window.innerHeight + 100;
+      const endY = -150;
+      let startTime = null;
 
-    function animateFlyer(flyerId, duration, delay) {
-      setTimeout(() => {
-        const flyer = document.getElementById(flyerId);
-        flyer.style.display = "block";
+      function animate(timestamp) {
+        if (!startTime) startTime = timestamp;
+        const elapsed = timestamp - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const step = elapsed / 16;
 
-        const startX = window.innerWidth + 100;
-        const endX = -200;
-        const startY = window.innerHeight + 100;
-        const endY = -150;
-        let startTime = null;
+        const baseX = startX + (endX - startX) * progress;
+        const baseY = startY + (endY - startY) * progress;
 
-        function animate(timestamp) {
-          if (!startTime) startTime = timestamp;
-          const elapsed = timestamp - startTime;
-          const progress = Math.min(elapsed / duration, 1);
-          const step = elapsed / 16;
+        const wobbleX = Math.sin(step / 10) * 3;
+        const wobbleY = Math.cos(step / 15) * 3;
 
-          const baseX = startX + (endX - startX) * progress;
-          const baseY = startY + (endY - startY) * progress;
+        flyer.style.left = `${baseX + wobbleX}px`;
+        flyer.style.top = `${baseY + wobbleY}px`;
 
-          const wobbleX = Math.sin(step / 10) * 3;
-          const wobbleY = Math.cos(step / 15) * 3;
-
-          flyer.style.left = `${baseX + wobbleX}px`;
-          flyer.style.top = `${baseY + wobbleY}px`;
-
-          if (progress < 1) {
-            requestAnimationFrame(animate);
-          } else {
-            flyer.style.display = "none";
-          }
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        } else {
+          flyer.style.display = "none";
         }
+      }
 
-        requestAnimationFrame(animate);
-      }, delay);
-    }
+      requestAnimationFrame(animate);
+    }, delay);
+  }
 
-    // Start eerste run
-    animateFlyer("bikeFlyer", 20000, 1000);
-    animateFlyer("balloonFlyer", 30000, 1000);
+  animateFlyer("bikeFlyer", 20000, 1000);
+  animateFlyer("balloonFlyer", 30000, 1000);
 
-    // Herhaal elke 30 sec
-    setInterval(() => animateFlyer("bikeFlyer", 20000, 1000), 30000);
-    setInterval(() => animateFlyer("balloonFlyer", 30000, 0), 30000);
-  </script>
+  setInterval(() => animateFlyer("bikeFlyer", 20000, 1000), 30000);
+  setInterval(() => animateFlyer("balloonFlyer", 30000, 0), 30000);
+</script>
 
   <style>
     #game-container {
