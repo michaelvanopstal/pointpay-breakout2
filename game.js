@@ -623,13 +623,15 @@ function draw() {
     });
 
     if (rocketY < -48) {
-      rocketFired = false;
-      rocketActive = false;
-    } else {
-      ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
-      checkRocketCollision();
-    }
+  rocketFired = false;
+  if (rocketAmmo <= 0) {
+    rocketActive = false;
   }
+} else {
+  ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
+  checkRocketCollision();
+}
+
 
   explosions.forEach(e => {
     ctx.beginPath();
