@@ -261,8 +261,7 @@ function resetBall() {
   ballLaunched = false;
   ballMoving = false;
 
-  // Zorg dat de game visueel opnieuw wordt getekend
-  requestAnimationFrame(draw);
+  
 }
 
 
