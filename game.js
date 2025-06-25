@@ -85,6 +85,11 @@ for (let c = 0; c < brickColumnCount; c++) {
   }
 }
 
+const boatPaddleImg = new Image();
+boatPaddleImg.src = "pointpay_bood.png";
+boatPaddleImg.onload = onImageLoad;
+
+
 const bootBlockImg = new Image();
 bootBlockImg.src = "boot_block_logo.png";
 
