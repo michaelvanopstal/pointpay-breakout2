@@ -601,23 +601,25 @@ function draw() {
 
 
 if (ball.y + ball.dy > canvas.height) {
-  
+  // Verwijder deze bal uit de array
   balls.splice(index, 1);
 
-  // Als er geen ballen meer over zijn: level reset
+  // Geen ballen meer? Dan resetten we het level
   if (balls.length === 0) {
-    saveHighscore();     
-    resetBricks();       
-    resetBall();         
-    return;              
+    saveHighscore();
+    resetBricks();
+    resetBall();  // Deze roept draw() opnieuw aan
+    return;       // Stop huidige draw-loop
   }
 
-  // Als hoofd-bal weg is, maak een andere de hoofd-bal
+  // Als de hoofd-bal verloren is, wijs een andere als hoofd-bal aan
   else if (ball.isMain) {
     balls[0].isMain = true;
   }
-}
 
+  // Stop deze iteratie zodat de verwijderde bal niet meer getekend wordt
+  return;
+}
 
   // Teken bal
   ctx.drawImage(ballImg, ball.x, ball.y, ball.radius * 2, ball.radius * 2);
