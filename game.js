@@ -613,25 +613,25 @@ function draw() {
     rocketX = paddleX + paddleWidth / 2 - 12;
     rocketY = canvas.height - paddleHeight - 48;
     ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
-  } else if (rocketFired) {
-    rocketY -= rocketSpeed;
-    smokeParticles.push({
-      x: rocketX + 15,
-      y: rocketY + 65,
-      radius: Math.random() * 6 + 4,
-      alpha: 1
-    });
+ } else if (rocketFired) {
+  rocketY -= rocketSpeed;
+  smokeParticles.push({
+    x: rocketX + 15,
+    y: rocketY + 65,
+    radius: Math.random() * 6 + 4,
+    alpha: 1
+  });
 
-    if (rocketY < -48) {
-  rocketFired = false;
-  if (rocketAmmo <= 0) {
-    rocketActive = false;
+  if (rocketY < -48) {
+    rocketFired = false;
+    if (rocketAmmo <= 0) {
+      rocketActive = false;
+    }
+  } else {
+    ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
+    checkRocketCollision();
   }
-} else {
-  ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
-  checkRocketCollision();
-}
-
+} // ← deze accolade sloot je eerst niet goed
 
   explosions.forEach(e => {
     ctx.beginPath();
