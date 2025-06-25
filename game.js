@@ -666,11 +666,10 @@ function onImageLoad() {
   console.log("Afbeelding geladen:", imagesLoaded);
 
   if (imagesLoaded === 5) {
-    x = paddleX + paddleWidth / 2 - ballRadius;
-    y = canvas.height - paddleHeight - ballRadius * 2;
     draw();
   }
 }
+
 
 // Koppel alle images aan onImageLoad
 blockImg.onload = onImageLoad;
