@@ -626,6 +626,9 @@ function draw() {
   drawWater();
 
   }
+
+
+  requestAnimationFrame(draw);
 }
 
  if (bootBonusActive) {
@@ -794,9 +797,6 @@ if (bootBonusActive) {
   });
  
 smokeParticles = smokeParticles.filter(p => p.alpha > 0);
-
-  requestAnimationFrame(draw);
-}
 
 
 
