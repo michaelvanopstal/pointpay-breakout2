@@ -684,7 +684,7 @@ function onImageLoad() {
   imagesLoaded++;
   console.log("Afbeelding geladen:", imagesLoaded);
 
-  if (imagesLoaded === 5) {
+  if (imagesLoaded === 8) {
     draw();
   }
 }
@@ -696,6 +696,8 @@ ballImg.onload = onImageLoad;
 powerBlockImg.onload = onImageLoad;
 powerBlock2Img.onload = onImageLoad;
 rocketImg.onload = onImageLoad;
+doublePointsImg.onload = onImageLoad;
+
 
 document.addEventListener("mousedown", function () {
   if (rocketActive && rocketAmmo > 0 && !rocketFired) {
