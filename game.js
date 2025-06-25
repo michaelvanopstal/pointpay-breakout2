@@ -228,6 +228,18 @@ function drawBricks() {
 }
 
 
+function resetBricks() {
+  for (let c = 0; c < brickColumnCount; c++) {
+    for (let r = 0; r < brickRowCount; r++) {
+      bricks[c][r].status = 1;
+
+      // Bonusblok opnieuw instellen
+      const bonus = bonusBricks.find(b => b.col === c && b.row === r);
+      bricks[c][r].type = bonus ? bonus.type : "normal";
+    }
+  }
+}
+
 
 function drawPaddle() {
   ctx.beginPath();
