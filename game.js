@@ -30,7 +30,7 @@ let balls = []; // array van actieve ballen
 
 balls.push({
   x: canvas.width / 2,
-  y: paddle.y - 10,
+  y: canvas.height - paddleHeight - 10,
   dx: 3,
   dy: -3,
   radius: 8,
