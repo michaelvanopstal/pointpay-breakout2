@@ -201,10 +201,10 @@ function drawBricks() {
         b.x = brickX;
         b.y = brickY;
          
+        switch (b.type) {
          case "2x":
          ctx.drawImage(doublePointsImg, brickX, brickY, brickWidth, brickHeight);
          break;
-         switch (b.type) {
          case "rocket":
          ctx.drawImage(powerBlock2Img, brickX, brickY, brickWidth, brickHeight);
          break;
