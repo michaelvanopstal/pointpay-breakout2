@@ -520,9 +520,9 @@ function draw() {
 
  if (
   y + dy > canvas.height - paddleHeight - ballRadius &&
-  y + dy < canvas.height + 2 && // iets meer speling
-  x > paddleX &&
-  x < paddleX + paddleWidth
+  y + dy < canvas.height + 2 &&
+  x + ballRadius > paddleX &&
+  x - ballRadius < paddleX + paddleWidth
 ) {
   const hitPos = (x - paddleX) / paddleWidth;
   const angle = (hitPos - 0.5) * Math.PI / 2;
@@ -530,6 +530,7 @@ function draw() {
   dx = speed * Math.sin(angle);
   dy = -Math.abs(speed * Math.cos(angle));
 }
+
 
 
   if (y + dy > canvas.height - ballRadius) {
