@@ -254,6 +254,50 @@ function drawBoat() {
 }
 
 
+function drawWater() {
+  ctx.save();
+
+  // Laag 1 – diepe watergolf
+  ctx.beginPath();
+  ctx.moveTo(0, canvas.height);
+  for (let x = 0; x <= canvas.width; x++) {
+    let y = canvas.height - 50 + Math.sin((x + waterOffset * 0.8) * 0.03) * 10;
+    ctx.lineTo(x, y);
+  }
+  ctx.lineTo(canvas.width, canvas.height);
+  ctx.closePath();
+
+  let gradient1 = ctx.createLinearGradient(0, canvas.height - 60, 0, canvas.height);
+  gradient1.addColorStop(0, 'rgba(0, 140, 255, 0.5)');
+  gradient1.addColorStop(1, 'rgba(0, 80, 200, 0.3)');
+  ctx.fillStyle = gradient1;
+  ctx.fill();
+
+  // Laag 2 – voorgrondgolf
+  ctx.beginPath();
+  ctx.moveTo(0, canvas.height);
+  for (let x = 0; x <= canvas.width; x++) {
+    let y = canvas.height - 55 + Math.sin((x + waterOffset) * 0.05) * 6;
+    ctx.lineTo(x, y);
+  }
+  ctx.lineTo(canvas.width, canvas.height);
+  ctx.closePath();
+
+  let gradient2 = ctx.createLinearGradient(0, canvas.height - 60, 0, canvas.height);
+  gradient2.addColorStop(0, 'rgba(0, 170, 255, 0.35)');
+  gradient2.addColorStop(1, 'rgba(0, 100, 255, 0.2)');
+  ctx.fillStyle = gradient2;
+  ctx.fill();
+
+  ctx.restore();
+
+  waterOffset += 1.5;
+}
+
+
+
+
+
 function drawBall() {
   ctx.drawImage(ballImg, x, y, ballRadius * 2, ballRadius * 2);
 }
@@ -556,6 +600,7 @@ function resetAfterBootBonus() {
   if (!ballLaunched && !ballMoving) {
     resetBall();
   }
+}
 
   
 
