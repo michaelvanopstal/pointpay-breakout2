@@ -318,7 +318,7 @@ function checkFlyingCoinHits() {
           b.status = 0;
           b.type = "normal";
           coin.active = false;
-          score += 10;
+          score += doublePointsActive ? 20 : 10;
 
           document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
           return;
@@ -374,7 +374,7 @@ function collisionDetection() {
 
           b.status = 0;
           b.type = "normal";
-          score += 10;
+          score += doublePointsActive ? 20 : 10;
           spawnCoin(b.x, b.y);
           document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
         }
@@ -484,7 +484,7 @@ function checkRocketCollision() {
 
             target.status = 0;
             target.type = "normal";
-            score += 10;
+            score += doublePointsActive ? 20 : 10;
             hitSomething = true;
           }
         });
@@ -522,7 +522,7 @@ function checkCoinCollision() {
       coin.x < paddleX + paddleWidth
     ) {
       coin.active = false;
-      score += 5;
+      score += doublePointsActive ? 10 : 5;
       document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
   
     }
@@ -705,4 +705,5 @@ document.addEventListener("mousedown", function () {
     shootFromFlags();
   }
 }); 
+
 
