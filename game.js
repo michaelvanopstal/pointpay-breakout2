@@ -569,11 +569,13 @@ function checkRocketCollision() {
 function checkCoinCollision() {
   coins.forEach((coin) => {
     if (
-      coin.active &&
-      coin.y + coin.radius > canvas.height - paddleHeight &&
-      coin.x > paddleX &&
-      coin.x < paddleX + paddleWidth
-    ) {
+       coin.active &&
+       coin.y + coin.radius >= canvas.height - paddleHeight &&  // top van het paddle
+       coin.y + coin.radius <= canvas.height &&                 // onderkant van canvas
+       coin.x + coin.radius > paddleX &&
+       coin.x < paddleX + paddleWidth
+     )
+
       const earned = doublePointsActive ? 20 : 10;
       score += earned;
       coin.active = false;
