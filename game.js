@@ -139,9 +139,6 @@ speedImg.src = "speed.png";
 const pointpayPaddleImg = new Image();
 pointpayPaddleImg.src = "balkje.png";
 
-const signalBlockImg = new Image();
-signalBlockImg.src = "signal.png"; // of juiste bestandsnaam
-
 
 
 let speedMultiplier = (speedBoostActive && Date.now() - speedBoostStart < speedBoostDuration) ? speedBoostMultiplier : 1;
@@ -252,9 +249,6 @@ function drawBricks() {
          break;
          case "doubleball":
          ctx.drawImage(doubleBallImg, brickX, brickY, brickWidth, brickHeight);
-         break;
-         case "signal":
-         ctx.drawImage(signalBlockImg, brickX, brickY, brickWidth, brickHeight);
          break;
          default:
          ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight);
