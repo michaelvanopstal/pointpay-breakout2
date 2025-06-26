@@ -402,7 +402,7 @@ function checkCoinCollision() {
       score += doublePointsActive ? 10 : 5;
       document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
 
-      // 🎵 Speel geld-geluid bij het vangen van muntje
+      // 🎵 Alleen hier geld-geluid!
       coinSound.currentTime = 0;
       coinSound.play();
     }
@@ -556,9 +556,10 @@ function collisionDetection() {
           blockSound.currentTime = 0;
           blockSound.play();
 
+          // Richting van bal omkeren
           ball.dy = -ball.dy;
 
-          // ➕ Activeer bonus
+          // ➕ Activeer bonus indien van toepassing
           switch (b.type) {
             case "power":
               flagsOnPaddle = true;
@@ -581,17 +582,16 @@ function collisionDetection() {
               break;
           }
 
-          // Blok verdwijnt
+          // Blok verwijderen
           b.status = 0;
           b.type = "normal";
 
-          // Punten erbij
+          // Score verhogen
           score += doublePointsActive ? 20 : 10;
           document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
 
-          // Muntje spawnen met geluid
+          // 💰 Muntje spawnen (zonder geluid hier)
           spawnCoin(b.x, b.y);
-          
         }
       }
     }
