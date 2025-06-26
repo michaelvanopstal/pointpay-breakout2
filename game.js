@@ -539,21 +539,66 @@ function checkRocketCollision() {
   }
 }
 
-function checkCoinCollision() {
-  coins.forEach(coin => {
-    if (
-      coin.active &&
-      coin.y + coin.radius * 2 >= canvas.height - paddleHeight &&
-      coin.x + coin.radius > paddleX &&
-      coin.x < paddleX + paddleWidth
-    ) {
-      coin.active = false;
-      score += doublePointsActive ? 10 : 5;
-      document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
-  
+function collisionDetection() {
+  balls.forEach(ball => {
+    for (let c = 0; c < brickColumnCount; c++) {
+      for (let r = 0; r < brickRowCount; r++) {
+        const b = bricks[c][r];
+
+        if (
+          b.status === 1 &&
+          ball.x > b.x &&
+          ball.x < b.x + brickWidth &&
+          ball.y > b.y &&
+          ball.y < b.y + brickHeight
+        ) {
+          // 🎯 Speel blok-geluid
+          blockSound.currentTime = 0;
+          blockSound.play();
+
+          ball.dy = -ball.dy;
+
+          // ➕ Activeer bonus
+          switch (b.type) {
+            case "power":
+              flagsOnPaddle = true;
+              flagTimer = Date.now();
+              break;
+            case "rocket":
+              rocketActive = true;
+              rocketAmmo = 3;
+              break;
+            case "doubleball":
+              spawnExtraBall(ball);
+              break;
+            case "2x":
+              doublePointsActive = true;
+              doublePointsStartTime = Date.now();
+              break;
+            case "speed":
+              speedBoostActive = true;
+              speedBoostStart = Date.now();
+              break;
+          }
+
+          // Blok verdwijnt
+          b.status = 0;
+          b.type = "normal";
+
+          // Punten erbij
+          score += doublePointsActive ? 20 : 10;
+          document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+
+          // Muntje spawnen met geluid
+          spawnCoin(b.x, b.y);
+          coinSound.currentTime = 0;
+          coinSound.play();
+        }
+      }
     }
   });
 }
+
 
 function spawnExtraBall(originBall) {
   const speed = Math.sqrt(originBall.dx ** 2 + originBall.dy ** 2);
