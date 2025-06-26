@@ -742,7 +742,7 @@ function onImageLoad() {
   imagesLoaded++;
   console.log("Afbeelding geladen:", imagesLoaded);
 
-  if (imagesLoaded === 10) {
+  if (imagesLoaded === 11) {
     draw();
   }
 }
@@ -759,6 +759,7 @@ doublePointsImg.onload = onImageLoad;
 vlagImgLeft.onload = onImageLoad;
 vlagImgRight.onload = onImageLoad;
 shootCoinImg.onload = onImageLoad;
+speedImg.onload = onImageLoad;
 
 
 
