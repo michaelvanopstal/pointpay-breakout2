@@ -126,6 +126,10 @@ doublePointsImg.src = "2x.png";
 const speedImg = new Image();
 speedImg.src = "speed.png";
 
+const pointpayPaddleImg = new Image();
+pointpayPaddleImg.src = "balkje.png";
+
+
 
 let speedMultiplier = (speedBoostActive && Date.now() - speedBoostStart < speedBoostDuration) ? speedBoostMultiplier : 1;
 
@@ -259,12 +263,9 @@ function resetBricks() {
 
 
 function drawPaddle() {
-  ctx.beginPath();
-  ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
-  ctx.fillStyle = "#0095DD";
-  ctx.fill();
-  ctx.closePath();
-} 
+  ctx.drawImage(pointpayPaddleImg, paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
+}
+
 
 function resetBall() {
   balls = [{
@@ -760,7 +761,7 @@ vlagImgLeft.onload = onImageLoad;
 vlagImgRight.onload = onImageLoad;
 shootCoinImg.onload = onImageLoad;
 speedImg.onload = onImageLoad;
-
+pointpayPaddleImg.onload = onImageLoad;
 
 
 document.addEventListener("mousedown", function () {
