@@ -30,6 +30,7 @@ let doublePointsActive = false;
 let doublePointsStartTime = 0;
 let doublePointsDuration = 60000; // 1 minuut in millisecondenlet imagesLoaded = 0;
 let imagesLoaded = 0;
+let pointPopups = []; // voor 10+ of 20+ bij muntjes
 
 
 
@@ -260,6 +261,19 @@ function drawBricks() {
   }
 }
 
+function drawPointPopups() {
+  pointPopups.forEach(p => {
+    ctx.font = "bold 24px Arial";
+    ctx.fillStyle = `rgba(255, 215, 0, ${p.alpha})`; // goudkleurig + fading
+    ctx.fillText(p.value, p.x, p.y);
+    p.y -= 1;
+    p.alpha -= 0.02;
+  });
+
+  // Verwijder vervaagde popups
+  pointPopups = pointPopups.filter(p => p.alpha > 0);
+}
+
 
 function resetBricks() {
   for (let c = 0; c < brickColumnCount; c++) {
@@ -399,15 +413,26 @@ function checkCoinCollision() {
       coin.x < paddleX + paddleWidth
     ) {
       coin.active = false;
-      score += doublePointsActive ? 10 : 5;
+
+      const earned = doublePointsActive ? 20 : 10;
+      score += earned;
       document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
 
-      // 🎵 Alleen hier geld-geluid!
+      // 🎵 Speel geld-geluid
       coinSound.currentTime = 0;
       coinSound.play();
+
+      // ➕ Voeg punten-popup toe
+      pointPopups.push({
+        x: coin.x,
+        y: coin.y,
+        value: earned + "+",
+        alpha: 1
+      });
     }
   });
 }
+
 
 
   
@@ -630,6 +655,7 @@ function draw() {
   drawPaddleFlags();
   drawFlyingCoins();
   checkFlyingCoinHits();
+  drawPointPopups();
 
   if (doublePointsActive && Date.now() - doublePointsStartTime > doublePointsDuration) {
   doublePointsActive = false;
