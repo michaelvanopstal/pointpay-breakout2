@@ -567,32 +567,39 @@ function checkRocketCollision() {
 }
 
 function checkCoinCollision() {
-  coins.forEach((coin) => {
+  coins.forEach(coin => {
+    if (!coin.active) return;
+
+    const coinBottom = coin.y + coin.radius;
+    const paddleTop = canvas.height - paddleHeight;
+
+    // ✅ Coin raakt paddle correct
     if (
-       coin.active &&
-       coin.y + coin.radius >= canvas.height - paddleHeight &&  // top van het paddle
-       coin.y + coin.radius <= canvas.height &&                 // onderkant van canvas
-       coin.x + coin.radius > paddleX &&
-       coin.x < paddleX + paddleWidth
-     )
+      coinBottom >= paddleTop &&
+      coinBottom <= canvas.height &&
+      coin.x + coin.radius > paddleX &&
+      coin.x < paddleX + paddleWidth
+    ) {
+      coin.active = false;
 
       const earned = doublePointsActive ? 20 : 10;
       score += earned;
-      coin.active = false;
+      document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
 
-      // 🎵 Speel geld-geluid
       coinSound.currentTime = 0;
       coinSound.play();
 
-      // ✨ Toon +10 of +20 boven muntje
       pointPopups.push({
         x: coin.x,
         y: coin.y,
         value: "+" + earned,
         alpha: 1
       });
+    }
 
-      document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+    // ❌ Coin valt door onderkant canvas → weg ermee
+    else if (coinBottom > canvas.height) {
+      coin.active = false;
     }
   });
 }
