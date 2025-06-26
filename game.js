@@ -42,8 +42,8 @@ const speedBoostMultiplier = 2;
 balls.push({
   x: canvas.width / 2,
   y: canvas.height - paddleHeight - 10,
-  dx: 2,
-  dy: -2,
+  dx: 4,
+  dy: -4,
   radius: 8,
   isMain: true
 });
