@@ -828,14 +828,13 @@ pointpayPaddleImg.onload = onImageLoad;
 
 
 document.addEventListener("mousedown", function () {
-if (rocketActive && rocketAmmo > 0 && !rocketFired) {
-  rocketFired = true;
-  rocketAmmo--;
+  if (rocketActive && rocketAmmo > 0 && !rocketFired) {
+    rocketFired = true;
+    rocketAmmo--;
 
-  // 🔊 Speel afvuurgeluid
-  rocketLaunchSound.currentTime = 0;
-  rocketLaunchSound.play();
-}
-
-
+    // 🔊 Speel afvuurgeluid
+    rocketLaunchSound.currentTime = 0;
+    rocketLaunchSound.play();
+  }
+});
 
