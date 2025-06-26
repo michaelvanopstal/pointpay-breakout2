@@ -439,15 +439,14 @@ function collisionDetection() {
           score += doublePointsActive ? 20 : 10;
           document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
 
-          // Muntje spawnen met geluid
+          // Alleen muntje spawnen, geen geluid hier!
           spawnCoin(b.x, b.y);
-          coinSound.currentTime = 0;
-          coinSound.play();
         }
       }
     }
   });
 }
+
 
   
 
