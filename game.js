@@ -607,7 +607,8 @@ function draw() {
   balls.forEach((ball, index) => {
   // Verplaats bal
   if (ballLaunched) {
-  let speedMultiplier = (speedBoostActive && Date.now() - speedBoostStart < speedBoostDuration) ? 4 : 1;
+  let speedMultiplier = (speedBoostActive && Date.now() - speedBoostStart < speedBoostDuration) ? speedBoostMultiplier : 1;
+
   ball.x += ball.dx * speedMultiplier;
   ball.y += ball.dy * speedMultiplier;
 
