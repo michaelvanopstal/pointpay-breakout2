@@ -43,8 +43,8 @@ const speedBoostMultiplier = 2;
 balls.push({
   x: canvas.width / 2,
   y: canvas.height - paddleHeight - 10,
-  dx: 4,
-  dy: -4,
+  dx: 6,
+  dy: -6,
   radius: 8,
   isMain: true
 });
@@ -170,7 +170,7 @@ if ((e.key === "ArrowUp" || e.key === "Up") && !ballLaunched) {
   shootSound.play();
 
   balls[0].dx = 0;
-  balls[0].dy = -4;
+  balls[0].dy = -6;
   if (!timerRunning) startTimer();
   score = 0;
   document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
@@ -302,7 +302,7 @@ function resetBall() {
     x: paddleX + paddleWidth / 2 - ballRadius,
     y: canvas.height - paddleHeight - ballRadius * 2,
     dx: 0,
-    dy: -4,
+    dy: -6,
     radius: ballRadius,
     isMain: true
   }];
