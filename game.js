@@ -557,6 +557,38 @@ function checkRocketCollision() {
   }
 }
 
+function checkCoinCollision() {
+  coins.forEach((coin) => {
+    if (
+      coin.active &&
+      coin.y + coin.radius > canvas.height - paddleHeight &&
+      coin.x > paddleX &&
+      coin.x < paddleX + paddleWidth
+    ) {
+      const earned = doublePointsActive ? 20 : 10;
+      score += earned;
+      coin.active = false;
+
+      // 🎵 Speel geld-geluid
+      coinSound.currentTime = 0;
+      coinSound.play();
+
+      // ✨ Toon +10 of +20 boven muntje
+      pointPopups.push({
+        x: coin.x,
+        y: coin.y,
+        value: "+" + earned,
+        alpha: 1
+      });
+
+      document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+    }
+  });
+}
+
+
+
+
 function collisionDetection() {
   balls.forEach(ball => {
     for (let c = 0; c < brickColumnCount; c++) {
