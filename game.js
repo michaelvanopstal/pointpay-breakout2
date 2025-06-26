@@ -38,7 +38,7 @@ let pointPopups = []; // voor 10+ of 20+ bij muntjes
 let speedBoostActive = false;
 let speedBoostStart = 0;
 const speedBoostDuration = 30000;
-const speedBoostMultiplier = 2;
+const speedBoostMultiplier = 1.5;
 
 balls.push({
   x: canvas.width / 2,
