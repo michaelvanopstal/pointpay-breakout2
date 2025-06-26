@@ -60,8 +60,10 @@ const bonusBricks = [
   { col: 5, row: 10, type: "speed" }
 
 ];
+
 const rocketLaunchSound = new Audio("lounche.mp3");
-const rocketExplosionSound = new Audio("exsplosion.mp3");
+const rocketExplosionSound = new Audio("explosion.mp3"); // als dat de juiste is
+
 const laserSound = new Audio("laser.mp3"); // voeg dit bestand toe in je project
 const coinSound = new Audio("money.mp3");
 const shootSound = new Audio("shoot_arcade.mp3");
