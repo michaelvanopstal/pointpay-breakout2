@@ -60,7 +60,8 @@ const bonusBricks = [
   { col: 5, row: 10, type: "speed" }
 
 ];
-
+const rocketLaunchSound = new Audio("lounche.mp3");
+const rocketExplosionSound = new Audio("exsplosion.mp3");
 const laserSound = new Audio("laser.mp3"); // voeg dit bestand toe in je project
 const coinSound = new Audio("money.mp3");
 const shootSound = new Audio("shoot_arcade.mp3");
@@ -173,12 +174,15 @@ if ((e.key === "ArrowUp" || e.key === "Up") && !ballLaunched) {
   document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
 }
 
-
-
-  if ((e.code === "ArrowUp" || e.code === "Space") && rocketActive && rocketAmmo > 0 && !rocketFired) {
+ if ((e.code === "ArrowUp" || e.code === "Space") && rocketActive && rocketAmmo > 0 && !rocketFired) {
   rocketFired = true;
   rocketAmmo--;
+
+  // 🔊 Speel afvuurgeluid
+  rocketLaunchSound.currentTime = 0;
+  rocketLaunchSound.play();
 }
+
 
   if (flagsOnPaddle && (e.code === "Space" || e.code === "ArrowUp")) {
     shootFromFlags();
@@ -519,18 +523,25 @@ function checkRocketCollision() {
           }
         });
 
-        if (hitSomething) {
-          document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
-          rocketFired = false;
-          explosions.push({
-            x: rocketX + 12,
-            y: rocketY,
-            radius: 10,
-            alpha: 1
-          });
-        } else {
-          rocketFired = false;
-        }
+       
+            if (hitSomething) {
+             // 🔊 Speel explosie-geluid
+             rocketExplosionSound.currentTime = 0;
+              rocketExplosionSound.play();
+
+               document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+               rocketFired = false;
+
+               explosions.push({
+                x: rocketX + 12,
+                 y: rocketY,
+               radius: 10,
+               alpha: 1
+               });
+               } else {
+               rocketFired = false;
+              }
+
 
         // Stop bonus als ammo op is
         if (rocketAmmo <= 0) {
@@ -816,12 +827,14 @@ pointpayPaddleImg.onload = onImageLoad;
 
 
 document.addEventListener("mousedown", function () {
-  if (rocketActive && rocketAmmo > 0 && !rocketFired) {
-    rocketFired = true;
-    rocketAmmo--;
-  } else if (flagsOnPaddle) {
-    shootFromFlags();
-  }
-}); 
+if (rocketActive && rocketAmmo > 0 && !rocketFired) {
+  rocketFired = true;
+  rocketAmmo--;
+
+  // 🔊 Speel afvuurgeluid
+  rocketLaunchSound.currentTime = 0;
+  rocketLaunchSound.play();
+}
+
 
 
