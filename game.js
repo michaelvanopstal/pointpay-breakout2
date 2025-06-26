@@ -141,7 +141,7 @@ pointpayPaddleImg.src = "balkje.png";
 
 
 
-let speedMultiplier = (speedBoostActive && Date.now() - speedBoostStart < speedBoostDuration) ? speedBoostMultiplier : 2;
+let speedMultiplier = (speedBoostActive && Date.now() - speedBoostStart < speedBoostDuration) ? speedBoostMultiplier : 1.5;
 
 let rocketActive = false; // Voor nu altijd zichtbaar om te testen
 let rocketX = 0;
