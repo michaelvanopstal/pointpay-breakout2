@@ -139,6 +139,9 @@ speedImg.src = "speed.png";
 const pointpayPaddleImg = new Image();
 pointpayPaddleImg.src = "balkje.png";
 
+const signalBlockImg = new Image();
+signalBlockImg.src = "signal.png"; // of juiste bestandsnaam
+
 
 
 let speedMultiplier = (speedBoostActive && Date.now() - speedBoostStart < speedBoostDuration) ? speedBoostMultiplier : 1;
