@@ -61,7 +61,7 @@ const bonusBricks = [
 
 ];
 
-
+const laserSound = new Audio("laser.mp3"); // voeg dit bestand toe in je project
 const coinSound = new Audio("money.mp3");
 const shootSound = new Audio("shoot_arcade.mp3");
 const wallSound = new Audio("tick.mp3");
@@ -347,7 +347,14 @@ function shootFromFlags() {
     dy: -coinSpeed,
     active: true
   });
+
+  // 🔫 Speel laser-geluid als bonus actief is
+  if (flagsOnPaddle && Date.now() - flagTimer < 20000) {
+    laserSound.currentTime = 0;
+    laserSound.play();
+  }
 }
+
 
 function checkFlyingCoinHits() {
   flyingCoins.forEach((coin) => {
