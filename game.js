@@ -566,6 +566,7 @@ function checkRocketCollision() {
   }
 }
 
+
 function checkCoinCollision() {
   coins.forEach(coin => {
     if (!coin.active) return;
@@ -573,7 +574,7 @@ function checkCoinCollision() {
     const coinBottom = coin.y + coin.radius;
     const paddleTop = canvas.height - paddleHeight;
 
-    // ✅ Coin raakt paddle correct
+   
     if (
       coinBottom >= paddleTop &&
       coinBottom <= canvas.height &&
@@ -597,7 +598,6 @@ function checkCoinCollision() {
       });
     }
 
-    // ❌ Coin valt door onderkant canvas → weg ermee
     else if (coinBottom > canvas.height) {
       coin.active = false;
     }
