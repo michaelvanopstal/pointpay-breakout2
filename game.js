@@ -33,6 +33,14 @@ let imagesLoaded = 0;
 
 
 
+const adMessages = [
+  "Circulating supply 30M PXP.",
+  "Total Supply 100M PXP",
+  "Max Supply 100M PXP."
+];
+let currentAdText = adMessages[0];
+let showAdText = true;
+
 let speedBoostActive = false;
 let speedBoostStart = 0;
 const speedBoostDuration = 30000;
@@ -263,8 +271,23 @@ function resetBricks() {
 
 
 function drawPaddle() {
+  // Paddle-afbeelding tekenen
   ctx.drawImage(pointpayPaddleImg, paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
+
+  // Tekst netjes gecentreerd
+  if (showAdText) {
+    ctx.fillStyle = "white";
+    ctx.font = "bold 13px Arial";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(
+      currentAdText,
+      paddleX + paddleWidth / 2,
+      canvas.height - paddleHeight / 2
+    );
+  }
 }
+
 
 
 function resetBall() {
@@ -762,6 +785,14 @@ vlagImgRight.onload = onImageLoad;
 shootCoinImg.onload = onImageLoad;
 speedImg.onload = onImageLoad;
 pointpayPaddleImg.onload = onImageLoad;
+
+
+let adIndex = 0;
+setInterval(() => {
+  adIndex = (adIndex + 1) % adMessages.length;
+  currentAdText = adMessages[adIndex];
+}, 4000); // elke 4 seconden wisselen
+
 
 
 document.addEventListener("mousedown", function () {
