@@ -374,20 +374,27 @@ function checkFlyingCoinHits() {
           coin.y > b.y &&
           coin.y < b.y + brickHeight
         ) {
-          // ➕ Activeer bonus indien van toepassing
-          switch (b.type) {
-            case "power":
-              flagsOnPaddle = true;
-              flagTimer = Date.now();
-              break;
-            case "rocket":
-              rocketActive = true;
-              rocketAmmo += 3;
-              break;
-            case "doubleball":
-              spawnExtraBall(balls[0]); // gebruik eerste bal als basis
-              break;
-          }
+        switch (b.type) {
+  case "power":
+    flagsOnPaddle = true;
+    flagTimer = Date.now();
+    break;
+  case "rocket":
+    rocketActive = true;
+    rocketAmmo += 3;
+    break;
+  case "doubleball":
+    spawnExtraBall(balls[0]);
+    break;
+  case "2x":
+    doublePointsActive = true;
+    doublePointsStartTime = Date.now();
+    break;
+  case "speed":
+    speedBoostActive = true;
+    speedBoostStart = Date.now();
+    break;
+}
 
           b.status = 0;
           b.type = "normal";
