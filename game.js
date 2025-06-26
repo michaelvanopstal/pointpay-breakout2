@@ -743,7 +743,7 @@ function onImageLoad() {
   imagesLoaded++;
   console.log("Afbeelding geladen:", imagesLoaded);
 
-  if (imagesLoaded === 11) {
+  if (imagesLoaded === 12) {
     draw();
   }
 }
