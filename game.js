@@ -604,15 +604,14 @@ function draw() {
   doublePointsActive = false;
 }
 
-  balls.forEach((ball, index) => {
-  // Verplaats bal
+ balls.forEach((ball, index) => {
+  // Verplaats bal (met eventuele slow-motion)
   if (ballLaunched) {
-  let speedMultiplier = (speedBoostActive && Date.now() - speedBoostStart < speedBoostDuration) ? speedBoostMultiplier : 1;
-
-  ball.x += ball.dx * speedMultiplier;
-  ball.y += ball.dy * speedMultiplier;
-
-
+    let speedMultiplier = (speedBoostActive && Date.now() - speedBoostStart < speedBoostDuration)
+      ? speedBoostMultiplier
+      : 1;
+    ball.x += ball.dx * speedMultiplier;
+    ball.y += ball.dy * speedMultiplier;
   } else {
     ball.x = paddleX + paddleWidth / 2 - ballRadius;
     ball.y = canvas.height - paddleHeight - ballRadius * 2;
@@ -636,29 +635,34 @@ function draw() {
     ball.dy = -Math.abs(speed * Math.cos(angle));
   }
 
+  // Bal uit beeld → leven verloren
+  if (ball.y + ball.dy > canvas.height) {
+    balls.splice(index, 1);
 
-if (ball.y + ball.dy > canvas.height) {
-  // Verwijder deze bal uit de array
-  balls.splice(index, 1);
+    if (balls.length === 0) {
+      // 🔁 Reset bonussen en tijdelijke effecten
+      speedBoostActive = false;
+      doublePointsActive = false;
+      flagsOnPaddle = false;
+      rocketActive = false;
+      rocketFired = false;
+      rocketAmmo = 0;
+      flyingCoins = [];
+      smokeParticles = [];
+      explosions = [];
 
-  // Geen ballen meer? Dan resetten we het level
-  if (balls.length === 0) {
-    saveHighscore();
-    resetBricks();
-    resetBall();  // Deze roept draw() opnieuw aan
-    return;       // Stop huidige draw-loop
+      saveHighscore();
+      resetBricks();
+      resetBall();
+      return; // stop de draw-loop (wordt opnieuw gestart)
+    } else if (ball.isMain) {
+      balls[0].isMain = true;
+    }
+
+    return; // skip deze bal (hij is verwijderd)
   }
 
-  // Als de hoofd-bal verloren is, wijs een andere als hoofd-bal aan
-  else if (ball.isMain) {
-    balls[0].isMain = true;
-  }
-
-  // Stop deze iteratie zodat de verwijderde bal niet meer getekend wordt
-  return;
-}
-
-  // Teken bal
+  // ✅ Teken bal (alleen als deze nog leeft)
   ctx.drawImage(ballImg, ball.x, ball.y, ball.radius * 2, ball.radius * 2);
 });
 
