@@ -614,7 +614,7 @@ function draw() {
   if (ballLaunched) {
     let speedMultiplier = (speedBoostActive && Date.now() - speedBoostStart < speedBoostDuration)
       ? speedBoostMultiplier
-      : 2;
+      : 1;
     ball.x += ball.dx * speedMultiplier;
     ball.y += ball.dy * speedMultiplier;
   } else {
