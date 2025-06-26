@@ -43,8 +43,8 @@ const speedBoostMultiplier = 2;
 balls.push({
   x: canvas.width / 2,
   y: canvas.height - paddleHeight - 10,
-  dx: 6,
-  dy: -6,
+  dx: 10,
+  dy: -10,
   radius: 8,
   isMain: true
 });
@@ -302,7 +302,7 @@ function resetBall() {
     x: paddleX + paddleWidth / 2 - ballRadius,
     y: canvas.height - paddleHeight - ballRadius * 2,
     dx: 0,
-    dy: -6,
+    dy: -10,
     radius: ballRadius,
     isMain: true
   }];
