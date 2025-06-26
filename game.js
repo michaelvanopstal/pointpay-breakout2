@@ -38,7 +38,7 @@ let pointPopups = []; // voor 10+ of 20+ bij muntjes
 let speedBoostActive = false;
 let speedBoostStart = 0;
 const speedBoostDuration = 30000;
-const speedBoostMultiplier = 1.5;
+const speedBoostMultiplier = 2;
 
 balls.push({
   x: canvas.width / 2,
@@ -141,7 +141,7 @@ pointpayPaddleImg.src = "balkje.png";
 
 
 
-let speedMultiplier = (speedBoostActive && Date.now() - speedBoostStart < speedBoostDuration) ? speedBoostMultiplier : 1;
+let speedMultiplier = (speedBoostActive && Date.now() - speedBoostStart < speedBoostDuration) ? speedBoostMultiplier : 2;
 
 let rocketActive = false; // Voor nu altijd zichtbaar om te testen
 let rocketX = 0;
@@ -170,7 +170,7 @@ if ((e.key === "ArrowUp" || e.key === "Up") && !ballLaunched) {
   shootSound.play();
 
   balls[0].dx = 0;
-  balls[0].dy = -6;
+  balls[0].dy = -4;
   if (!timerRunning) startTimer();
   score = 0;
   document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
@@ -699,7 +699,7 @@ balls.forEach((ball, index) => {
   if (ballLaunched) {
     let speedMultiplier = (speedBoostActive && Date.now() - speedBoostStart < speedBoostDuration)
       ? speedBoostMultiplier
-      : 1.5;
+      : 2;
     ball.x += ball.dx * speedMultiplier;
     ball.y += ball.dy * speedMultiplier;
   } else {
