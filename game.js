@@ -473,6 +473,7 @@ function drawFlyingCoins() {
   
   flyingCoins = flyingCoins.filter(coin => coin.y > -24 && coin.active);
 }
+
 function checkRocketCollision() {
   for (let c = 0; c < brickColumnCount; c++) {
     for (let r = 0; r < brickRowCount; r++) {
