@@ -170,7 +170,7 @@ if ((e.key === "ArrowUp" || e.key === "Up") && !ballLaunched) {
   shootSound.play();
 
   balls[0].dx = 0;
-  balls[0].dy = -4;
+  balls[0].dy = -6;
   if (!timerRunning) startTimer();
   score = 0;
   document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
