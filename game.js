@@ -577,7 +577,7 @@ function spawnExtraBall(originBall) {
   const speed = Math.sqrt(originBall.dx ** 2 + originBall.dy ** 2);
 
   // Huidige bal krijgt een lichte afwijking
-  originBall.dx = -2;
+  originBall.dx = -1;
   originBall.dy = -Math.abs(speed);
 
   // Tweede bal gaat recht omhoog
