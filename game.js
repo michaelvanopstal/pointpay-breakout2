@@ -33,16 +33,6 @@ let imagesLoaded = 0;
 
 
 
-const adMessages = [
-  "Circulating supply 30M PXP.",
-  "Total Supply 100M PXP.",
-  "Max Supply 100M PXP."
-];
-
-let currentAdText = adMessages[0];
-let showAdText = true;
-let adScrollX = 0;
-let adScrollSpeed = 1.2; // snelheid in pixels per frame
 
 let speedBoostActive = false;
 let speedBoostStart = 0;
@@ -274,21 +264,7 @@ function resetBricks() {
 
 
 function drawPaddle() {
-  // Paddle-afbeelding tekenen
   ctx.drawImage(pointpayPaddleImg, paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
-
-  // Tekst netjes gecentreerd
-  if (showAdText) {
-    ctx.fillStyle = "white";
-    ctx.font = "bold 13px Arial";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText(
-      currentAdText,
-      paddleX + paddleWidth / 2,
-      canvas.height - paddleHeight / 2
-    );
-  }
 }
 
 
@@ -761,13 +737,6 @@ if (speedBoostActive && Date.now() - speedBoostStart >= speedBoostDuration) {
 
 smokeParticles = smokeParticles.filter(p => p.alpha > 0);
 
-
-adScrollX -= adScrollSpeed;
-if (ctx.measureText(currentAdText).width + adScrollX < 0) {
-  adScrollX = paddleWidth;
-  adIndex = (adIndex + 1) % adMessages.length;
-  currentAdText = adMessages[adIndex];
-}
 
 // 🎯 Belangrijk: requestAnimationFrame moet als laatste
 requestAnimationFrame(draw);
