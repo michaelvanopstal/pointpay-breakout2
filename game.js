@@ -389,57 +389,29 @@ function checkFlyingCoinHits() {
           b.status = 0;
           b.type = "normal";
           coin.active = false;
-          score += doublePointsActive ? 20 : 10;
 
+          const earned = doublePointsActive ? 20 : 10;
+          score += earned;
           document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+
+          // 🎵 Speel geld-geluid
+          coinSound.currentTime = 0;
+          coinSound.play();
+
+          // 💬 ✨ Toon gouden popup precies op muntpositie
+          pointPopups.push({
+            x: coin.x,
+            y: coin.y,
+            value: "+" + earned,
+            alpha: 1
+          });
+
           return;
         }
       }
     }
   });
 }
-
-
-function startTimer() {
-  timerRunning = true;
-  timerInterval = setInterval(() => {
-    elapsedTime++;
-    const minutes = String(Math.floor(elapsedTime / 60)).padStart(2, '0');
-    const seconds = String(elapsedTime % 60).padStart(2, '0');
-    document.getElementById("timeDisplay").textContent = "time " + minutes + ":" + seconds;
-  }, 1000);
-}
-
-
-function checkCoinCollision() {
-  coins.forEach(coin => {
-    if (
-      coin.active &&
-      coin.y + coin.radius * 2 >= canvas.height - paddleHeight &&
-      coin.x + coin.radius > paddleX &&
-      coin.x < paddleX + paddleWidth
-    ) {
-      coin.active = false;
-
-      const earned = doublePointsActive ? 20 : 10;
-      score += earned;
-      document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
-
-      // 🎵 Speel geld-geluid
-      coinSound.currentTime = 0;
-      coinSound.play();
-
-      // ➕ Voeg punten-popup toe
-      pointPopups.push({
-        x: coin.x,
-        y: coin.y,
-        value: earned + "+",
-        alpha: 1
-      });
-    }
-  });
-}
-
 
 
   
