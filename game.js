@@ -61,7 +61,7 @@ const bonusBricks = [
 
 ];
 
-const rocketLaunchSound = new Audio("lounche.mp3");
+const rocketLaunchSound = new Audio("launch.mp3");
 const rocketExplosionSound = new Audio("explosion.mp3"); // als dat de juiste is
 
 const laserSound = new Audio("laser.mp3"); // voeg dit bestand toe in je project
