@@ -60,6 +60,9 @@ const bonusBricks = [
 
 ];
 
+const shootSound = new Audio("shoot_arcade.mp3");
+const wallSound = new Audio("tick.mp3");
+const blockSound = new Audio("tock.mp3");
 
 const customBrickWidth = 70;   // pas aan zoals jij wilt
 const customBrickHeight = 25;  // pas aan zoals jij wilt
@@ -152,15 +155,21 @@ function keyDownHandler(e) {
   if (e.key === "Right" || e.key === "ArrowRight") rightPressed = true;
   else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = true;
 
- if ((e.key === "ArrowUp" || e.key === "Up") && !ballLaunched) {
+if ((e.key === "ArrowUp" || e.key === "Up") && !ballLaunched) {
   ballLaunched = true;
   ballMoving = true;
+
+  // 🎯 Speel schiet-geluid af
+  shootSound.currentTime = 0;
+  shootSound.play();
+
   balls[0].dx = 0;
   balls[0].dy = -4;
   if (!timerRunning) startTimer();
   score = 0;
   document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
 }
+
 
 
   if ((e.code === "ArrowUp" || e.code === "Space") && rocketActive && rocketAmmo > 0 && !rocketFired) {
@@ -383,15 +392,20 @@ function collisionDetection() {
     for (let c = 0; c < brickColumnCount; c++) {
       for (let r = 0; r < brickRowCount; r++) {
         const b = bricks[c][r];
-        if (b.status === 1 &&
-            ball.x > b.x &&
-            ball.x < b.x + brickWidth &&
-            ball.y > b.y &&
-            ball.y < b.y + brickHeight) {
+        if (
+          b.status === 1 &&
+          ball.x > b.x &&
+          ball.x < b.x + brickWidth &&
+          ball.y > b.y &&
+          ball.y < b.y + brickHeight
+        ) {
+          // 🎯 Geluid afspelen bij raken blokje
+          blockSound.currentTime = 0;
+          blockSound.play();
 
           ball.dy = -ball.dy;
 
-        
+          // ➕ Activeer eventuele bonus
           switch (b.type) {
             case "power":
               flagsOnPaddle = true;
@@ -402,18 +416,16 @@ function collisionDetection() {
               rocketAmmo = 3;
               break;
             case "doubleball":
-              spawnExtraBall(ball);  // ➕ hier spawn je de extra bal
+              spawnExtraBall(ball);
               break;
-              case "2x":
+            case "2x":
               doublePointsActive = true;
               doublePointsStartTime = Date.now();
               break;
-              case "speed":
+            case "speed":
               speedBoostActive = true;
               speedBoostStart = Date.now();
               break;
-
-
           }
 
           b.status = 0;
@@ -608,8 +620,7 @@ function draw() {
   if (doublePointsActive && Date.now() - doublePointsStartTime > doublePointsDuration) {
   doublePointsActive = false;
 }
-
- balls.forEach((ball, index) => {
+balls.forEach((ball, index) => {
   // Verplaats bal (met eventuele slow-motion)
   if (ballLaunched) {
     let speedMultiplier = (speedBoostActive && Date.now() - speedBoostStart < speedBoostDuration)
@@ -623,8 +634,16 @@ function draw() {
   }
 
   // Muurbotsing
-  if (ball.x < ball.radius || ball.x > canvas.width - ball.radius) ball.dx *= -1;
-  if (ball.y < ball.radius) ball.dy *= -1;
+  if (ball.x < ball.radius || ball.x > canvas.width - ball.radius) {
+    ball.dx *= -1;
+    wallSound.currentTime = 0;
+    wallSound.play();
+  }
+  if (ball.y < ball.radius) {
+    ball.dy *= -1;
+    wallSound.currentTime = 0;
+    wallSound.play();
+  }
 
   // Paddle-botsing
   if (
@@ -638,6 +657,10 @@ function draw() {
     const speed = Math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy);
     ball.dx = speed * Math.sin(angle);
     ball.dy = -Math.abs(speed * Math.cos(angle));
+
+    // 🎯 Geluid bij paddle-botsing
+    wallSound.currentTime = 0;
+    wallSound.play();
   }
 
   // Bal uit beeld → leven verloren
@@ -670,6 +693,7 @@ function draw() {
   // ✅ Teken bal (alleen als deze nog leeft)
   ctx.drawImage(ballImg, ball.x, ball.y, ball.radius * 2, ball.radius * 2);
 });
+
 
  // Paddle bewegen
 if (rightPressed && paddleX < canvas.width - paddleWidth) {
