@@ -526,7 +526,7 @@ function checkRocketCollision() {
 
        
             if (hitSomething) {
-             // 🔊 Speel explosie-geluid
+             
              rocketExplosionSound.currentTime = 0;
               rocketExplosionSound.play();
 
@@ -689,7 +689,7 @@ balls.forEach((ball, index) => {
     ball.dx = speed * Math.sin(angle);
     ball.dy = -Math.abs(speed * Math.cos(angle));
 
-    // 🎯 Geluid bij paddle-botsing
+   
     wallSound.currentTime = 0;
     wallSound.play();
   }
@@ -721,7 +721,7 @@ balls.forEach((ball, index) => {
     return; // skip deze bal (hij is verwijderd)
   }
 
-  // ✅ Teken bal (alleen als deze nog leeft)
+  
   ctx.drawImage(ballImg, ball.x, ball.y, ball.radius * 2, ball.radius * 2);
 });
 
@@ -736,7 +736,7 @@ if (rightPressed && paddleX < canvas.width - paddleWidth) {
 
 
 
-// ✅ RAKET ACTIE EN TEKENING + EFFECTEN + DRAW LOOP
+
 if (rocketActive && !rocketFired && rocketAmmo > 0) {
   rocketX = paddleX + paddleWidth / 2 - 12;
   rocketY = canvas.height - paddleHeight - 48;
@@ -793,7 +793,6 @@ if (speedBoostActive && Date.now() - speedBoostStart >= speedBoostDuration) {
 smokeParticles = smokeParticles.filter(p => p.alpha > 0);
 
 
-// 🎯 Belangrijk: requestAnimationFrame moet als laatste
 requestAnimationFrame(draw);
 }
 
@@ -832,7 +831,7 @@ document.addEventListener("mousedown", function () {
     rocketFired = true;
     rocketAmmo--;
 
-    // 🔊 Speel afvuurgeluid
+    
     rocketLaunchSound.currentTime = 0;
     rocketLaunchSound.play();
   }
