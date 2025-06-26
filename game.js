@@ -358,7 +358,6 @@ function shootFromFlags() {
   }
 }
 
-
 function checkFlyingCoinHits() {
   flyingCoins.forEach((coin) => {
     if (!coin.active) return;
@@ -374,41 +373,43 @@ function checkFlyingCoinHits() {
           coin.y > b.y &&
           coin.y < b.y + brickHeight
         ) {
-        switch (b.type) {
-  case "power":
-    flagsOnPaddle = true;
-    flagTimer = Date.now();
-    break;
-  case "rocket":
-    rocketActive = true;
-    rocketAmmo += 3;
-    break;
-  case "doubleball":
-    spawnExtraBall(balls[0]);
-    break;
-  case "2x":
-    doublePointsActive = true;
-    doublePointsStartTime = Date.now();
-    break;
-  case "speed":
-    speedBoostActive = true;
-    speedBoostStart = Date.now();
-    break;
-}
+          // ➕ Activeer bonus indien van toepassing
+          switch (b.type) {
+            case "power":
+              flagsOnPaddle = true;
+              flagTimer = Date.now();
+              break;
+            case "rocket":
+              rocketActive = true;
+              rocketAmmo += 3;
+              break;
+            case "doubleball":
+              spawnExtraBall(balls[0]);
+              break;
+            case "2x":
+              doublePointsActive = true;
+              doublePointsStartTime = Date.now();
+              break;
+            case "speed":
+              speedBoostActive = true;
+              speedBoostStart = Date.now();
+              break;
+          }
 
+          // ❌ Blok uitschakelen
           b.status = 0;
           b.type = "normal";
-          coin.active = false;
 
+          // 🪙 Puntentelling en feedback
           const earned = doublePointsActive ? 20 : 10;
           score += earned;
           document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
 
-          // 🎵 Speel geld-geluid
+          // 💰 Speel munt-geluid
           coinSound.currentTime = 0;
           coinSound.play();
 
-          // 💬 ✨ Toon gouden popup precies op muntpositie
+          // ✨ Punt-popup laten zien
           pointPopups.push({
             x: coin.x,
             y: coin.y,
@@ -416,12 +417,16 @@ function checkFlyingCoinHits() {
             alpha: 1
           });
 
+          // 🧹 Zet muntje uit
+          coin.active = false;
+
           return;
         }
       }
     }
   });
 }
+
 
 
   
