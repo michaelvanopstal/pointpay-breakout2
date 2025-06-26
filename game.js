@@ -591,8 +591,7 @@ function collisionDetection() {
 
           // Muntje spawnen met geluid
           spawnCoin(b.x, b.y);
-          coinSound.currentTime = 0;
-          coinSound.play();
+          
         }
       }
     }
