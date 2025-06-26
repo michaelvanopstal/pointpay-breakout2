@@ -35,11 +35,14 @@ let imagesLoaded = 0;
 
 const adMessages = [
   "Circulating supply 30M PXP.",
-  "Total Supply 100M PXP",
+  "Total Supply 100M PXP.",
   "Max Supply 100M PXP."
 ];
+
 let currentAdText = adMessages[0];
 let showAdText = true;
+let adScrollX = 0;
+let adScrollSpeed = 1.2; // snelheid in pixels per frame
 
 let speedBoostActive = false;
 let speedBoostStart = 0;
@@ -323,6 +326,8 @@ function drawPaddleFlags() {
     flagsOnPaddle = false;
   }
 }
+
+
 function shootFromFlags() {
   const coinSpeed = 8;
 
@@ -754,11 +759,20 @@ if (speedBoostActive && Date.now() - speedBoostStart >= speedBoostDuration) {
   speedBoostActive = false;
 }
 
-  smokeParticles = smokeParticles.filter(p => p.alpha > 0);
+smokeParticles = smokeParticles.filter(p => p.alpha > 0);
 
-  // Volgende frame
+
+adScrollX -= adScrollSpeed;
+if (ctx.measureText(currentAdText).width + adScrollX < 0) {
+  adScrollX = paddleWidth;
+  adIndex = (adIndex + 1) % adMessages.length;
+  currentAdText = adMessages[adIndex];
+}
+
+// 🎯 Belangrijk: requestAnimationFrame moet als laatste
 requestAnimationFrame(draw);
 }
+
 
 
 
@@ -786,12 +800,6 @@ shootCoinImg.onload = onImageLoad;
 speedImg.onload = onImageLoad;
 pointpayPaddleImg.onload = onImageLoad;
 
-
-let adIndex = 0;
-setInterval(() => {
-  adIndex = (adIndex + 1) % adMessages.length;
-  currentAdText = adMessages[adIndex];
-}, 4000); // elke 4 seconden wisselen
 
 
 
