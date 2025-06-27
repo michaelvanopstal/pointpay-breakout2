@@ -72,6 +72,9 @@ const bonusBricks = [
   { col: 6, row: 7, type: "stone" },
 ];
 
+
+const paddleExplodeSound = new Audio("paddle_explode.mp3");
+
 const doubleBallSound = new Audio("double_ball.mp3");
 const speedBoostSound = new Audio("speed_boost.mp3");
 const rocketReadySound = new Audio("rocket_ready.mp3");
