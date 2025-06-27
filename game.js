@@ -59,9 +59,9 @@ const bonusBricks = [
   { col: 2, row: 9, type: "doubleball" },
   { col: 4, row: 7, type: "2x" },
   { col: 5, row: 10, type: "speed" },
-  { col: 4, row: 13, type: "stone" },
-  { col: 5, row: 13, type: "stone" },
-  { col: 6, row: 13, type: "stone" },
+  { col: 4, row: 14, type: "stone" },
+  { col: 5, row: 14, type: "stone" },
+  { col: 6, row: 14, type: "stone" },
 ];
 
 const bricksSound = new Audio("bricks.mp3");
