@@ -299,16 +299,11 @@ function resetBricks() {
     for (let r = 0; r < brickRowCount; r++) {
       bricks[c][r].status = 1;
 
-      // Haal bonusinfo op
+      // Haal bonusinfo op (inclusief eventueel "stone")
       const bonus = bonusBricks.find(b => b.col === c && b.row === r);
-      let brickType = bonus ? bonus.type : "normal";
+      const brickType = bonus ? bonus.type : "normal";
 
-      // Handmatig stenen blokken plaatsen op rij 2, kolommen 4 t/m 6
-      if (r === 2 && (c === 4 || c === 5 || c === 6)) {
-        brickType = "stone";
-      }
-
-      // Type updaten
+      // Type instellen
       bricks[c][r].type = brickType;
 
       // Extra eigenschappen voor stone blokken
@@ -322,6 +317,7 @@ function resetBricks() {
     }
   }
 }
+
 
 
 
