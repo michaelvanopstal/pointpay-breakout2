@@ -54,7 +54,6 @@ balls.push({
 
 
 const bonusBricks = [
- 
   { col: 6, row: 8, type: "rocket" },
   { col: 8, row: 6, type: "power" },
   { col: 2, row: 9, type: "doubleball" },
@@ -63,8 +62,8 @@ const bonusBricks = [
   { col: 4, row: 2, type: "stone" },
   { col: 5, row: 2, type: "stone" },
   { col: 6, row: 2, type: "stone" },
-
 ];
+
 
 const rocketLaunchSound = new Audio("launch.mp3");
 const rocketExplosionSound = new Audio("explosion.mp3"); // als dat de juiste is
