@@ -966,7 +966,7 @@ function onImageLoad() {
   imagesLoaded++;
   console.log("Afbeelding geladen:", imagesLoaded);
 
-  if (imagesLoaded === 17) {
+  if (imagesLoaded === 16) {
     draw();
   }
 }
