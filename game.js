@@ -1010,7 +1010,6 @@ document.addEventListener("mousedown", function () {
   }
 });
 
-// ✅ StartTimer-functie los hieronder
 function startTimer() {
   timerRunning = true;
   timerInterval = setInterval(() => {
