@@ -70,6 +70,12 @@ const bonusBricks = [
   { col: 6, row: 7, type: "stone" },
 ];
 
+const doubleBallSound = new Audio("double_ball.mp3");
+const speedBoostSound = new Audio("speed_boost.mp3");
+const rocketReadySound = new Audio("rocket_ready.mp3");
+const flagsActivatedSound = new Audio("flags_activated.mp3");
+const doublePointsSound = new Audio("double_points.mp3");
+
 const bricksSound = new Audio("bricks.mp3");
 const pxpBagSound = new Audio("pxpbagsound_mp3.mp3");
 
@@ -732,11 +738,9 @@ function collisionDetection() {
           ball.y > b.y &&
           ball.y < b.y + brickHeight
         ) {
-          // 🎯 Speel blok-geluid
           blockSound.currentTime = 0;
           blockSound.play();
 
-          // Richting van bal omkeren
           ball.dy = -ball.dy;
           if (ball.dy < 0) {
             ball.y = b.y - ball.radius - 1;
@@ -744,9 +748,8 @@ function collisionDetection() {
             ball.y = b.y + brickHeight + ball.radius + 1;
           }
 
-          // 🪨 Speciaal gedrag voor "stone" blokken
+          // 🪨 Gedrag voor stenen blokken
           if (b.type === "stone") {
-            // 🎵 Speel stenen blok-geluid
             bricksSound.currentTime = 0;
             bricksSound.play();
 
@@ -756,7 +759,7 @@ function collisionDetection() {
               spawnCoin(b.x + brickWidth / 2, b.y);
             }
 
-            if (b.hits === 3) {
+            if (b.hits >= 3) {
               b.status = 0;
 
               if (!b.hasDroppedBag) {
@@ -776,42 +779,45 @@ function collisionDetection() {
               });
             }
 
-            return; // Stop hier, zodat andere logica niet wordt uitgevoerd
+            return;
           }
 
-          // ➕ Activeer bonus indien van toepassing
+          // 🎁 Bonusacties met geluid
           switch (b.type) {
             case "power":
+            case "flags":
               flagsOnPaddle = true;
               flagTimer = Date.now();
+              flagsActivatedSound.play();
               break;
             case "rocket":
               rocketActive = true;
               rocketAmmo = 3;
+              rocketReadySound.play();
               break;
             case "doubleball":
               spawnExtraBall(ball);
+              doubleBallSound.play();
               break;
             case "2x":
               doublePointsActive = true;
               doublePointsStartTime = Date.now();
+              doublePointsSound.play();
               break;
             case "speed":
               speedBoostActive = true;
               speedBoostStart = Date.now();
+              speedBoostSound.play();
               break;
           }
 
-          // Normaal blok verwijderen
           b.status = 0;
           b.type = "normal";
 
-          // Score verhogen
           const earned = doublePointsActive ? 20 : 10;
           score += earned;
           document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
 
-          // 💰 Muntje spawnen
           spawnCoin(b.x, b.y);
         }
       }
