@@ -194,11 +194,20 @@ setInterval(() => animateFlyer("balloonFlyer", 30000, 0), 30000);
   let currentTrackIndex = 0;
   let musicPlaying = false;
 
-  albumTracks.forEach(track => track.loop = false);
-
+  // 🔁 Zorg dat elke track zichzelf pas reset als die eindigt
   albumTracks.forEach((track, index) => {
+    track.loop = false;
+
     track.addEventListener("ended", () => {
       currentTrackIndex = (currentTrackIndex + 1) % albumTracks.length;
+
+      // Stop alle andere tracks (zekerheid)
+      albumTracks.forEach(t => {
+        t.pause();
+        t.currentTime = 0;
+      });
+
+      // Speel de volgende track als muziek nog aanstaat
       if (musicPlaying) {
         albumTracks[currentTrackIndex].play();
       }
@@ -209,15 +218,24 @@ setInterval(() => animateFlyer("balloonFlyer", 30000, 0), 30000);
     musicPlaying = !musicPlaying;
 
     if (musicPlaying) {
+      // Stop alle andere tracks eerst
+      albumTracks.forEach(track => {
+        track.pause();
+        track.currentTime = 0;
+      });
+
       albumTracks[currentTrackIndex].play();
-      document.getElementById("musicToggle").textContent = "🔇 Music Off";
+      document.getElementById("musicToggle").textContent = "🔇 Stop Music";
     } else {
       albumTracks.forEach(track => {
         track.pause();
         track.currentTime = 0;
       });
-      document.getElementById("musicToggle").textContent = "🔊 Music On";
-      currentTrackIndex = 0;
+      document.getElementById("musicToggle").textContent = "🎵 Play Music";
+      currentTrackIndex = 0; // optioneel resetten naar begin
     }
+
+    // 🛡️ Haal focus van knop zodat toetsen werken
+    document.getElementById("musicToggle").blur();
   });
 </script>
