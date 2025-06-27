@@ -238,6 +238,7 @@ function mouseMoveHandler(e) {
   }
 }
 
+
 function drawBricks() {
   const totalBricksWidth = brickColumnCount * brickWidth;
   const offsetX = (canvas.width - totalBricksWidth) / 2;
@@ -251,7 +252,7 @@ function drawBricks() {
 
         b.x = brickX;
         b.y = brickY;
-         
+
         switch (b.type) {
           case "2x":
             ctx.drawImage(doublePointsImg, brickX, brickY, brickWidth, brickHeight);
@@ -268,16 +269,16 @@ function drawBricks() {
           case "speed":
             ctx.drawImage(speedImg, brickX, brickY, brickWidth, brickHeight);
             break;
-            case "stone":
+          case "stone":
             if (b.hits === 0) {
-            ctx.drawImage(stone1Img, brickX, brickY, brickWidth, brickHeight);
+              ctx.drawImage(stone1Img, brickX, brickY, brickWidth, brickHeight);
             } else if (b.hits === 1) {
-            ctx.drawImage(stone2Img, brickX, brickY, brickWidth, brickHeight);
+              ctx.drawImage(stone2Img, brickX, brickY, brickWidth, brickHeight);
             } else {
-            ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight);
+              ctx.drawImage(dollarPxpImg, brickX, brickY, brickWidth, brickHeight);
             }
             break;
-            default:
+          default:
             ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight);
             break;
         }
