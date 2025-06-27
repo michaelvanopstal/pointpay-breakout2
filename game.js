@@ -412,14 +412,45 @@ function checkFlyingCoinHits() {
       for (let r = 0; r < brickRowCount; r++) {
         const b = bricks[c][r];
 
-          if (
-            b.status === 1 &&
-            b.type !== "stone" &&
-            coin.x > b.x &&
-            coin.x < b.x + brickWidth &&
-            coin.y > b.y &&
-            coin.y < b.y + brickHeight
-            ) {
+        if (
+          b.status === 1 &&
+          coin.x > b.x &&
+          coin.x < b.x + brickWidth &&
+          coin.y > b.y &&
+          coin.y < b.y + brickHeight
+        ) {
+
+          // 🪨 Als het een stenen blok is
+          if (b.type === "stone") {
+            b.hits = (b.hits || 0) + 1;
+
+            if (b.hits === 1 || b.hits === 2) {
+              spawnCoin(b.x + brickWidth / 2, b.y);
+            }
+
+            if (b.hits >= 3) {
+              b.status = 0;
+
+              if (!b.hasDroppedBag) {
+                spawnPxpBag(b.x + brickWidth / 2, b.y + brickHeight);
+                b.hasDroppedBag = true;
+              }
+
+              const earned = doublePointsActive ? 120 : 60;
+              score += earned;
+              document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+
+              pointPopups.push({
+                x: b.x + brickWidth / 2,
+                y: b.y,
+                value: "+" + earned,
+                alpha: 1
+              });
+            }
+
+            coin.active = false;
+            return;
+          }
 
           // ➕ Activeer bonus indien van toepassing
           switch (b.type) {
@@ -474,6 +505,7 @@ function checkFlyingCoinHits() {
     }
   });
 }
+
 
 
 
@@ -561,6 +593,37 @@ function checkRocketCollision() {
           ) {
             const target = bricks[col][row];
 
+            // 🪨 Speciaal gedrag voor stenen blokken
+            if (target.type === "stone") {
+              target.hits = (target.hits || 0) + 1;
+
+              if (target.hits === 1 || target.hits === 2) {
+                spawnCoin(target.x + brickWidth / 2, target.y);
+              }
+
+              if (target.hits >= 3) {
+                target.status = 0;
+
+                if (!target.hasDroppedBag) {
+                  spawnPxpBag(target.x + brickWidth / 2, target.y + brickHeight);
+                  target.hasDroppedBag = true;
+                }
+
+                const earned = doublePointsActive ? 120 : 60;
+                score += earned;
+
+                pointPopups.push({
+                  x: target.x + brickWidth / 2,
+                  y: target.y,
+                  value: "+" + earned,
+                  alpha: 1
+                });
+              }
+
+              hitSomething = true;
+              return;
+            }
+
             // ➕ Activeer bonus als het een bonusblok is
             switch (target.type) {
               case "power":
@@ -576,6 +639,7 @@ function checkRocketCollision() {
                 break;
             }
 
+            // Normaal blok vernietigen
             target.status = 0;
             target.type = "normal";
             score += doublePointsActive ? 20 : 10;
@@ -583,27 +647,23 @@ function checkRocketCollision() {
           }
         });
 
-       
-            if (hitSomething) {
-             
-             rocketExplosionSound.currentTime = 0;
-              rocketExplosionSound.play();
+        if (hitSomething) {
+          rocketExplosionSound.currentTime = 0;
+          rocketExplosionSound.play();
 
-               document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
-               rocketFired = false;
+          document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+          rocketFired = false;
 
-               explosions.push({
-                x: rocketX + 12,
-                 y: rocketY,
-               radius: 10,
-               alpha: 1
-               });
-               } else {
-               rocketFired = false;
-              }
+          explosions.push({
+            x: rocketX + 12,
+            y: rocketY,
+            radius: 10,
+            alpha: 1
+          });
+        } else {
+          rocketFired = false;
+        }
 
-
-        // Stop bonus als ammo op is
         if (rocketAmmo <= 0) {
           rocketActive = false;
         }
