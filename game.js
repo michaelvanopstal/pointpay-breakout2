@@ -190,9 +190,9 @@ function keyDownHandler(e) {
   if (e.key === "Right" || e.key === "ArrowRight") rightPressed = true;
   else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = true;
 
-if ((e.key === "ArrowUp" || e.key === "Up") && !ballLaunched) {
-  ballLaunched = true;
-  ballMoving = true;
+if ((e.key === "ArrowUp" || e.key === "Up" || e.code === "Space") && !ballLaunched) {
+ ballLaunched = true;
+ ballMoving = true;
 
   // 🎯 Speel schiet-geluid af
   shootSound.currentTime = 0;
@@ -1096,14 +1096,30 @@ dollarPxpImg.onload = onImageLoad;
 
 
 document.addEventListener("mousedown", function () {
+  // 🔫 Raket afvuren
   if (rocketActive && rocketAmmo > 0 && !rocketFired) {
     rocketFired = true;
     rocketAmmo--;
-
     rocketLaunchSound.currentTime = 0;
     rocketLaunchSound.play();
   }
+
+  // 🎯 Bal afschieten met muisklik (trackpad)
+  if (!ballLaunched && !ballMoving) {
+    ballLaunched = true;
+    ballMoving = true;
+    shootSound.currentTime = 0;
+    shootSound.play();
+
+    balls[0].dx = 0;
+    balls[0].dy = -6;
+
+    if (!timerRunning) startTimer();
+    score = 0;
+    document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
+  }
 });
+
 
 function startTimer() {
   timerRunning = true;
