@@ -105,6 +105,9 @@ for (let c = 0; c < brickColumnCount; c++) {
   }
 }
 
+const dollarPxpImg = new Image();
+dollarPxpImg.src = "dollarpxp.png";
+
 
 const doubleBallImg = new Image();
 doubleBallImg.src = "2 balls.png";  // upload dit naar dezelfde map
@@ -977,7 +980,7 @@ pointpayPaddleImg.onload = onImageLoad;
 stone1Img.onload = onImageLoad;
 stone2Img.onload = onImageLoad;
 pxpBagImg.onload = onImageLoad;
-
+dollarPxpImg.onload = onImageLoad;
 
 
 document.addEventListener("mousedown", function () {
