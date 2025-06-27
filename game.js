@@ -399,13 +399,15 @@ function checkFlyingCoinHits() {
       for (let r = 0; r < brickRowCount; r++) {
         const b = bricks[c][r];
 
-        if (
-          b.status === 1 &&
-          coin.x > b.x &&
-          coin.x < b.x + brickWidth &&
-          coin.y > b.y &&
-          coin.y < b.y + brickHeight
-        ) {
+          if (
+            b.status === 1 &&
+            b.type !== "stone" &&
+            coin.x > b.x &&
+            coin.x < b.x + brickWidth &&
+            coin.y > b.y &&
+            coin.y < b.y + brickHeight
+            ) {
+
           // ➕ Activeer bonus indien van toepassing
           switch (b.type) {
             case "power":
