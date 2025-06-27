@@ -266,14 +266,14 @@ function drawBricks() {
             ctx.drawImage(speedImg, brickX, brickY, brickWidth, brickHeight);
             break;
           case "stone":
-            if (b.hits === 0) {
-              ctx.drawImage(stoneBlockImg1, brickX, brickY, brickWidth, brickHeight);
-            } else if (b.hits === 1) {
-              ctx.drawImage(stoneBlockImg2, brickX, brickY, brickWidth, brickHeight);
-            } else {
-              ctx.drawImage(pointpayBlockImg, brickX, brickY, brickWidth, brickHeight);
-            }
-            break;
+          if (b.hits === 0) {
+          ctx.drawImage(stenen1Img, brickX, brickY, brickWidth, brickHeight);
+          } else if (b.hits === 1) {
+          ctx.drawImage(stenen2Img, brickX, brickY, brickWidth, brickHeight);
+          } else {
+          ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight); // gebruik blockImg, geen pointpayBlockImg
+        }
+          break;
           default:
             ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight);
             break;
