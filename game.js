@@ -943,6 +943,9 @@ function draw() {
         flyingCoins = [];
         smokeParticles = [];
         explosions = [];
+        coins = [];       
+        pxpBags = [];     
+
 
         saveHighscore();
         resetBricks();
