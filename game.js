@@ -64,6 +64,8 @@ const bonusBricks = [
   { col: 6, row: 13, type: "stone" },
 ];
 
+const bricksSound = new Audio("bricks.mp3");
+const pxpBagSound = new Audio("pxpbagsound_mp3.mp3");
 
 const rocketLaunchSound = new Audio("launch.mp3");
 const rocketExplosionSound = new Audio("explosion.mp3"); // als dat de juiste is
@@ -678,6 +680,10 @@ function collisionDetection() {
 
           // 🪨 Speciaal gedrag voor "stone" blokken
           if (b.type === "stone") {
+            // 🎵 Speel stenen blok-geluid
+            bricksSound.currentTime = 0;
+            bricksSound.play();
+
             b.hits++;
 
             if (b.hits === 1 || b.hits === 2) {
@@ -746,6 +752,7 @@ function collisionDetection() {
     }
   });
 }
+
 
 
 function spawnExtraBall(originBall) {
@@ -930,28 +937,29 @@ function draw() {
     const bagBottom = bag.y + 40;
     const paddleTop = canvas.height - paddleHeight;
 
-    if (
-      bagBottom >= paddleTop &&
-      bagBottom <= canvas.height &&
-      bag.x > paddleX &&
-      bag.x < paddleX + paddleWidth
-    ) {
-      const earned = doublePointsActive ? 160 : 80;
-      score += earned;
-      document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+   if (
+  bagBottom >= paddleTop &&
+  bagBottom <= canvas.height &&
+  bag.x > paddleX &&
+  bag.x < paddleX + paddleWidth
+) {
+  pxpBagSound.currentTime = 0;
+  pxpBagSound.play(); // 🎵 Speel geluid als zakje wordt gevangen
 
-      pointPopups.push({
-        x: bag.x,
-        y: bag.y,
-        value: "+" + earned + " pxp",
-        alpha: 1
-      });
+  const earned = doublePointsActive ? 160 : 80;
+  score += earned;
+  document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
 
-      pxpBags.splice(i, 1);
-    } else if (bag.y > canvas.height) {
-      pxpBags.splice(i, 1);
-    }
-  }
+  pointPopups.push({
+    x: bag.x,
+    y: bag.y,
+    value: "+" + earned + " pxp",
+    alpha: 1
+  });
+
+  pxpBags.splice(i, 1);
+}
+
 
   smokeParticles = smokeParticles.filter(p => p.alpha > 0);
 
