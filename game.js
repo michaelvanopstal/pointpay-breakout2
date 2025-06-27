@@ -674,20 +674,31 @@ function collisionDetection() {
           if (b.type === "stone") {
             b.hits++;
 
+            if (b.hits === 1 || b.hits === 2) {
+              spawnCoin(b.x + brickWidth / 2, b.y);
+            }
+
             if (b.hits === 3) {
               b.status = 0;
-              b.type = "normal";
 
               if (!b.hasDroppedBag) {
                 spawnPxpBag(b.x + brickWidth / 2, b.y + brickHeight);
                 b.hasDroppedBag = true;
               }
 
-              score += doublePointsActive ? 160 : 80;
+              const earned = doublePointsActive ? 120 : 60;
+              score += earned;
               document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+
+              pointPopups.push({
+                x: b.x + brickWidth / 2,
+                y: b.y,
+                value: "+" + earned,
+                alpha: 1
+              });
             }
 
-            return; // Stop hier, zodat andere bonussen niet afgaan
+            return; // Stop hier, zodat andere logica niet wordt uitgevoerd
           }
 
           // ➕ Activeer bonus indien van toepassing
@@ -713,15 +724,16 @@ function collisionDetection() {
               break;
           }
 
-          // Blok verwijderen
+          // Normaal blok verwijderen
           b.status = 0;
           b.type = "normal";
 
           // Score verhogen
-          score += doublePointsActive ? 20 : 10;
+          const earned = doublePointsActive ? 20 : 10;
+          score += earned;
           document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
 
-          // 💰 Muntje spawnen (zonder geluid hier)
+          // 💰 Muntje spawnen
           spawnCoin(b.x, b.y);
         }
       }
