@@ -431,7 +431,6 @@ function checkFlyingCoinHits() {
           coin.y > b.y &&
           coin.y < b.y + brickHeight
         ) {
-
           // 🪨 Als het een stenen blok is
           if (b.type === "stone") {
             b.hits = (b.hits || 0) + 1;
@@ -464,26 +463,32 @@ function checkFlyingCoinHits() {
             return;
           }
 
-          // ➕ Activeer bonus indien van toepassing
+          // 🎁 Activeer bonus indien van toepassing + geluid
           switch (b.type) {
             case "power":
+            case "flags":
               flagsOnPaddle = true;
               flagTimer = Date.now();
+              flagsActivatedSound.play();
               break;
             case "rocket":
               rocketActive = true;
               rocketAmmo += 3;
+              rocketReadySound.play();
               break;
             case "doubleball":
               spawnExtraBall(balls[0]);
+              doubleBallSound.play();
               break;
             case "2x":
               doublePointsActive = true;
               doublePointsStartTime = Date.now();
+              doublePointsSound.play();
               break;
             case "speed":
               speedBoostActive = true;
               speedBoostStart = Date.now();
+              speedBoostSound.play();
               break;
           }
 
@@ -510,7 +515,6 @@ function checkFlyingCoinHits() {
 
           // 🧹 Zet muntje uit
           coin.active = false;
-
           return;
         }
       }
@@ -582,12 +586,13 @@ function checkRocketCollision() {
     for (let r = 0; r < brickRowCount; r++) {
       let b = bricks[c][r];
 
-      if (b.status === 1 &&
-          rocketX + 12 > b.x &&
-          rocketX + 12 < b.x + brickWidth &&
-          rocketY < b.y + brickHeight &&
-          rocketY + 48 > b.y) {
-
+      if (
+        b.status === 1 &&
+        rocketX + 12 > b.x &&
+        rocketX + 12 < b.x + brickWidth &&
+        rocketY < b.y + brickHeight &&
+        rocketY + 48 > b.y
+      ) {
         let hitSomething = false;
 
         const targets = [
@@ -605,7 +610,7 @@ function checkRocketCollision() {
           ) {
             const target = bricks[col][row];
 
-            // 🪨 Speciaal gedrag voor stenen blokken
+            // 🪨 Gedrag voor stenen blokken
             if (target.type === "stone") {
               target.hits = (target.hits || 0) + 1;
 
@@ -636,22 +641,35 @@ function checkRocketCollision() {
               return;
             }
 
-            // ➕ Activeer bonus als het een bonusblok is
+            // 🎁 Bonusacties + geluid
             switch (target.type) {
               case "power":
+              case "flags":
                 flagsOnPaddle = true;
                 flagTimer = Date.now();
+                flagsActivatedSound.play();
                 break;
               case "rocket":
                 rocketActive = true;
                 rocketAmmo += 3;
+                rocketReadySound.play();
                 break;
               case "doubleball":
-                spawnExtraBall(balls[0]); // neem eerste bal als basis
+                spawnExtraBall(balls[0]);
+                doubleBallSound.play();
+                break;
+              case "2x":
+                doublePointsActive = true;
+                doublePointsStartTime = Date.now();
+                doublePointsSound.play();
+                break;
+              case "speed":
+                speedBoostActive = true;
+                speedBoostStart = Date.now();
+                speedBoostSound.play();
                 break;
             }
 
-            // Normaal blok vernietigen
             target.status = 0;
             target.type = "normal";
             score += doublePointsActive ? 20 : 10;
@@ -685,6 +703,7 @@ function checkRocketCollision() {
     }
   }
 }
+
 
 
 function checkCoinCollision() {
