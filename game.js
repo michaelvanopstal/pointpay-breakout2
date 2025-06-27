@@ -288,16 +288,23 @@ function drawBricks() {
 }
 
 function drawPointPopups() {
-  pointPopups.forEach(p => {
-    ctx.font = "bold 24px Arial";
-    ctx.fillStyle = `rgba(255, 215, 0, ${p.alpha})`; // goudkleurig + fading
+  pointPopups.forEach((p, index) => {
+    ctx.globalAlpha = p.alpha;
+    ctx.fillStyle = "#ffffff"; // of "#ffd700" voor goud
+    ctx.font = "bold 18px Arial";
+    ctx.textAlign = "center";
     ctx.fillText(p.value, p.x, p.y);
-    p.y -= 1;
-    p.alpha -= 0.02;
+
+    // Animeren
+    p.y -= 0.5;
+    p.alpha -= 0.01;
+
+    if (p.alpha <= 0) {
+      pointPopups.splice(index, 1);
+    }
   });
 
-  // Verwijder vervaagde popups
-  pointPopups = pointPopups.filter(p => p.alpha > 0);
+  ctx.globalAlpha = 1; // Transparantie resetten
 }
 
 
@@ -613,7 +620,7 @@ function checkCoinCollision() {
     const coinBottom = coin.y + coin.radius;
     const paddleTop = canvas.height - paddleHeight;
 
-   
+    // Paddle vangt muntje
     if (
       coinBottom >= paddleTop &&
       coinBottom <= canvas.height &&
@@ -632,19 +639,17 @@ function checkCoinCollision() {
       pointPopups.push({
         x: coin.x,
         y: coin.y,
-        value: "+" + earned,
+        value: "+" + earned + " pxp",
         alpha: 1
       });
     }
 
+    // Coin valt uit beeld zonder vangst
     else if (coinBottom > canvas.height) {
       coin.active = false;
     }
   });
 }
-
-
-
 
 function collisionDetection() {
   balls.forEach(ball => {
@@ -786,183 +791,173 @@ function draw() {
   drawPointPopups();
 
   if (doublePointsActive && Date.now() - doublePointsStartTime > doublePointsDuration) {
-  doublePointsActive = false;
-}
-balls.forEach((ball, index) => {
-  // Verplaats bal (met eventuele slow-motion)
-  if (ballLaunched) {
-    let speedMultiplier = (speedBoostActive && Date.now() - speedBoostStart < speedBoostDuration)
-      ? speedBoostMultiplier
-      : 1;
-    ball.x += ball.dx * speedMultiplier;
-    ball.y += ball.dy * speedMultiplier;
-  } else {
-    ball.x = paddleX + paddleWidth / 2 - ballRadius;
-    ball.y = canvas.height - paddleHeight - ballRadius * 2;
+    doublePointsActive = false;
   }
 
-  // Muurbotsing
-  if (ball.x < ball.radius || ball.x > canvas.width - ball.radius) {
-    ball.dx *= -1;
-    wallSound.currentTime = 0;
-    wallSound.play();
-  }
-  if (ball.y < ball.radius) {
-    ball.dy *= -1;
-    wallSound.currentTime = 0;
-    wallSound.play();
-  }
-
-  // Paddle-botsing
-  if (
-    ball.y + ball.dy > canvas.height - paddleHeight - ball.radius &&
-    ball.y + ball.dy < canvas.height + 2 &&
-    ball.x + ball.radius > paddleX &&
-    ball.x - ball.radius < paddleX + paddleWidth
-  ) {
-    const hitPos = (ball.x - paddleX) / paddleWidth;
-    const angle = (hitPos - 0.5) * Math.PI / 2;
-    const speed = Math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy);
-    ball.dx = speed * Math.sin(angle);
-    ball.dy = -Math.abs(speed * Math.cos(angle));
-
-   
-    wallSound.currentTime = 0;
-    wallSound.play();
-  }
-
-  // Bal uit beeld → leven verloren
-  if (ball.y + ball.dy > canvas.height) {
-    balls.splice(index, 1);
-
-    if (balls.length === 0) {
-      // 🔁 Reset bonussen en tijdelijke effecten
-      speedBoostActive = false;
-      doublePointsActive = false;
-      flagsOnPaddle = false;
-      rocketActive = false;
-      rocketFired = false;
-      rocketAmmo = 0;
-      flyingCoins = [];
-      smokeParticles = [];
-      explosions = [];
-
-      saveHighscore();
-      resetBricks();
-      resetBall();
-      return; // stop de draw-loop (wordt opnieuw gestart)
-    } else if (ball.isMain) {
-      balls[0].isMain = true;
+  balls.forEach((ball, index) => {
+    if (ballLaunched) {
+      let speedMultiplier = (speedBoostActive && Date.now() - speedBoostStart < speedBoostDuration)
+        ? speedBoostMultiplier : 1;
+      ball.x += ball.dx * speedMultiplier;
+      ball.y += ball.dy * speedMultiplier;
+    } else {
+      ball.x = paddleX + paddleWidth / 2 - ballRadius;
+      ball.y = canvas.height - paddleHeight - ballRadius * 2;
     }
 
-    return; // skip deze bal (hij is verwijderd)
-  }
+    if (ball.x < ball.radius || ball.x > canvas.width - ball.radius) {
+      ball.dx *= -1;
+      wallSound.currentTime = 0;
+      wallSound.play();
+    }
+    if (ball.y < ball.radius) {
+      ball.dy *= -1;
+      wallSound.currentTime = 0;
+      wallSound.play();
+    }
 
-  
-  ctx.drawImage(ballImg, ball.x, ball.y, ball.radius * 2, ball.radius * 2);
-});
+    if (
+      ball.y + ball.dy > canvas.height - paddleHeight - ball.radius &&
+      ball.y + ball.dy < canvas.height + 2 &&
+      ball.x + ball.radius > paddleX &&
+      ball.x - ball.radius < paddleX + paddleWidth
+    ) {
+      const hitPos = (ball.x - paddleX) / paddleWidth;
+      const angle = (hitPos - 0.5) * Math.PI / 2;
+      const speed = Math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy);
+      ball.dx = speed * Math.sin(angle);
+      ball.dy = -Math.abs(speed * Math.cos(angle));
 
+      wallSound.currentTime = 0;
+      wallSound.play();
+    }
 
- // Paddle bewegen
-if (rightPressed && paddleX < canvas.width - paddleWidth) {
-  paddleX += 7;
-} else if (leftPressed && paddleX > 0) {
-  paddleX -= 7;
-}
+    if (ball.y + ball.dy > canvas.height) {
+      balls.splice(index, 1);
 
+      if (balls.length === 0) {
+        speedBoostActive = false;
+        doublePointsActive = false;
+        flagsOnPaddle = false;
+        rocketActive = false;
+        rocketFired = false;
+        rocketAmmo = 0;
+        flyingCoins = [];
+        smokeParticles = [];
+        explosions = [];
 
+        saveHighscore();
+        resetBricks();
+        resetBall();
+        return;
+      } else if (ball.isMain) {
+        balls[0].isMain = true;
+      }
 
+      return;
+    }
 
-
-if (rocketActive && !rocketFired && rocketAmmo > 0) {
-  rocketX = paddleX + paddleWidth / 2 - 12;
-  rocketY = canvas.height - paddleHeight - 48;
-  ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
-}
-
-if (rocketFired) {
-  rocketY -= rocketSpeed;
-
-  smokeParticles.push({
-    x: rocketX + 15,
-    y: rocketY + 65,
-    radius: Math.random() * 6 + 4,
-    alpha: 1
+    ctx.drawImage(ballImg, ball.x, ball.y, ball.radius * 2, ball.radius * 2);
   });
 
-  if (rocketY < -48) {
-    rocketFired = false;
-    if (rocketAmmo <= 0) {
-      rocketActive = false;
-    }
-  } else {
+  // Paddle bewegen
+  if (rightPressed && paddleX < canvas.width - paddleWidth) {
+    paddleX += 7;
+  } else if (leftPressed && paddleX > 0) {
+    paddleX -= 7;
+  }
+
+  if (rocketActive && !rocketFired && rocketAmmo > 0) {
+    rocketX = paddleX + paddleWidth / 2 - 12;
+    rocketY = canvas.height - paddleHeight - 48;
     ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
-    checkRocketCollision();
   }
-}
 
-// Explosies tekenen
-explosions.forEach(e => {
-  ctx.beginPath();
-  ctx.arc(e.x, e.y, e.radius, 0, Math.PI * 2);
-  ctx.fillStyle = `rgba(255, 165, 0, ${e.alpha})`;
-  ctx.fill();
-  e.radius += 2;
-  e.alpha -= 0.05;
-});
-explosions = explosions.filter(e => e.alpha > 0);
+  if (rocketFired) {
+    rocketY -= rocketSpeed;
 
-// Rook tekenen
-smokeParticles.forEach(p => {
-  ctx.beginPath();
-  ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-  ctx.fillStyle = `rgba(150, 150, 150, ${p.alpha})`;
-  ctx.fill();
-  p.y += 1;
-  p.radius += 0.3;
-  p.alpha -= 0.02;
-});
-  
-if (speedBoostActive && Date.now() - speedBoostStart >= speedBoostDuration) {
-  speedBoostActive = false;
-}
-// Zakjes tekenen en vangen
-for (let i = pxpBags.length - 1; i >= 0; i--) {
-  let bag = pxpBags[i];
-  bag.y += bag.dy;
-
-  // Zakje tekenen
-  ctx.drawImage(pxpBagImg, bag.x - 20, bag.y, 40, 40);
-
-  // Vangst door paddle
-  if (
-    bag.y + 40 >= canvas.height - paddleHeight &&
-    bag.x > paddleX &&
-    bag.x < paddleX + paddleWidth
-  ) {
-    pxpBags.splice(i, 1);
-    score += doublePointsActive ? 160 : 80;
-
-    document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
-
-    pointPopups.push({
-      text: "+80 pxp",
-      x: bag.x,
-      y: bag.y,
-      alpha: 1.0
+    smokeParticles.push({
+      x: rocketX + 15,
+      y: rocketY + 65,
+      radius: Math.random() * 6 + 4,
+      alpha: 1
     });
+
+    if (rocketY < -48) {
+      rocketFired = false;
+      if (rocketAmmo <= 0) {
+        rocketActive = false;
+      }
+    } else {
+      ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
+      checkRocketCollision();
+    }
   }
-  // Zakje valt uit beeld
-  else if (bag.y > canvas.height) {
-    pxpBags.splice(i, 1);
+
+  // Explosies tekenen
+  explosions.forEach(e => {
+    ctx.beginPath();
+    ctx.arc(e.x, e.y, e.radius, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255, 165, 0, ${e.alpha})`;
+    ctx.fill();
+    e.radius += 2;
+    e.alpha -= 0.05;
+  });
+  explosions = explosions.filter(e => e.alpha > 0);
+
+  // Rook tekenen
+  smokeParticles.forEach(p => {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(150, 150, 150, ${p.alpha})`;
+    ctx.fill();
+    p.y += 1;
+    p.radius += 0.3;
+    p.alpha -= 0.02;
+  });
+
+  if (speedBoostActive && Date.now() - speedBoostStart >= speedBoostDuration) {
+    speedBoostActive = false;
   }
+
+  // Zakjes tekenen en vangen
+  for (let i = pxpBags.length - 1; i >= 0; i--) {
+    let bag = pxpBags[i];
+    bag.y += bag.dy;
+
+    ctx.drawImage(pxpBagImg, bag.x - 20, bag.y, 40, 40);
+
+    const bagBottom = bag.y + 40;
+    const paddleTop = canvas.height - paddleHeight;
+
+    if (
+      bagBottom >= paddleTop &&
+      bagBottom <= canvas.height &&
+      bag.x > paddleX &&
+      bag.x < paddleX + paddleWidth
+    ) {
+      const earned = doublePointsActive ? 160 : 80;
+      score += earned;
+      document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+
+      pointPopups.push({
+        x: bag.x,
+        y: bag.y,
+        value: "+" + earned + " pxp",
+        alpha: 1
+      });
+
+      pxpBags.splice(i, 1);
+    } else if (bag.y > canvas.height) {
+      pxpBags.splice(i, 1);
+    }
+  }
+
+  smokeParticles = smokeParticles.filter(p => p.alpha > 0);
+
+  requestAnimationFrame(draw);
 }
 
-smokeParticles = smokeParticles.filter(p => p.alpha > 0);
-
-
-requestAnimationFrame(draw);
-}
 
 
 
