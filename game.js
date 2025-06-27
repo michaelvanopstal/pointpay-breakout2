@@ -290,7 +290,7 @@ function drawBricks() {
 function drawPointPopups() {
   pointPopups.forEach((p, index) => {
     ctx.globalAlpha = p.alpha;
-    ctx.fillStyle = "#ffffff"; // of "#ffd700" voor goud
+    ctx.fillStyle = `rgba(255, 215, 0, ${p.alpha})`; // ✅ goudkleurig
     ctx.font = "bold 18px Arial";
     ctx.textAlign = "center";
     ctx.fillText(p.value, p.x, p.y);
