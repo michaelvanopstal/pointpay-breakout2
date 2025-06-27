@@ -34,6 +34,7 @@ let pointPopups = []; // voor 10+ of 20+ bij muntjes
 let pxpBags = [];
 let paddleExploding = false;
 let paddleExplosionParticles = [];
+let stoneDebris = [];
 
 
 
@@ -442,6 +443,18 @@ function checkFlyingCoinHits() {
           if (b.type === "stone") {
             b.hits = (b.hits || 0) + 1;
 
+            // 🔸 Steenpuin toevoegen
+            for (let i = 0; i < 5; i++) {
+              stoneDebris.push({
+                x: b.x + brickWidth / 2,
+                y: b.y + brickHeight / 2,
+                dx: (Math.random() - 0.5) * 3,
+                dy: (Math.random() - 0.5) * 3,
+                radius: Math.random() * 2 + 1,
+                alpha: 1
+              });
+            }
+
             if (b.hits === 1 || b.hits === 2) {
               spawnCoin(b.x + brickWidth / 2, b.y);
             }
@@ -499,20 +512,16 @@ function checkFlyingCoinHits() {
               break;
           }
 
-          // ❌ Blok uitschakelen
           b.status = 0;
           b.type = "normal";
 
-          // 🪙 Puntentelling en feedback
           const earned = doublePointsActive ? 20 : 10;
           score += earned;
           document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
 
-          // 💰 Speel munt-geluid
           coinSound.currentTime = 0;
           coinSound.play();
 
-          // ✨ Punt-popup laten zien
           pointPopups.push({
             x: coin.x,
             y: coin.y,
@@ -520,7 +529,6 @@ function checkFlyingCoinHits() {
             alpha: 1
           });
 
-          // 🧹 Zet muntje uit
           coin.active = false;
           return;
         }
@@ -528,7 +536,6 @@ function checkFlyingCoinHits() {
     }
   });
 }
-
 
 
 
@@ -620,6 +627,18 @@ function checkRocketCollision() {
             // 🪨 Gedrag voor stenen blokken
             if (target.type === "stone") {
               target.hits = (target.hits || 0) + 1;
+
+              // 🔸 Puin toevoegen
+              for (let i = 0; i < 5; i++) {
+                stoneDebris.push({
+                  x: target.x + brickWidth / 2,
+                  y: target.y + brickHeight / 2,
+                  dx: (Math.random() - 0.5) * 3,
+                  dy: (Math.random() - 0.5) * 3,
+                  radius: Math.random() * 2 + 1,
+                  alpha: 1
+                });
+              }
 
               if (target.hits === 1 || target.hits === 2) {
                 spawnCoin(target.x + brickWidth / 2, target.y);
@@ -713,6 +732,7 @@ function checkRocketCollision() {
 
 
 
+
 function checkCoinCollision() {
   coins.forEach(coin => {
     if (!coin.active) return;
@@ -780,6 +800,18 @@ function collisionDetection() {
             bricksSound.play();
 
             b.hits++;
+
+            // 🧱 Puin genereren
+            for (let i = 0; i < 5; i++) {
+              stoneDebris.push({
+                x: b.x + brickWidth / 2,
+                y: b.y + brickHeight / 2,
+                dx: (Math.random() - 0.5) * 3,
+                dy: (Math.random() - 0.5) * 3,
+                radius: Math.random() * 2 + 1,
+                alpha: 1
+              });
+            }
 
             if (b.hits === 1 || b.hits === 2) {
               spawnCoin(b.x + brickWidth / 2, b.y);
@@ -850,7 +882,6 @@ function collisionDetection() {
     }
   });
 }
-
 
 
 function spawnExtraBall(originBall) {
@@ -1053,7 +1084,7 @@ for (let i = pxpBags.length - 1; i >= 0; i--) {
   }
 }
 
-  // 🎇 Paddle-explosie tekenen
+// 🎇 Paddle-explosie tekenen
 if (paddleExploding) {
   paddleExplosionParticles.forEach(p => {
     ctx.beginPath();
@@ -1068,11 +1099,24 @@ if (paddleExploding) {
   paddleExplosionParticles = paddleExplosionParticles.filter(p => p.alpha > 0);
 }
 
+// 🧱 Steenpuin tekenen – altijd uitvoeren
+stoneDebris.forEach(p => {
+  ctx.beginPath();
+  ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+  ctx.fillStyle = `rgba(140, 120, 100, ${p.alpha})`; // Bruin-grijze kleur
+  ctx.fill();
+  p.x += p.dx;
+  p.y += p.dy;
+  p.alpha -= 0.02;
+});
+stoneDebris = stoneDebris.filter(p => p.alpha > 0);
+
 // Extra updates onderaan draw()
 smokeParticles = smokeParticles.filter(p => p.alpha > 0);
 
 requestAnimationFrame(draw);
 } // ⬅️ Deze sluit de draw() functie correct af
+
 
 
 
@@ -1145,6 +1189,22 @@ function startTimer() {
     document.getElementById("timeDisplay").textContent = "time " + minutes + ":" + seconds;
   }, 1000);
 }
+
+
+function spawnStoneDebris(x, y) {
+  for (let i = 0; i < 8; i++) {
+    stoneDebris.push({
+      x: x,
+      y: y,
+      dx: (Math.random() - 0.5) * 6,
+      dy: (Math.random() - 0.5) * 6,
+      radius: Math.random() * 2 + 1,
+      alpha: 1
+    });
+  }
+}
+
+
 
 function triggerPaddleExplosion() {
   paddleExploding = true;
