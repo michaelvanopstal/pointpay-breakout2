@@ -967,6 +967,7 @@ function onImageLoad() {
   console.log("Afbeelding geladen:", imagesLoaded);
 
   if (imagesLoaded === 16) {
+    resetBricks();  // <-- deze toevoegen!
     draw();
   }
 }
