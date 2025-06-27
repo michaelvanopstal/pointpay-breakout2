@@ -143,14 +143,14 @@ speedImg.src = "speed.png";
 const pointpayPaddleImg = new Image();
 pointpayPaddleImg.src = "balkje.png";
 
-const stenen1Img = new Image();
-stenen1Img.src = "stenen1.png";
+const stone1Img = new Image();
+stone1Img.src = "stone1.png";
 
-const stenen2Img = new Image();
-stenen2Img.src = "stenen2.png";
+const stone2Img = new Image();
+stone2Img.src = "stone2.png";
 
 const pxpBagImg = new Image();
-pxpBagImg.src = "pxpbag.png";
+pxpBagImg.src = "pxp_bag.png"; // of "bag.png"
 
 
 let speedMultiplier = (speedBoostActive && Date.now() - speedBoostStart < speedBoostDuration) ? speedBoostMultiplier : 1.5;
