@@ -140,6 +140,14 @@ speedImg.src = "speed.png";
 const pointpayPaddleImg = new Image();
 pointpayPaddleImg.src = "balkje.png";
 
+const stenen1Img = new Image();
+stenen1Img.src = "stenen1.png";
+
+const stenen2Img = new Image();
+stenen2Img.src = "stenen2.png";
+
+const pxpBagImg = new Image();
+pxpBagImg.src = "pxpbag.png";
 
 
 let speedMultiplier = (speedBoostActive && Date.now() - speedBoostStart < speedBoostDuration) ? speedBoostMultiplier : 1.5;
@@ -946,7 +954,7 @@ function onImageLoad() {
   imagesLoaded++;
   console.log("Afbeelding geladen:", imagesLoaded);
 
-  if (imagesLoaded === 12) {
+  if (imagesLoaded === 15) {
     draw();
   }
 }
@@ -965,7 +973,9 @@ vlagImgRight.onload = onImageLoad;
 shootCoinImg.onload = onImageLoad;
 speedImg.onload = onImageLoad;
 pointpayPaddleImg.onload = onImageLoad;
-
+stenen1Img.onload = onImageLoad;
+stenen2Img.onload = onImageLoad;
+pxpBagImg.onload = onImageLoad;
 
 
 
