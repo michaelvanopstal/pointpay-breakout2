@@ -64,7 +64,11 @@ document.getElementById("musicToggle").addEventListener("click", () => {
     backgroundMusic.pause();
     document.getElementById("musicToggle").textContent = "🎵 Play Music";
   }
+
+  // 🎯 Belangrijk: zorg dat knop focus verliest zodat toetsen blijven werken
+  document.getElementById("musicToggle").blur();
 });
+
 
 
 
