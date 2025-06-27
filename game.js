@@ -31,6 +31,7 @@ let doublePointsStartTime = 0;
 let doublePointsDuration = 60000; // 1 minuut in millisecondenlet imagesLoaded = 0;
 let imagesLoaded = 0;
 let pointPopups = []; // voor 10+ of 20+ bij muntjes
+let pxpBags = [];
 
 
 
@@ -237,27 +238,34 @@ function drawBricks() {
         b.x = brickX;
         b.y = brickY;
          
-         switch (b.type) {
-         case "2x":
-         ctx.drawImage(doublePointsImg, brickX, brickY, brickWidth, brickHeight);
-         break;
-         case "rocket":
-         ctx.drawImage(powerBlock2Img, brickX, brickY, brickWidth, brickHeight);
-         break;
-         case "power":
-         ctx.drawImage(powerBlockImg, brickX, brickY, brickWidth, brickHeight);
-         break;
-         case "doubleball":
-         ctx.drawImage(doubleBallImg, brickX, brickY, brickWidth, brickHeight);
-         break;
-         default:
-         ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight);
-         break;
-         case "speed":
-         ctx.drawImage(speedImg, brickX, brickY, brickWidth, brickHeight);
-         break;
-
-        
+        switch (b.type) {
+          case "2x":
+            ctx.drawImage(doublePointsImg, brickX, brickY, brickWidth, brickHeight);
+            break;
+          case "rocket":
+            ctx.drawImage(powerBlock2Img, brickX, brickY, brickWidth, brickHeight);
+            break;
+          case "power":
+            ctx.drawImage(powerBlockImg, brickX, brickY, brickWidth, brickHeight);
+            break;
+          case "doubleball":
+            ctx.drawImage(doubleBallImg, brickX, brickY, brickWidth, brickHeight);
+            break;
+          case "speed":
+            ctx.drawImage(speedImg, brickX, brickY, brickWidth, brickHeight);
+            break;
+          case "stone":
+            if (b.hits === 0) {
+              ctx.drawImage(stoneBlockImg1, brickX, brickY, brickWidth, brickHeight);
+            } else if (b.hits === 1) {
+              ctx.drawImage(stoneBlockImg2, brickX, brickY, brickWidth, brickHeight);
+            } else {
+              ctx.drawImage(pointpayBlockImg, brickX, brickY, brickWidth, brickHeight);
+            }
+            break;
+          default:
+            ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight);
+            break;
         }
       }
     }
@@ -283,12 +291,30 @@ function resetBricks() {
     for (let r = 0; r < brickRowCount; r++) {
       bricks[c][r].status = 1;
 
-      // Bonusblok opnieuw instellen
+      // Haal bonusinfo op
       const bonus = bonusBricks.find(b => b.col === c && b.row === r);
-      bricks[c][r].type = bonus ? bonus.type : "normal";
+      let brickType = bonus ? bonus.type : "normal";
+
+      // Handmatig stenen blokken plaatsen op rij 2, kolommen 4 t/m 6
+      if (r === 2 && (c === 4 || c === 5 || c === 6)) {
+        brickType = "stone";
+      }
+
+      // Type updaten
+      bricks[c][r].type = brickType;
+
+      // Extra eigenschappen voor stone blokken
+      if (brickType === "stone") {
+        bricks[c][r].hits = 0;
+        bricks[c][r].hasDroppedBag = false;
+      } else {
+        delete bricks[c][r].hits;
+        delete bricks[c][r].hasDroppedBag;
+      }
     }
   }
 }
+
 
 
 function drawPaddle() {
@@ -626,13 +652,31 @@ function collisionDetection() {
 
           // Richting van bal omkeren
           ball.dy = -ball.dy;
-          // Voorkom dat de bal blijft hangen in blokje
           if (ball.dy < 0) {
-          ball.y = b.y - ball.radius - 1;
+            ball.y = b.y - ball.radius - 1;
           } else {
-          ball.y = b.y + brickHeight + ball.radius + 1;
-         }
+            ball.y = b.y + brickHeight + ball.radius + 1;
+          }
 
+          // 🪨 Speciaal gedrag voor "stone" blokken
+          if (b.type === "stone") {
+            b.hits++;
+
+            if (b.hits === 3) {
+              b.status = 0;
+              b.type = "normal";
+
+              if (!b.hasDroppedBag) {
+                spawnPxpBag(b.x + brickWidth / 2, b.y + brickHeight);
+                b.hasDroppedBag = true;
+              }
+
+              score += doublePointsActive ? 160 : 80;
+              document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+            }
+
+            return; // Stop hier, zodat andere bonussen niet afgaan
+          }
 
           // ➕ Activeer bonus indien van toepassing
           switch (b.type) {
@@ -660,7 +704,6 @@ function collisionDetection() {
           // Blok verwijderen
           b.status = 0;
           b.type = "normal";
-          
 
           // Score verhogen
           score += doublePointsActive ? 20 : 10;
@@ -690,6 +733,15 @@ function spawnExtraBall(originBall) {
     dy: -speed,
     radius: ballRadius,
     isMain: false
+  });
+}
+
+function spawnPxpBag(x, y) {
+  pxpBags.push({
+    x: x,
+    y: y,
+    dy: 2,
+    caught: false
   });
 }
 
@@ -848,6 +900,37 @@ smokeParticles.forEach(p => {
   
 if (speedBoostActive && Date.now() - speedBoostStart >= speedBoostDuration) {
   speedBoostActive = false;
+}
+// Zakjes tekenen en vangen
+for (let i = pxpBags.length - 1; i >= 0; i--) {
+  let bag = pxpBags[i];
+  bag.y += bag.dy;
+
+  // Zakje tekenen
+  ctx.drawImage(pxpBagImg, bag.x - 20, bag.y, 40, 40);
+
+  // Vangst door paddle
+  if (
+    bag.y + 40 >= canvas.height - paddleHeight &&
+    bag.x > paddleX &&
+    bag.x < paddleX + paddleWidth
+  ) {
+    pxpBags.splice(i, 1);
+    score += doublePointsActive ? 160 : 80;
+
+    document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+
+    pointPopups.push({
+      text: "+80 pxp",
+      x: bag.x,
+      y: bag.y,
+      alpha: 1.0
+    });
+  }
+  // Zakje valt uit beeld
+  else if (bag.y > canvas.height) {
+    pxpBags.splice(i, 1);
+  }
 }
 
 smokeParticles = smokeParticles.filter(p => p.alpha > 0);
