@@ -924,49 +924,50 @@ function draw() {
   });
 
   if (speedBoostActive && Date.now() - speedBoostStart >= speedBoostDuration) {
-    speedBoostActive = false;
+  speedBoostActive = false;
+}
+
+// Zakjes tekenen en vangen
+for (let i = pxpBags.length - 1; i >= 0; i--) {
+  let bag = pxpBags[i];
+  bag.y += bag.dy;
+
+  ctx.drawImage(pxpBagImg, bag.x - 20, bag.y, 40, 40);
+
+  const bagBottom = bag.y + 40;
+  const paddleTop = canvas.height - paddleHeight;
+
+  if (
+    bagBottom >= paddleTop &&
+    bagBottom <= canvas.height &&
+    bag.x > paddleX &&
+    bag.x < paddleX + paddleWidth
+  ) {
+    pxpBagSound.currentTime = 0;
+    pxpBagSound.play(); // 🎵 Speel geluid als zakje wordt gevangen
+
+    const earned = doublePointsActive ? 160 : 80;
+    score += earned;
+    document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+
+    pointPopups.push({
+      x: bag.x,
+      y: bag.y,
+      value: "+" + earned + " pxp",
+      alpha: 1
+    });
+
+    pxpBags.splice(i, 1);
+  } else if (bag.y > canvas.height) {
+    pxpBags.splice(i, 1);
   }
-
-  // Zakjes tekenen en vangen
-  for (let i = pxpBags.length - 1; i >= 0; i--) {
-    let bag = pxpBags[i];
-    bag.y += bag.dy;
-
-    ctx.drawImage(pxpBagImg, bag.x - 20, bag.y, 40, 40);
-
-    const bagBottom = bag.y + 40;
-    const paddleTop = canvas.height - paddleHeight;
-
-   if (
-  bagBottom >= paddleTop &&
-  bagBottom <= canvas.height &&
-  bag.x > paddleX &&
-  bag.x < paddleX + paddleWidth
-) {
-  pxpBagSound.currentTime = 0;
-  pxpBagSound.play(); // 🎵 Speel geluid als zakje wordt gevangen
-
-  const earned = doublePointsActive ? 160 : 80;
-  score += earned;
-  document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
-
-  pointPopups.push({
-    x: bag.x,
-    y: bag.y,
-    value: "+" + earned + " pxp",
-    alpha: 1
-  });
-
-  pxpBags.splice(i, 1);
 }
 
+// Extra updates onderaan draw()
+smokeParticles = smokeParticles.filter(p => p.alpha > 0);
 
-  smokeParticles = smokeParticles.filter(p => p.alpha > 0);
-
-  requestAnimationFrame(draw);
-}
-
-
+requestAnimationFrame(draw);
+} // ⬅️ Deze sluit de draw() functie correct af
 
 
 
