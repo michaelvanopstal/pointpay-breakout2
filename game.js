@@ -265,16 +265,16 @@ function drawBricks() {
           case "speed":
             ctx.drawImage(speedImg, brickX, brickY, brickWidth, brickHeight);
             break;
-          case "stone":
-          if (b.hits === 0) {
-          ctx.drawImage(stenen1Img, brickX, brickY, brickWidth, brickHeight);
-          } else if (b.hits === 1) {
-          ctx.drawImage(stenen2Img, brickX, brickY, brickWidth, brickHeight);
-          } else {
-          ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight); // gebruik blockImg, geen pointpayBlockImg
-        }
-          break;
-          default:
+            case "stone":
+            if (b.hits === 0) {
+            ctx.drawImage(stone1Img, brickX, brickY, brickWidth, brickHeight);
+            } else if (b.hits === 1) {
+            ctx.drawImage(stone2Img, brickX, brickY, brickWidth, brickHeight);
+            } else {
+            ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight);
+            }
+            break;
+            default:
             ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight);
             break;
         }
@@ -972,8 +972,8 @@ vlagImgRight.onload = onImageLoad;
 shootCoinImg.onload = onImageLoad;
 speedImg.onload = onImageLoad;
 pointpayPaddleImg.onload = onImageLoad;
-stenen1Img.onload = onImageLoad;
-stenen2Img.onload = onImageLoad;
+stone1Img.onload = onImageLoad;
+stone2Img.onload = onImageLoad;
 pxpBagImg.onload = onImageLoad;
 
 
