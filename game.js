@@ -32,6 +32,8 @@ let doublePointsDuration = 60000; // 1 minuut in millisecondenlet imagesLoaded =
 let imagesLoaded = 0;
 let pointPopups = []; // voor 10+ of 20+ bij muntjes
 let pxpBags = [];
+let paddleExploding = false;
+let paddleExplosionParticles = [];
 
 
 
@@ -350,8 +352,8 @@ function resetBricks() {
 
 
 
-
 function drawPaddle() {
+  if (paddleExploding) return; // Verberg paddle tijdens explosie
   ctx.drawImage(pointpayPaddleImg, paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
 }
 
@@ -932,33 +934,22 @@ function draw() {
       wallSound.play();
     }
 
-    if (ball.y + ball.dy > canvas.height) {
-      balls.splice(index, 1);
 
-      if (balls.length === 0) {
-        speedBoostActive = false;
-        doublePointsActive = false;
-        flagsOnPaddle = false;
-        rocketActive = false;
-        rocketFired = false;
-        rocketAmmo = 0;
-        flyingCoins = [];
-        smokeParticles = [];
-        explosions = [];
-        coins = [];       
-        pxpBags = [];     
+    
+ if (ball.y + ball.dy > canvas.height) {
+   balls.splice(index, 1);
+
+  if (balls.length === 0 && !paddleExploding) {
+    triggerPaddleExplosion(); // 💥 start explosie + animatie + reset
+    return;
+  } else if (ball.isMain && balls.length > 0) {
+    balls[0].isMain = true;
+  }
+
+  return;
+}
 
 
-        saveHighscore();
-        resetBricks();
-        resetBall();
-        return;
-      } else if (ball.isMain) {
-        balls[0].isMain = true;
-      }
-
-      return;
-    }
 
     ctx.drawImage(ballImg, ball.x, ball.y, ball.radius * 2, ball.radius * 2);
   });
@@ -1059,6 +1050,21 @@ for (let i = pxpBags.length - 1; i >= 0; i--) {
   }
 }
 
+  // 🎇 Paddle-explosie tekenen
+if (paddleExploding) {
+  paddleExplosionParticles.forEach(p => {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255, 100, 0, ${p.alpha})`;
+    ctx.fill();
+    p.x += p.dx;
+    p.y += p.dy;
+    p.alpha -= 0.02;
+  });
+
+  paddleExplosionParticles = paddleExplosionParticles.filter(p => p.alpha > 0);
+}
+
 // Extra updates onderaan draw()
 smokeParticles = smokeParticles.filter(p => p.alpha > 0);
 
@@ -1134,5 +1140,47 @@ function startTimer() {
     const minutes = String(Math.floor(elapsedTime / 60)).padStart(2, '0');
     const seconds = String(elapsedTime % 60).padStart(2, '0');
     document.getElementById("timeDisplay").textContent = "time " + minutes + ":" + seconds;
+  }, 1000);
+}
+
+function triggerPaddleExplosion() {
+  paddleExploding = true;
+  paddleExplosionParticles = [];
+
+  // Maak 50 deeltjes aan die uit elkaar vliegen
+  for (let i = 0; i < 50; i++) {
+    paddleExplosionParticles.push({
+      x: paddleX + paddleWidth / 2,
+      y: canvas.height - paddleHeight / 2,
+      dx: (Math.random() - 0.5) * 10,
+      dy: (Math.random() - 0.5) * 10,
+      radius: Math.random() * 4 + 2,
+      alpha: 1
+    });
+  }
+
+  const paddleExplodeSound = new Audio("paddle_explode.mp3");
+  paddleExplodeSound.play();
+
+  // ⏱️ Na 1 seconde paddle resetten + alles wissen
+  setTimeout(() => {
+    paddleExploding = false;
+    paddleExplosionParticles = [];
+
+    speedBoostActive = false;
+    doublePointsActive = false;
+    flagsOnPaddle = false;
+    rocketActive = false;
+    rocketFired = false;
+    rocketAmmo = 0;
+    flyingCoins = [];
+    smokeParticles = [];
+    explosions = [];
+    coins = [];       
+    pxpBags = [];
+
+    saveHighscore();
+    resetBricks();
+    resetBall();
   }, 1000);
 }
