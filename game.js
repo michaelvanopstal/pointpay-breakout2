@@ -1270,6 +1270,10 @@ function triggerPaddleExplosion() {
 }
 
 
+const rocketSize = 100;
+const animatedRocketSpeed = 10000;
+const loopRadius = 150;
+
 function createRocketSystem() {
   const rocket = document.createElement('div');
   rocket.style.position = 'absolute';
@@ -1288,10 +1292,6 @@ function createRocketSystem() {
   document.body.appendChild(rocket);
   animateRocketFlight(rocket);
 }
-
-const rocketSize = 100;               // visuele grootte van animatieraket
-const animatedRocketSpeed = 10000;    // duur van animatie in ms
-const loopRadius = 150;               // radius van de looping
 
 function animateRocketFlight(rocket) {
   const startTime = performance.now();
@@ -1313,14 +1313,14 @@ function animateRocketFlight(rocket) {
       rot = -135;
     } else if (t < 0.6) {
       const p = (t - 0.3) / 0.3;
-      const angle = p * Math.PI * 2 + Math.PI / 2;
+      const angle = -p * Math.PI * 2 + Math.PI / 2; // ⬅️ rechtsom!
       x = midX + Math.cos(angle) * loopRadius;
-      y = midY - Math.sin(angle) * loopRadius;
-      rot = angle * 180 / Math.PI;
+      y = midY + Math.sin(angle) * loopRadius;
+      rot = angle * 180 / Math.PI + 90;
     } else {
       const p = (t - 0.6) / 0.4;
       x = midX - p * (midX + 200);
-      y = midY - loopRadius - p * (midY + 100);
+      y = midY + loopRadius - p * (midY + 200);
       rot = -135;
     }
 
@@ -1328,29 +1328,31 @@ function animateRocketFlight(rocket) {
     rocket.style.top = `${y}px`;
     rocket.style.transform = `rotate(${rot}deg)`;
 
+    // 🔥 Vuur (flikkerend)
     const flame = document.createElement('div');
     flame.style.position = 'absolute';
-    flame.style.width = '20px';
-    flame.style.height = '40px';
+    flame.style.width = `${18 + Math.random() * 4}px`;
+    flame.style.height = `${30 + Math.random() * 10}px`;
     flame.style.left = '50%';
     flame.style.top = '100%';
     flame.style.transform = 'translate(-50%, 0)';
     flame.style.background = 'radial-gradient(circle, orange, red, transparent)';
     flame.style.borderRadius = '50%';
     flame.style.filter = 'blur(1px)';
-    flame.style.opacity = '0.6';
+    flame.style.opacity = `${0.5 + Math.random() * 0.5}`;
     flame.style.zIndex = '-1';
     flame.style.pointerEvents = 'none';
     rocket.appendChild(flame);
-    setTimeout(() => flame.remove(), 200);
+    setTimeout(() => flame.remove(), 100);
 
+    // ☁️ Rook
     if (t % 0.03 < 0.01) {
       const smoke = document.createElement('div');
       smoke.style.position = 'absolute';
       smoke.style.left = `${x + rocketSize / 2}px`;
       smoke.style.top = `${y + rocketSize}px`;
-      smoke.style.width = '25px';
-      smoke.style.height = '25px';
+      smoke.style.width = `${20 + Math.random() * 10}px`;
+      smoke.style.height = smoke.style.width;
       smoke.style.borderRadius = '50%';
       smoke.style.background = 'rgba(200,200,200,0.4)';
       smoke.style.transition = 'opacity 2s linear';
@@ -1373,7 +1375,6 @@ function animateRocketFlight(rocket) {
   requestAnimationFrame(draw);
 }
 
-// Start direct & herhaal elke 30 sec
+// 🚀 Start de eerste raket, en herhaal elke 30 sec
 createRocketSystem();
 setInterval(createRocketSystem, 30000);
-
