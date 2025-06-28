@@ -235,12 +235,11 @@ setInterval(() => animateFlyer("balloonFlyer", 30000, 0), 30000);
       currentTrackIndex = 0; // optioneel resetten naar begin
     }
 
-    // 🛡️ Haal focus van knop zodat toetsen werken
-    document.getElementById("musicToggle").blur();
+     document.getElementById("musicToggle").blur();
   });
-<script>
+</script>
 
-  <script>
+<script>
   function launchRocketAnimation() {
     const rocket = document.querySelector('.rocket-container');
     rocket.style.animation = 'none';
@@ -254,4 +253,3 @@ setInterval(() => animateFlyer("balloonFlyer", 30000, 0), 30000);
   // Herhaal elke 2 minuten:
   setInterval(launchRocketAnimation, 120000);
 </script>
-
