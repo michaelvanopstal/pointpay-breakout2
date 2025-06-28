@@ -231,7 +231,7 @@ body {
   bottom: -100px;
   right: -100px;
   pointer-events: none;
-  animation: fly-diagonal 6s linear;
+  animation: fly-diagonal 15s linear;
   z-index: 10;
 }
 
