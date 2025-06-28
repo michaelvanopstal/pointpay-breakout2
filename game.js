@@ -1296,6 +1296,4 @@ function animateRocketWithLoop(rocket) {
     }
   }
 
-  requestAnimationFrame(draw);
-}
-
+  
