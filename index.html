@@ -240,23 +240,25 @@ setInterval(() => animateFlyer("balloonFlyer", 30000, 0), 30000);
 </script>
 
 <script>
+  const rocketDuration = 15; // verander dit getal om snelheid aan te passen (in seconden)
+
   function launchRocketAnimation() {
     const rocket = document.querySelector('.rocket-container');
 
-    // Reset animatie en positie
+    // Reset
     rocket.style.animation = 'none';
     rocket.style.transform = 'none';
     rocket.style.opacity = '1';
 
-    void rocket.offsetWidth; // dwing herberekening af
+    void rocket.offsetWidth;
 
-    // Start animatie opnieuw
-    rocket.style.animation = 'fly-diagonal 6s linear';
+    // Herstart met juiste tijd
+    rocket.style.animation = `fly-diagonal ${rocketDuration}s linear`;
   }
 
-  // Start direct:
+  // Start direct
   launchRocketAnimation();
 
-  // Herhaal elke 2 minuten:
-  setInterval(launchRocketAnimation, 120000);
+  // Herhaal na rocketDuration + marge (bv. +5s)
+  setInterval(launchRocketAnimation, (rocketDuration + 5) * 1000);
 </script>
