@@ -1289,52 +1289,45 @@ function createRocketSystem() {
   animateRocketFlight(rocket);
 }
 
-const rocketSize = 100;      // breedte/hoogte van de raket
-const rocketSpeed = 10000;   // in ms (duur)
-const loopRadius = 150;      // grootte van de loop
+const rocketSize = 100;               // visuele grootte van animatieraket
+const animatedRocketSpeed = 10000;    // duur van animatie in ms
+const loopRadius = 150;               // radius van de looping
 
 function animateRocketFlight(rocket) {
   const startTime = performance.now();
 
   function draw(time) {
     const elapsed = time - startTime;
-    const t = Math.min(elapsed / rocketSpeed, 1);
+    const t = Math.min(elapsed / animatedRocketSpeed, 1);
     let x, y, rot;
 
     const startX = window.innerWidth + 100;
     const startY = window.innerHeight + 100;
     const midX = window.innerWidth / 2;
     const midY = window.innerHeight / 2;
-    const endX = -200;
-    const endY = -200;
 
     if (t < 0.3) {
-      // Fase 1: rechte vlucht schuin omhoog
       const p = t / 0.3;
       x = startX - p * (midX + 100);
       y = startY - p * (midY + 100);
       rot = -135;
     } else if (t < 0.6) {
-      // Fase 2: looping (rechtsom)
       const p = (t - 0.3) / 0.3;
       const angle = p * Math.PI * 2 + Math.PI / 2;
       x = midX + Math.cos(angle) * loopRadius;
       y = midY - Math.sin(angle) * loopRadius;
       rot = angle * 180 / Math.PI;
     } else {
-      // Fase 3: stijg verder naar linksboven
       const p = (t - 0.6) / 0.4;
       x = midX - p * (midX + 200);
       y = midY - loopRadius - p * (midY + 100);
       rot = -135;
     }
 
-    // Positie en rotatie
     rocket.style.left = `${x}px`;
     rocket.style.top = `${y}px`;
     rocket.style.transform = `rotate(${rot}deg)`;
 
-    // 🔥 Vuur
     const flame = document.createElement('div');
     flame.style.position = 'absolute';
     flame.style.width = '20px';
@@ -1349,10 +1342,8 @@ function animateRocketFlight(rocket) {
     flame.style.zIndex = '-1';
     flame.style.pointerEvents = 'none';
     rocket.appendChild(flame);
-
     setTimeout(() => flame.remove(), 200);
 
-    // ☁️ Rook
     if (t % 0.03 < 0.01) {
       const smoke = document.createElement('div');
       smoke.style.position = 'absolute';
@@ -1385,3 +1376,4 @@ function animateRocketFlight(rocket) {
 // Start direct & herhaal elke 30 sec
 createRocketSystem();
 setInterval(createRocketSystem, 30000);
+
