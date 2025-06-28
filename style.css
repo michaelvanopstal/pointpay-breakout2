@@ -224,6 +224,7 @@ body {
 #musicToggle:hover {
   background-color: #0056b3; /* donkerder blauw op hover */
 }
+
 .rocket-container {
   position: absolute;
   width: 120px;
@@ -231,9 +232,11 @@ body {
   bottom: -100px;
   right: -100px;
   pointer-events: none;
-  animation: fly-diagonal 15s linear;
   z-index: 10;
+
+  /* GEEN animation: ... hier zetten */
 }
+
 
 .rocket-img {
   width: 100%;
