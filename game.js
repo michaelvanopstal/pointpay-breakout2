@@ -1353,7 +1353,8 @@ function animateRocketFlight(rocket) {
     if (prevX !== null && prevY !== null) {
       const dx = x - prevX;
       const dy = y - prevY;
-      rot = Math.atan2(dy, dx) * 180 / Math.PI + 90;
+      rot = Math.atan2(dy, dx) * 180 / Math.PI + 115; // +25 graden extra rotatie
+
 
       // 🔥 Vlam tekenen achter de raket
       const flameX = x - dx * 0.5;
