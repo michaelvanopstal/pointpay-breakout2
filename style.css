@@ -245,26 +245,28 @@ body {
 
 .flame {
   position: absolute;
-  bottom: 0;
-  left: 40%;
-  width: 20px;
-  height: 30px;
-  background: radial-gradient(ellipse at center, orange 0%, red 70%, transparent 100%);
+  bottom: -18px;        /* iets verder onder de raket */
+  left: 48%;            /* precies onder de uitlaat */
+  width: 16px;
+  height: 28px;
+  background: radial-gradient(ellipse at center, orange 0%, red 60%, transparent 100%);
   border-radius: 50%;
-  animation: flame-anim 0.2s infinite alternate;
+  animation: flame-anim 0.15s infinite alternate;
   z-index: -1;
+  filter: blur(0.5px);
 }
 
 .smoke {
   position: absolute;
-  bottom: 0;
-  left: 30%;
-  width: 30px;
-  height: 30px;
-  background: radial-gradient(circle, rgba(255,255,255,0.3), transparent);
+  bottom: -28px;       /* onder de vlam */
+  left: 46%;           /* iets breder */
+  width: 24px;
+  height: 24px;
+  background: radial-gradient(circle, rgba(200, 200, 200, 0.3), transparent);
   border-radius: 50%;
   animation: smoke-rise 2s infinite;
   z-index: -2;
+  filter: blur(1.2px);
 }
 
 @keyframes fly-diagonal {
