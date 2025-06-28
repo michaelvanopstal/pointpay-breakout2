@@ -242,8 +242,15 @@ setInterval(() => animateFlyer("balloonFlyer", 30000, 0), 30000);
 <script>
   function launchRocketAnimation() {
     const rocket = document.querySelector('.rocket-container');
+
+    // Reset animatie en positie
     rocket.style.animation = 'none';
-    void rocket.offsetWidth; // reset animatie
+    rocket.style.transform = 'none';
+    rocket.style.opacity = '1';
+
+    void rocket.offsetWidth; // dwing herberekening af
+
+    // Start animatie opnieuw
     rocket.style.animation = 'fly-diagonal 6s linear';
   }
 
