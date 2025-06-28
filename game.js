@@ -1268,3 +1268,107 @@ function triggerPaddleExplosion() {
     resetBall();
   }, 1000);
 }
+
+function createRocketSystem() {
+  const rocket = document.createElement('div');
+  rocket.className = 'rocket-container';
+  rocket.style.position = 'absolute';
+  rocket.style.width = '120px';
+  rocket.style.height = '120px';
+  rocket.style.bottom = '-100px';
+  rocket.style.right = '-100px';
+  rocket.style.zIndex = '10';
+
+  const rocketImg = document.createElement('img');
+  rocketImg.src = 'raket-perfect.png';
+  rocketImg.style.width = '100%';
+  rocketImg.style.transform = 'rotate(-5deg)';
+  rocket.appendChild(rocketImg);
+
+  const flame = document.createElement('div');
+  flame.style.position = 'absolute';
+  flame.style.bottom = '-20px';
+  flame.style.left = '88%';
+  flame.style.width = '18px';
+  flame.style.height = '30px';
+  flame.style.borderRadius = '50%';
+  flame.style.background = 'radial-gradient(ellipse at center, orange, red, transparent)';
+  flame.style.filter = 'blur(0.5px)';
+  flame.style.animation = 'flamePulse 0.15s infinite alternate';
+  flame.style.zIndex = '-1';
+  rocket.appendChild(flame);
+
+  document.body.appendChild(rocket);
+
+  animateRocketWithLoop(rocket);
+}
+
+function animateRocketWithLoop(rocket) {
+  const duration = 8000; // totaaltraject in ms
+  const loopStart = 0.3; // 30% van de animatie (tijd/geometrie)
+  const startTime = performance.now();
+
+  const smokeParticles = [];
+
+  function draw(time) {
+    const elapsed = time - startTime;
+    const t = Math.min(elapsed / duration, 1);
+
+    // Positie: rechte stijging, dan looping
+    let x, y;
+    const maxX = window.innerWidth + 200;
+    const maxY = window.innerHeight + 200;
+
+    if (t < loopStart) {
+      x = window.innerWidth - t * maxX;
+      y = window.innerHeight - t * maxY;
+    } else {
+      const loopT = (t - loopStart) / (1 - loopStart);
+      const angle = loopT * 2 * Math.PI;
+      const radius = 150;
+      x = window.innerWidth / 2 + Math.cos(angle) * radius;
+      y = window.innerHeight / 2 - Math.sin(angle) * radius;
+    }
+
+    rocket.style.left = `${x}px`;
+    rocket.style.top = `${y}px`;
+
+    // Smoke particle (blijft hangen en verdwijnt)
+    if (t % 0.02 < 0.005) {
+      const smoke = document.createElement('div');
+      smoke.className = 'rocket-smoke';
+      smoke.style.position = 'absolute';
+      smoke.style.left = `${x + 50}px`;
+      smoke.style.top = `${y + 100}px`;
+      smoke.style.width = '20px';
+      smoke.style.height = '20px';
+      smoke.style.borderRadius = '50%';
+      smoke.style.background = 'rgba(200,200,200,0.4)';
+      smoke.style.zIndex = '1';
+      smoke.style.pointerEvents = 'none';
+      smoke.style.transition = 'opacity 2s linear';
+      document.body.appendChild(smoke);
+      smokeParticles.push(smoke);
+
+      // laat rook langzaam verdwijnen
+      setTimeout(() => {
+        smoke.style.opacity = '0';
+        setTimeout(() => smoke.remove(), 2000);
+      }, 100);
+    }
+
+    if (t < 1) {
+      requestAnimationFrame(draw);
+    } else {
+      rocket.remove();
+    }
+  }
+
+  requestAnimationFrame(draw);
+}
+
+// 🔁 Start elke 30 seconden een raket
+setInterval(createRocketSystem, 30000);
+
+// 🔄 Start ook meteen één keer
+createRocketSystem();
