@@ -381,8 +381,6 @@ function resetBall() {
   }];
   ballLaunched = false;
   ballMoving = false;
-
-  if (!timerRunning) startTimer(); // ⏱️ Start timer opnieuw als hij nog niet loopt
 }
 
 
