@@ -1295,11 +1295,12 @@ function createRocketSystem() {
 
 function animateRocketFlight(rocket) {
   const startTime = performance.now();
+  let prevX = null, prevY = null;
 
   function draw(time) {
     const elapsed = time - startTime;
     const t = Math.min(elapsed / animatedRocketSpeed, 1);
-    let x, y, rot;
+    let x, y, rot = -135;
 
     const canvasW = window.innerWidth;
     const canvasH = window.innerHeight;
@@ -1310,35 +1311,36 @@ function animateRocketFlight(rocket) {
     const loopCenterX = canvasW / 2;
     const loopCenterY = canvasH / 1.5;
 
-    const endX = -200;
-    const endY = -200;
-
     if (t < 0.3) {
-      // Fase 1: schuin omhoog naar het beginpunt van de loop
       const p = t / 0.3;
       x = startX - p * (loopCenterX + loopRadius);
       y = startY - p * (canvasH - loopCenterY);
-      rot = -135;
     } else if (t < 0.6) {
-      // Fase 2: rechtsom looping
       const p = (t - 0.3) / 0.3;
       const angle = Math.PI * 2 * p + Math.PI / 2;
       x = loopCenterX + Math.cos(angle) * loopRadius;
       y = loopCenterY + Math.sin(angle) * loopRadius;
-      rot = angle * 180 / Math.PI + 90;
     } else {
-      // Fase 3: schuin verder omhoog naar linksboven
       const p = (t - 0.6) / 0.4;
       x = loopCenterX - loopRadius - p * (loopCenterX + 200);
       y = loopCenterY + loopRadius - p * (loopCenterY + 100);
-      rot = -135;
     }
 
+    // 🧠 Rotatie op basis van richting
+    if (prevX !== null && prevY !== null) {
+      const dx = x - prevX;
+      const dy = y - prevY;
+      rot = Math.atan2(dy, dx) * 180 / Math.PI + 90;
+    }
+    prevX = x;
+    prevY = y;
+
+    // 💫 Toepassen positie en rotatie
     rocket.style.left = `${x}px`;
     rocket.style.top = `${y}px`;
     rocket.style.transform = `rotate(${rot}deg)`;
 
-    // 🔥 Vlam (levendig)
+    // 🔥 Vlam (flikkerend)
     const flame = document.createElement('div');
     flame.style.position = 'absolute';
     flame.style.width = `${18 + Math.random() * 4}px`;
@@ -1384,6 +1386,7 @@ function animateRocketFlight(rocket) {
 
   requestAnimationFrame(draw);
 }
+
 
 // Start en herhaal
 createRocketSystem();
