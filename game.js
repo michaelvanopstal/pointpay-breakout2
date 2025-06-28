@@ -1224,6 +1224,56 @@ function spawnStoneDebris(x, y) {
 }
 
 
+function createRocketSystem() {
+  const rocket = document.createElement('div');
+  rocket.className = 'rocket-container';
+  rocket.style.position = 'absolute';
+  rocket.style.width = '120px';
+  rocket.style.height = '120px';
+  rocket.style.left = '-150px';
+  rocket.style.bottom = '-100px';
+  rocket.style.zIndex = '20';
+  rocket.style.pointerEvents = 'none';
+
+  const rocketImg = document.createElement('img');
+  rocketImg.src = 'raket-perfect.png';
+  rocketImg.style.width = '100%';
+  rocketImg.style.height = 'auto';
+  rocketImg.style.display = 'block';
+  rocketImg.style.position = 'absolute';
+  rocketImg.style.top = '0';
+  rocketImg.style.left = '0';
+  rocket.appendChild(rocketImg);
+
+  const flame = document.createElement('div');
+  flame.style.position = 'absolute';
+  flame.style.bottom = '-20px';
+  flame.style.left = '88%';
+  flame.style.width = '18px';
+  flame.style.height = '30px';
+  flame.style.borderRadius = '50%';
+  flame.style.background = 'radial-gradient(ellipse at center, orange, red, transparent)';
+  flame.style.filter = 'blur(0.5px)';
+  flame.style.zIndex = '-1';
+  flame.style.animation = 'flamePulse 0.15s infinite alternate';
+  rocket.appendChild(flame);
+
+  // Voeg animatie toe aan document als die nog niet bestaat
+  if (!document.getElementById('flamePulseStyle')) {
+    const style = document.createElement('style');
+    style.id = 'flamePulseStyle';
+    style.innerHTML = `
+      @keyframes flamePulse {
+        0% { transform: scaleY(1); opacity: 1; }
+        100% { transform: scaleY(1.3); opacity: 0.7; }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  document.body.appendChild(rocket);
+  animateRocketWithLoop(rocket);
+}
 
 function animateRocketWithLoop(rocket) {
   const duration = 8000;
@@ -1247,7 +1297,7 @@ function animateRocketWithLoop(rocket) {
       rot = -45;
     } else if (t <= loopEnd) {
       const p = (t - loopStart) / (loopEnd - loopStart);
-      const angle = Math.PI * 2 * p - Math.PI; // begin rechts
+      const angle = Math.PI * 2 * p - Math.PI; // loop met de klok mee
       const r = 150;
       x = midX + Math.cos(angle) * r;
       y = midY + Math.sin(angle) * r;
@@ -1263,28 +1313,39 @@ function animateRocketWithLoop(rocket) {
     rocket.style.top = `${y}px`;
     rocket.style.transform = `rotate(${rot}deg)`;
 
+    // Rook
     if (t % 0.02 < 0.005) {
-      const s = document.createElement('div');
-      s.className = 'rocket-smoke';
-      s.style.cssText = `
-        position:absolute;
-        left:${x+50}px; top:${y+100}px;
-        width:20px;height:20px;
-        border-radius:50%;
-        background:rgba(200,200,200,0.4);
-        pointer-events:none;
-        transition:opacity 2s linear;
-      `;
-      document.body.appendChild(s);
+      const smoke = document.createElement('div');
+      smoke.className = 'rocket-smoke';
+      smoke.style.position = 'absolute';
+      smoke.style.left = `${x + 50}px`;
+      smoke.style.top = `${y + 100}px`;
+      smoke.style.width = '20px';
+      smoke.style.height = '20px';
+      smoke.style.borderRadius = '50%';
+      smoke.style.background = 'rgba(200,200,200,0.4)';
+      smoke.style.zIndex = '10';
+      smoke.style.pointerEvents = 'none';
+      smoke.style.transition = 'opacity 2s linear';
+      document.body.appendChild(smoke);
+
       setTimeout(() => {
-        s.style.opacity = '0';
-        setTimeout(() => s.remove(), 2000);
-      },100);
+        smoke.style.opacity = '0';
+        setTimeout(() => smoke.remove(), 2000);
+      }, 100);
     }
 
-    if (t < 1) requestAnimationFrame(draw);
-    else rocket.remove();
+    if (t < 1) {
+      requestAnimationFrame(draw);
+    } else {
+      rocket.remove();
+    }
   }
 
   requestAnimationFrame(draw);
 }
+
+// 🚀 Start direct & herhaal elke 30 sec
+createRocketSystem();
+setInterval(createRocketSystem, 30000);
+
