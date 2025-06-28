@@ -1268,3 +1268,123 @@ function triggerPaddleExplosion() {
     resetBall();
   }, 1000);
 }
+
+
+const rocketSize = 100;
+const animatedRocketSpeed = 10000;
+const loopRadius = 120;
+
+function createRocketSystem() {
+  const rocket = document.createElement('div');
+  rocket.style.position = 'absolute';
+  rocket.style.width = rocketSize + 'px';
+  rocket.style.height = rocketSize + 'px';
+  rocket.style.zIndex = '100';
+  rocket.style.pointerEvents = 'none';
+
+  const img = document.createElement('img');
+  img.src = 'raket-perfect.png';
+  img.style.width = '100%';
+  img.style.height = 'auto';
+  img.style.position = 'absolute';
+  rocket.appendChild(img);
+
+  document.body.appendChild(rocket);
+  animateRocketFlight(rocket);
+}
+
+function animateRocketFlight(rocket) {
+  const startTime = performance.now();
+
+  function draw(time) {
+    const elapsed = time - startTime;
+    const t = Math.min(elapsed / animatedRocketSpeed, 1);
+    let x, y, rot;
+
+    const canvasW = window.innerWidth;
+    const canvasH = window.innerHeight;
+
+    const startX = canvasW + 150;
+    const startY = canvasH - 50;
+
+    const loopCenterX = canvasW / 2;
+    const loopCenterY = canvasH / 1.5;
+
+    const endX = -200;
+    const endY = -200;
+
+    if (t < 0.3) {
+      // Fase 1: schuin omhoog naar het beginpunt van de loop
+      const p = t / 0.3;
+      x = startX - p * (loopCenterX + loopRadius);
+      y = startY - p * (canvasH - loopCenterY);
+      rot = -135;
+    } else if (t < 0.6) {
+      // Fase 2: rechtsom looping
+      const p = (t - 0.3) / 0.3;
+      const angle = Math.PI * 2 * p + Math.PI / 2;
+      x = loopCenterX + Math.cos(angle) * loopRadius;
+      y = loopCenterY + Math.sin(angle) * loopRadius;
+      rot = angle * 180 / Math.PI + 90;
+    } else {
+      // Fase 3: schuin verder omhoog naar linksboven
+      const p = (t - 0.6) / 0.4;
+      x = loopCenterX - loopRadius - p * (loopCenterX + 200);
+      y = loopCenterY + loopRadius - p * (loopCenterY + 100);
+      rot = -135;
+    }
+
+    rocket.style.left = `${x}px`;
+    rocket.style.top = `${y}px`;
+    rocket.style.transform = `rotate(${rot}deg)`;
+
+    // 🔥 Vlam (levendig)
+    const flame = document.createElement('div');
+    flame.style.position = 'absolute';
+    flame.style.width = `${18 + Math.random() * 4}px`;
+    flame.style.height = `${30 + Math.random() * 10}px`;
+    flame.style.left = '50%';
+    flame.style.top = '100%';
+    flame.style.transform = 'translate(-50%, 0)';
+    flame.style.background = 'radial-gradient(circle, orange, red, transparent)';
+    flame.style.borderRadius = '50%';
+    flame.style.filter = 'blur(1px)';
+    flame.style.opacity = `${0.5 + Math.random() * 0.5}`;
+    flame.style.zIndex = '-1';
+    flame.style.pointerEvents = 'none';
+    rocket.appendChild(flame);
+    setTimeout(() => flame.remove(), 100);
+
+    // ☁️ Rook
+    if (t % 0.03 < 0.01) {
+      const smoke = document.createElement('div');
+      smoke.style.position = 'absolute';
+      smoke.style.left = `${x + rocketSize / 2}px`;
+      smoke.style.top = `${y + rocketSize}px`;
+      smoke.style.width = `${20 + Math.random() * 10}px`;
+      smoke.style.height = smoke.style.width;
+      smoke.style.borderRadius = '50%';
+      smoke.style.background = 'rgba(200,200,200,0.4)';
+      smoke.style.transition = 'opacity 2s linear';
+      smoke.style.pointerEvents = 'none';
+      smoke.style.zIndex = '5';
+      document.body.appendChild(smoke);
+      setTimeout(() => {
+        smoke.style.opacity = '0';
+        setTimeout(() => smoke.remove(), 2000);
+      }, 50);
+    }
+
+    if (t < 1) {
+      requestAnimationFrame(draw);
+    } else {
+      rocket.remove();
+    }
+  }
+
+  requestAnimationFrame(draw);
+}
+
+// Start en herhaal
+createRocketSystem();
+setInterval(createRocketSystem, 30000);
