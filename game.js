@@ -1182,6 +1182,7 @@ document.addEventListener("mousedown", function (e) {
 
 
 function startTimer() {
+  if (timerRunning) return; // ✅ voorkomt dubbele timers
   timerRunning = true;
   timerInterval = setInterval(() => {
     elapsedTime++;
@@ -1189,6 +1190,13 @@ function startTimer() {
     const seconds = String(elapsedTime % 60).padStart(2, '0');
     document.getElementById("timeDisplay").textContent = "time " + minutes + ":" + seconds;
   }, 1000);
+}
+
+function stopTimer() {
+  clearInterval(timerInterval);
+  timerRunning = false;
+  elapsedTime = 0;
+  document.getElementById("timeDisplay").textContent = "time 00:00";
 }
 
 
@@ -1223,28 +1231,31 @@ function triggerPaddleExplosion() {
     });
   }
 
-  const paddleExplodeSound = new Audio("paddle_explode.mp3");
-  paddleExplodeSound.play();
 
-  // ⏱️ Na 1 seconde paddle resetten + alles wissen
-  setTimeout(() => {
-    paddleExploding = false;
-    paddleExplosionParticles = [];
+const paddleExplodeSound = new Audio("paddle_explode.mp3");
+paddleExplodeSound.play();
 
-    speedBoostActive = false;
-    doublePointsActive = false;
-    flagsOnPaddle = false;
-    rocketActive = false;
-    rocketFired = false;
-    rocketAmmo = 0;
-    flyingCoins = [];
-    smokeParticles = [];
-    explosions = [];
-    coins = [];       
-    pxpBags = [];
+// ⏱️ Na 1 seconde paddle resetten + alles wissen
+setTimeout(() => {
+  stopTimer(); // ⏹️ Timer stoppen en terug op 00:00 zetten
 
-    saveHighscore();
-    resetBricks();
-    resetBall();
-  }, 1000);
-}
+  paddleExploding = false;
+  paddleExplosionParticles = [];
+
+  speedBoostActive = false;
+  doublePointsActive = false;
+  flagsOnPaddle = false;
+  rocketActive = false;
+  rocketFired = false;
+  rocketAmmo = 0;
+  flyingCoins = [];
+  smokeParticles = [];
+  explosions = [];
+  coins = [];       
+  pxpBags = [];
+
+  saveHighscore();
+  resetBricks();
+  resetBall();
+}, 1000);
+
