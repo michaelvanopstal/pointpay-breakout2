@@ -120,9 +120,9 @@
       const endY = -150;
       let startTime = null;
 
-      const loopStart = 0.3;        // 30% van het pad
-      const loopDuration = 0.3;     // loop duurt 30%
-      const loopRadius = 100;       // straal van de looping
+      const loopStart = 0.3;        // Na 30% begint de loop
+      const loopDuration = 0.3;     // Duurt 30% van het pad
+      const loopRadius = 100;
 
       function animate(timestamp) {
         if (!startTime) startTime = timestamp;
@@ -130,18 +130,18 @@
         const progress = Math.min(elapsed / duration, 1);
         const step = elapsed / 16;
 
-        // Lineair pad voor basispositie
+        // Basispositie met een vloeiende verticale golf
         const baseX = startX + (endX - startX) * progress;
-        const baseY = startY + (endY - startY) * progress;
+        const baseY = startY + (endY - startY) * progress + Math.sin(progress * Math.PI * 2) * 20;
 
-        const wobbleX = Math.sin(step / 10) * 3;
-        const wobbleY = Math.cos(step / 15) * 3;
+        const wobbleX = Math.sin(step / 10) * 2;
+        const wobbleY = Math.cos(step / 15) * 2;
 
         let x = baseX + wobbleX;
         let y = baseY + wobbleY;
         let rotation = 0;
 
-        // Loop logica tussen 30%-60%
+        // Looping tussen 30% en 60%
         if (progress >= loopStart && progress < loopStart + loopDuration) {
           const loopProgress = (progress - loopStart) / loopDuration;
           const angle = loopProgress * 2 * Math.PI;
@@ -152,10 +152,9 @@
           x = loopCenterX + Math.cos(angle) * loopRadius;
           y = loopCenterY + Math.sin(angle) * loopRadius;
 
-          rotation = angle * (180 / Math.PI); // graden
+          rotation = Math.sin(loopProgress * Math.PI) * 360; // vloeiende draai
         }
 
-        // Positie en rotatie toepassen
         flyer.style.left = `${x}px`;
         flyer.style.top = `${y}px`;
         flyer.style.transform = `rotate(${rotation}deg)`;
@@ -173,12 +172,10 @@
   }
 
   // Start eerste run
-  animateFlyer("bikeFlyer", 20000, 1000);     // fiets na 1 sec, 20 sec lang
-  animateFlyer("balloonFlyer", 30000, 1000);  // ballon na 1 sec, 30 sec lang
+  animateFlyer("bikeFlyer", 20000, 1000);
 
-  // Herhaal elke 30 sec
+  // Herhaal elke 30 seconden
   setInterval(() => animateFlyer("bikeFlyer", 20000, 1000), 30000);
-  setInterval(() => animateFlyer("balloonFlyer", 30000, 0), 30000);
 </script>
 
 <!-- PXP Coin Banner -->
