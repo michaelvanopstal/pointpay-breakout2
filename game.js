@@ -1282,11 +1282,13 @@ function createRocketSystem() {
   rocket.style.pointerEvents = 'none';
 
   const img = document.createElement('img');
-  img.src = 'raket-perfect.png';
-  img.style.width = '100%';
-  img.style.height = 'auto';
-  img.style.position = 'absolute';
-  rocket.appendChild(img);
+img.src = 'raket-perfect.png';
+img.style.width = '100%';
+img.style.height = 'auto';
+img.style.display = 'block'; // voorkomt whitespace
+img.style.transformOrigin = 'center center'; // draait netjes om midden
+rocket.appendChild(img);
+
 
   document.body.appendChild(rocket);
   animateRocketFlight(rocket);
