@@ -376,9 +376,8 @@ function resetBall() {
   ballLaunched = false;
   ballMoving = false;
 
-  
+  if (!timerRunning) startTimer(); // ⏱️ Start timer opnieuw als hij nog niet loopt
 }
-
 
 
 function resetPaddle() {
@@ -538,34 +537,45 @@ function checkFlyingCoinHits() {
   });
 }
 
+function saveHighscore() {
+  const playerName = window.currentPlayer || "Unknown";
+  const minutes = String(Math.floor(elapsedTime / 60)).padStart(2, '0');
+  const seconds = String(elapsedTime % 60).padStart(2, '0');
+  const timeFormatted = `${minutes}:${seconds}`;
 
-
-  
-
-  function saveHighscore() {
-  const timeText = document.getElementById("timeDisplay").textContent.replace("time ", "");
-  const highscore = {
-    name: window.currentPlayer || "Unknown",
+  const newScore = {
+    name: playerName,
     score: score,
-   time: timeText
-    
+    time: timeFormatted
   };
 
   let highscores = JSON.parse(localStorage.getItem("highscores")) || [];
-  if (!highscores.some(h => h.name === highscore.name && h.score === highscore.score && h.time === highscore.time)) {
-    highscores.push(highscore);
+
+  if (!highscores.some(h => h.name === newScore.name && h.score === newScore.score && h.time === newScore.time)) {
+    highscores.push(newScore);
   }
-  highscores.sort((a, b) => b.score - a.score || a.time.localeCompare(b.time));
+
+  highscores.sort((a, b) => {
+    if (b.score === a.score) {
+      const [amin, asec] = a.time.split(":").map(Number);
+      const [bmin, bsec] = b.time.split(":").map(Number);
+      return (amin * 60 + asec) - (bmin * 60 + bsec);
+    }
+    return b.score - a.score;
+  });
+
   highscores = highscores.slice(0, 10);
   localStorage.setItem("highscores", JSON.stringify(highscores));
 
   const list = document.getElementById("highscore-list");
-  list.innerHTML = "";
-  highscores.forEach((entry, index) => {
-    const li = document.createElement("li");
-    li.textContent = `${index + 1} ${entry.name} - ${entry.score} pxp - ${entry.time}`;
-    list.appendChild(li);
-  });
+  if (list) {
+    list.innerHTML = "";
+    highscores.forEach((entry, index) => {
+      const li = document.createElement("li");
+      li.textContent = `${index + 1} ${entry.name} - ${entry.score} pxp - ${entry.time}`;
+      list.appendChild(li);
+    });
+  }
 }
 
 const coinImg = new Image();
