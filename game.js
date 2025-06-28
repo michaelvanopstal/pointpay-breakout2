@@ -1302,25 +1302,30 @@ function animateRocketFlight(rocket) {
     let x, y, rot;
 
     const startX = window.innerWidth + 100;
-    const startY = window.innerHeight + 100;
+    const startY = window.innerHeight - 100;
     const midX = window.innerWidth / 2;
-    const midY = window.innerHeight / 2;
+    const midY = window.innerHeight / 1.3; // lager voor de loop
+    const endX = -200;
+    const endY = -200;
 
     if (t < 0.3) {
+      // Fase 1: naar startpunt loop
       const p = t / 0.3;
-      x = startX - p * (midX + 100);
-      y = startY - p * (midY + 100);
+      x = startX - p * (midX - loopRadius);
+      y = startY;
       rot = -135;
     } else if (t < 0.6) {
+      // Fase 2: volledige looping (rechtsom, 360°)
       const p = (t - 0.3) / 0.3;
-      const angle = Math.PI * 2 * p - Math.PI / 2;
+      const angle = Math.PI * 2 * p + Math.PI; // met klok mee
       x = midX + Math.cos(angle) * loopRadius;
       y = midY + Math.sin(angle) * loopRadius;
       rot = angle * 180 / Math.PI + 90;
     } else {
+      // Fase 3: verder omhoog naar linksboven
       const p = (t - 0.6) / 0.4;
-      x = midX - p * (midX + 200);
-      y = midY + loopRadius - p * (midY + 200);
+      x = midX - loopRadius - p * (midX + 200);
+      y = midY + loopRadius - p * (midY + 100);
       rot = -135;
     }
 
@@ -1328,7 +1333,7 @@ function animateRocketFlight(rocket) {
     rocket.style.top = `${y}px`;
     rocket.style.transform = `rotate(${rot}deg)`;
 
-    // 🔥 Vuur (flikkerend)
+    // 🔥 Vlam (flikkerend)
     const flame = document.createElement('div');
     flame.style.position = 'absolute';
     flame.style.width = `${18 + Math.random() * 4}px`;
@@ -1374,6 +1379,7 @@ function animateRocketFlight(rocket) {
 
   requestAnimationFrame(draw);
 }
+
 
 // 🚀 Start de eerste raket, en herhaal elke 30 sec
 createRocketSystem();
