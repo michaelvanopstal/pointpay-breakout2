@@ -1225,150 +1225,66 @@ function spawnStoneDebris(x, y) {
 
 
 
-function triggerPaddleExplosion() {
-  paddleExploding = true;
-  paddleExplosionParticles = [];
-
-  // Maak 50 deeltjes aan die uit elkaar vliegen
-  for (let i = 0; i < 50; i++) {
-    paddleExplosionParticles.push({
-      x: paddleX + paddleWidth / 2,
-      y: canvas.height - paddleHeight / 2,
-      dx: (Math.random() - 0.5) * 10,
-      dy: (Math.random() - 0.5) * 10,
-      radius: Math.random() * 4 + 2,
-      alpha: 1
-    });
-  }
-
-  const paddleExplodeSound = new Audio("paddle_explode.mp3");
-  paddleExplodeSound.play();
-
-  // ⏱️ Na 1 seconde paddle resetten + alles wissen
-  setTimeout(() => {
-    stopTimer(); // ⏹️ Timer stoppen en terug op 00:00 zetten
-
-    paddleExploding = false;
-    paddleExplosionParticles = [];
-
-    speedBoostActive = false;
-    doublePointsActive = false;
-    flagsOnPaddle = false;
-    rocketActive = false;
-    rocketFired = false;
-    rocketAmmo = 0;
-    flyingCoins = [];
-    smokeParticles = [];
-    explosions = [];
-    coins = [];
-    pxpBags = [];
-
-    saveHighscore();
-    resetBricks();
-    resetBall();
-  }, 1000);
-}
-
-function createRocketSystem() {
-  const rocket = document.createElement('div');
-  rocket.className = 'rocket-container';
-  rocket.style.position = 'absolute';
-  rocket.style.width = '120px';
-  rocket.style.height = '120px';
-  rocket.style.bottom = '-100px';
-  rocket.style.right = '-100px';
-  rocket.style.zIndex = '10';
-
-  const rocketImg = document.createElement('img');
-  rocketImg.src = 'raket-perfect.png';
-  rocketImg.style.width = '100%';
-  rocketImg.style.transform = 'rotate(-5deg)';
-  rocket.appendChild(rocketImg);
-
-  const flame = document.createElement('div');
-  flame.style.position = 'absolute';
-  flame.style.bottom = '-20px';
-  flame.style.left = '88%';
-  flame.style.width = '18px';
-  flame.style.height = '30px';
-  flame.style.borderRadius = '50%';
-  flame.style.background = 'radial-gradient(ellipse at center, orange, red, transparent)';
-  flame.style.filter = 'blur(0.5px)';
-  flame.style.animation = 'flamePulse 0.15s infinite alternate';
-  flame.style.zIndex = '-1';
-  rocket.appendChild(flame);
-
-  document.body.appendChild(rocket);
-
-  animateRocketWithLoop(rocket);
-}
-
 function animateRocketWithLoop(rocket) {
-  const duration = 8000; // totaaltraject in ms
-  const loopStart = 0.3; // 30% van de animatie (tijd/geometrie)
+  const duration = 8000;
+  const loopStart = 0.3;
+  const loopEnd = 0.6;
   const startTime = performance.now();
-
-  const smokeParticles = [];
 
   function draw(time) {
     const elapsed = time - startTime;
     const t = Math.min(elapsed / duration, 1);
+    let x, y, rot;
 
-    // Positie: rechte stijging, dan looping
-    let x, y;
-    const maxX = window.innerWidth + 200;
-    const maxY = window.innerHeight + 200;
+    const startX = -150, startY = window.innerHeight + 100;
+    const midX = window.innerWidth / 2, midY = window.innerHeight / 2;
+    const endX = -200, endY = -150;
 
     if (t < loopStart) {
-      x = window.innerWidth - t * maxX;
-      y = window.innerHeight - t * maxY;
+      const p = t / loopStart;
+      x = startX + p * (midX + 150);
+      y = startY - p * (midY + 150);
+      rot = -45;
+    } else if (t <= loopEnd) {
+      const p = (t - loopStart) / (loopEnd - loopStart);
+      const angle = Math.PI * 2 * p - Math.PI; // begin rechts
+      const r = 150;
+      x = midX + Math.cos(angle) * r;
+      y = midY + Math.sin(angle) * r;
+      rot = (angle * 180 / Math.PI) - 90;
     } else {
-      const loopT = (t - loopStart) / (1 - loopStart);
-      const angle = loopT * 2 * Math.PI;
-      const radius = 150;
-      x = window.innerWidth / 2 + Math.cos(angle) * radius;
-      y = window.innerHeight / 2 - Math.sin(angle) * radius;
+      const p = (t - loopEnd) / (1 - loopEnd);
+      x = midX - 150 - p * (midX + 150);
+      y = midY - 150 - p * (midY + 150);
+      rot = -135;
     }
 
     rocket.style.left = `${x}px`;
     rocket.style.top = `${y}px`;
+    rocket.style.transform = `rotate(${rot}deg)`;
 
-    // Smoke particle (blijft hangen en verdwijnt)
     if (t % 0.02 < 0.005) {
-      const smoke = document.createElement('div');
-      smoke.className = 'rocket-smoke';
-      smoke.style.position = 'absolute';
-      smoke.style.left = `${x + 50}px`;
-      smoke.style.top = `${y + 100}px`;
-      smoke.style.width = '20px';
-      smoke.style.height = '20px';
-      smoke.style.borderRadius = '50%';
-      smoke.style.background = 'rgba(200,200,200,0.4)';
-      smoke.style.zIndex = '1';
-      smoke.style.pointerEvents = 'none';
-      smoke.style.transition = 'opacity 2s linear';
-      document.body.appendChild(smoke);
-      smokeParticles.push(smoke);
-
-      // laat rook langzaam verdwijnen
+      const s = document.createElement('div');
+      s.className = 'rocket-smoke';
+      s.style.cssText = `
+        position:absolute;
+        left:${x+50}px; top:${y+100}px;
+        width:20px;height:20px;
+        border-radius:50%;
+        background:rgba(200,200,200,0.4);
+        pointer-events:none;
+        transition:opacity 2s linear;
+      `;
+      document.body.appendChild(s);
       setTimeout(() => {
-        smoke.style.opacity = '0';
-        setTimeout(() => smoke.remove(), 2000);
-      }, 100);
+        s.style.opacity = '0';
+        setTimeout(() => s.remove(), 2000);
+      },100);
     }
 
-    if (t < 1) {
-      requestAnimationFrame(draw);
-    } else {
-      rocket.remove();
-    }
+    if (t < 1) requestAnimationFrame(draw);
+    else rocket.remove();
   }
 
   requestAnimationFrame(draw);
 }
-
-// 🔁 Start elke 30 seconden een raket
-setInterval(createRocketSystem, 30000);
-
-// 🔄 Start ook meteen één keer
-createRocketSystem();
