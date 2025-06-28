@@ -1275,7 +1275,6 @@ const loopRadius = 120;
 
 function createRocketSystem() {
   const rocket = document.createElement('div');
-  rocket.style.position = 'absolute';
   rocket.style.width = rocketSize + 'px';
   rocket.style.height = rocketSize + 'px';
   rocket.style.zIndex = '100';
