@@ -1313,7 +1313,7 @@ function animateRocketFlight(rocket) {
       rot = -135;
     } else if (t < 0.6) {
       const p = (t - 0.3) / 0.3;
-      const angle = -p * Math.PI * 2 + Math.PI / 2; // ⬅️ rechtsom!
+      const angle = Math.PI * 2 * p - Math.PI / 2;
       x = midX + Math.cos(angle) * loopRadius;
       y = midY + Math.sin(angle) * loopRadius;
       rot = angle * 180 / Math.PI + 90;
