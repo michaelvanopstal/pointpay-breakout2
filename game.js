@@ -1389,12 +1389,6 @@ function animateRocketFlight(rocket) {
   requestAnimationFrame(draw);
 }
 
-// Start en herhaal
-createRocketSystem();
-setInterval(createRocketSystem, 30000);
-
-
-
 // 🚀 Start de eerste raket, en herhaal elke 30 sec
 createRocketSystem();
 setInterval(createRocketSystem, 30000);
