@@ -116,32 +116,28 @@
 
       const startX = window.innerWidth + 100;
       const endX = -200;
-      const startY = window.innerHeight + 100;
-      const endY = -150;
+      const startY = window.innerHeight * 0.6;
+      const endY = window.innerHeight * 0.2;
       let startTime = null;
 
-      const loopStart = 0.3;        // Na 30% begint de loop
-      const loopDuration = 0.3;     // Duurt 30% van het pad
-      const loopRadius = 100;
+      const loopStart = 0.3;
+      const loopDuration = 0.3;
+      const loopRadius = 80;
 
       function animate(timestamp) {
         if (!startTime) startTime = timestamp;
         const elapsed = timestamp - startTime;
         const progress = Math.min(elapsed / duration, 1);
-        const step = elapsed / 16;
 
-        // Basispositie met een vloeiende verticale golf
+        // Bereken basispositie
         const baseX = startX + (endX - startX) * progress;
-        const baseY = startY + (endY - startY) * progress + Math.sin(progress * Math.PI * 2) * 20;
+        const baseY = startY + (endY - startY) * progress;
 
-        const wobbleX = Math.sin(step / 10) * 2;
-        const wobbleY = Math.cos(step / 15) * 2;
-
-        let x = baseX + wobbleX;
-        let y = baseY + wobbleY;
+        let x = baseX;
+        let y = baseY;
         let rotation = 0;
 
-        // Looping tussen 30% en 60%
+        // Loop uitvoeren tijdens het middenstuk
         if (progress >= loopStart && progress < loopStart + loopDuration) {
           const loopProgress = (progress - loopStart) / loopDuration;
           const angle = loopProgress * 2 * Math.PI;
@@ -149,12 +145,15 @@
           const loopCenterX = baseX;
           const loopCenterY = baseY;
 
-          x = loopCenterX + Math.cos(angle) * loopRadius;
-          y = loopCenterY + Math.sin(angle) * loopRadius;
+          // Loop met klok mee (omhoog en dan omlaag)
+          x = loopCenterX + Math.sin(angle) * loopRadius;
+          y = loopCenterY - Math.cos(angle) * loopRadius;
 
-          rotation = Math.sin(loopProgress * Math.PI) * 360; // vloeiende draai
+          // Roteer met de loop mee
+          rotation = (Math.sin(angle) * 180) + 180;
         }
 
+        // Toepassen op flyer
         flyer.style.left = `${x}px`;
         flyer.style.top = `${y}px`;
         flyer.style.transform = `rotate(${rotation}deg)`;
@@ -171,10 +170,8 @@
     }, delay);
   }
 
-  // Start eerste run
+  // Start & herhaal
   animateFlyer("bikeFlyer", 20000, 1000);
-
-  // Herhaal elke 30 seconden
   setInterval(() => animateFlyer("bikeFlyer", 20000, 1000), 30000);
 </script>
 
