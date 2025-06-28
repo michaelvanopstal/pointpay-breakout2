@@ -1267,5 +1267,6 @@ setTimeout(() => {
   saveHighscore();
   resetBricks();
   resetBall();
-}, 1000);
+ }, 1000);
+}
 
