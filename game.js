@@ -1223,12 +1223,15 @@ function spawnStoneDebris(x, y) {
   }
 }
 
-
 function animateRocketWithLoop(rocket) {
   const duration = 8000;
   const loopStart = 0.3;
   const loopEnd = 0.6;
   const startTime = performance.now();
+
+  // ✅ Voeg hier direct debugstijl toe voor positionering
+  rocket.style.background = 'lime';
+  rocket.style.opacity = '0.5';
 
   function draw(time) {
     const elapsed = time - startTime;
@@ -1249,7 +1252,7 @@ function animateRocketWithLoop(rocket) {
       rot = -135;
     } else if (t <= loopEnd) {
       const p = (t - loopStart) / (loopEnd - loopStart);
-      const angle = Math.PI * 2 * p + Math.PI; // begint van linksonder, draait omhoog
+      const angle = Math.PI * 2 * p + Math.PI;
       const r = 150;
       x = midX + Math.cos(angle) * r;
       y = midY + Math.sin(angle) * r;
@@ -1295,3 +1298,4 @@ function animateRocketWithLoop(rocket) {
 
   requestAnimationFrame(draw);
 }
+
