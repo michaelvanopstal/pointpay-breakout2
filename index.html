@@ -104,7 +104,7 @@
   }
 </style>
   
-<img id="bikeFlyer" src="pointpay-bike.png" style="position:absolute; display:none; width:180px;" />
+<img id="bikeFlyer" src="pointpay-bike.png" />
 
 
 <script>
@@ -119,28 +119,51 @@
       const endY = -150;
       let startTime = null;
 
+      const loopStart = 0.3;        // 30% van het pad
+      const loopDuration = 0.3;     // loop duurt 30%
+      const loopRadius = 100;       // straal van de looping
+
       function animate(timestamp) {
         if (!startTime) startTime = timestamp;
         const elapsed = timestamp - startTime;
         const progress = Math.min(elapsed / duration, 1);
         const step = elapsed / 16;
 
+        // Lineair pad voor basispositie
         const baseX = startX + (endX - startX) * progress;
         const baseY = startY + (endY - startY) * progress;
 
         const wobbleX = Math.sin(step / 10) * 3;
         const wobbleY = Math.cos(step / 15) * 3;
 
-        const x = baseX + wobbleX;
-        const y = baseY + wobbleY;
+        let x = baseX + wobbleX;
+        let y = baseY + wobbleY;
+        let rotation = 0;
 
+        // Loop logica tussen 30%-60%
+        if (progress >= loopStart && progress < loopStart + loopDuration) {
+          const loopProgress = (progress - loopStart) / loopDuration;
+          const angle = loopProgress * 2 * Math.PI;
+
+          const loopCenterX = baseX;
+          const loopCenterY = baseY;
+
+          x = loopCenterX + Math.cos(angle) * loopRadius;
+          y = loopCenterY + Math.sin(angle) * loopRadius;
+
+          rotation = angle * (180 / Math.PI); // graden
+        }
+
+        // Positie en rotatie toepassen
         flyer.style.left = `${x}px`;
         flyer.style.top = `${y}px`;
+        flyer.style.transform = `rotate(${rotation}deg)`;
 
         if (progress < 1) {
           requestAnimationFrame(animate);
         } else {
           flyer.style.display = "none";
+          flyer.style.transform = "rotate(0deg)";
         }
       }
 
@@ -150,11 +173,11 @@
 
   // Start eerste run
   animateFlyer("bikeFlyer", 20000, 1000);     // fiets na 1 sec, 20 sec lang
-  animateFlyer("balloonFlyer", 30000, 1000);  // ballon na 2 sec, 28 sec lang
+  animateFlyer("balloonFlyer", 30000, 1000);  // ballon na 1 sec, 30 sec lang
 
   // Herhaal elke 30 sec
   setInterval(() => animateFlyer("bikeFlyer", 20000, 1000), 30000);
-setInterval(() => animateFlyer("balloonFlyer", 30000, 0), 30000);
+  setInterval(() => animateFlyer("balloonFlyer", 30000, 0), 30000);
 </script>
 
 <!-- PXP Coin Banner -->
