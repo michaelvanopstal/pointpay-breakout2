@@ -22,11 +22,7 @@
     <canvas id="gameCanvas" width="645" height="600"></canvas>
 
     <div id="login-overlay">
-    <div class="rocket-container">
- <img src="raket-perfect.png" class="rocket-img" alt="PXP Rocket">
-  <div class="flame"></div>
-  <div class="smoke"></div>
-</div>   
+   
 
   <div id="login-box">
   <label for="player-name">Inlog:</label><br />
@@ -237,28 +233,4 @@ setInterval(() => animateFlyer("balloonFlyer", 30000, 0), 30000);
 
      document.getElementById("musicToggle").blur();
   });
-</script>
-
-<script>
-  const rocketDuration = 15; // verander dit getal om snelheid aan te passen (in seconden)
-
-  function launchRocketAnimation() {
-    const rocket = document.querySelector('.rocket-container');
-
-    // Reset
-    rocket.style.animation = 'none';
-    rocket.style.transform = 'none';
-    rocket.style.opacity = '1';
-
-    void rocket.offsetWidth;
-
-    // Herstart met juiste tijd
-    rocket.style.animation = `fly-diagonal ${rocketDuration}s linear`;
-  }
-
-  // Start direct
-  launchRocketAnimation();
-
-  // Herhaal na rocketDuration + marge (bv. +5s)
-  setInterval(launchRocketAnimation, (rocketDuration + 5) * 1000);
 </script>
