@@ -109,45 +109,71 @@
 
 
 <script>
-  function animateFlyer(flyerId, duration, delay) {
-    setTimeout(() => {
-      const flyer = document.getElementById(flyerId);
-      flyer.style.display = "block";
+function animateFlyer(flyerId, duration, delay) {
+  setTimeout(() => {
+    const flyer = document.getElementById(flyerId);
+    flyer.style.display = "block";
 
-      const startX = window.innerWidth + 100;
-      const endX = -200;
-      const startY = window.innerHeight + 100;
-      const endY = -150;
-      let startTime = null;
+    const startX = window.innerWidth + 100;
+    const endX = -200;
+    const startY = window.innerHeight + 100;
+    const endY = -150;
 
-      function animate(timestamp) {
-        if (!startTime) startTime = timestamp;
-        const elapsed = timestamp - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        const step = elapsed / 16;
+    let startTime = null;
+    const loopStart = 0.3; // 30%
+    const loopDuration = 0.3; // Loop duurt 30% van de totale progress
+    const loopRadius = 100; // Grootte van de loop
 
-        const baseX = startX + (endX - startX) * progress;
-        const baseY = startY + (endY - startY) * progress;
+    function animate(timestamp) {
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const step = elapsed / 16;
 
-        const wobbleX = Math.sin(step / 10) * 3;
-        const wobbleY = Math.cos(step / 15) * 3;
+      // Basislijn tussen start en eind
+      const baseX = startX + (endX - startX) * progress;
+      const baseY = startY + (endY - startY) * progress;
 
-        const x = baseX + wobbleX;
-        const y = baseY + wobbleY;
+      // Wobble effect
+      const wobbleX = Math.sin(step / 10) * 3;
+      const wobbleY = Math.cos(step / 15) * 3;
 
-        flyer.style.left = `${x}px`;
-        flyer.style.top = `${y}px`;
+      let x = baseX + wobbleX;
+      let y = baseY + wobbleY;
+      let rotation = 0;
 
-        if (progress < 1) {
-          requestAnimationFrame(animate);
-        } else {
-          flyer.style.display = "none";
-        }
+      // Loop-segment
+      if (progress >= loopStart && progress < loopStart + loopDuration) {
+        const loopProgress = (progress - loopStart) / loopDuration;
+        const angle = loopProgress * 2 * Math.PI; // 0 tot 2π
+        const loopCenterX = baseX;
+        const loopCenterY = baseY;
+
+        x = loopCenterX + Math.cos(angle) * loopRadius;
+        y = loopCenterY + Math.sin(angle) * loopRadius;
+
+        rotation = angle * (180 / Math.PI); // in graden
+      } else if (progress >= loopStart + loopDuration) {
+        rotation = 0;
       }
 
-      requestAnimationFrame(animate);
-    }, delay);
-  }
+      // Apply position and rotation
+      flyer.style.left = `${x}px`;
+      flyer.style.top = `${y}px`;
+      flyer.style.transform = `rotate(${rotation}deg)`;
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        flyer.style.display = "none";
+      }
+    }
+
+    requestAnimationFrame(animate);
+  }, delay);
+}
+</script>
+
 
   // Start eerste run
   animateFlyer("bikeFlyer", 20000, 1000);     // fiets na 1 sec, 20 sec lang
