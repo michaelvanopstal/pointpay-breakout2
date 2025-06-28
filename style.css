@@ -208,17 +208,16 @@ body {
 }
 
 #musicToggle {
-  display: block;
-  margin: 10px auto;
-  padding: 8px 16px;
-  font-size: 16px;
-  font-weight: bold;
-  background-color: #007bff; /* PointPay blauw */
+  background-color: #007bff;     /* helder PointPay-blauw */
   color: white;
   border: none;
+  padding: 8px 16px;
+  font-size: 16px;
   border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  display: block;
+  margin: 10px auto;
 }
 
 #musicToggle:hover {
