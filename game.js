@@ -196,8 +196,11 @@ function keyDownHandler(e) {
   // 🛡️ Voorkom acties als gebruiker in een inputveld of knop zit
   if (["INPUT", "TEXTAREA", "BUTTON"].includes(document.activeElement.tagName)) return;
 
-  if (e.key === "Right" || e.key === "ArrowRight") rightPressed = true;
-  else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = true;
+  if (e.key === "Right" || e.key === "ArrowRight") {
+    rightPressed = true;
+  } else if (e.key === "Left" || e.key === "ArrowLeft") {
+    leftPressed = true;
+  }
 
   if ((e.key === "ArrowUp" || e.key === "Up" || e.code === "Space") && !ballLaunched) {
     ballLaunched = true;
@@ -235,20 +238,21 @@ function keyDownHandler(e) {
       score = 0;
       level = 1;
       resetBricks();
-      resetBall(); // ✅ Zorg dat dit hier staat
+      resetBall();
       resetPaddle();
       startTime = new Date();
       gameOver = false;
-      document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+
+      document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
       document.getElementById("timeDisplay").textContent = "time 00:00";
 
       flagsOnPaddle = false;
       flyingCoins = [];
     }
+
     ballMoving = true;
   }
 }
-
 
 function keyUpHandler(e) {
   if (e.key === "Right" || e.key === "ArrowRight") rightPressed = false;
