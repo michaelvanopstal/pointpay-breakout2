@@ -1270,28 +1270,6 @@ function triggerPaddleExplosion() {
 }
 
 
-const rocketSize = 100;
-const animatedRocketSpeed = 10000;
-const loopRadius = 120;
-
-function createRocketSystem() {
-  const rocket = document.createElement('div');
-  rocket.style.position = 'absolute';
-  rocket.style.width = rocketSize + 'px';
-  rocket.style.height = rocketSize + 'px';
-  rocket.style.zIndex = '100';
-  rocket.style.pointerEvents = 'none';
-
-  const img = document.createElement('img');
-  img.src = 'raket-perfect.png';
-  img.style.width = '100%';
-  img.style.height = 'auto';
-  img.style.position = 'absolute';
-  rocket.appendChild(img);
-
-  document.body.appendChild(rocket);
-  animateRocketFlight(rocket);
-}
 
 const rocketSize = 100;
 const animatedRocketSpeed = 10000;
