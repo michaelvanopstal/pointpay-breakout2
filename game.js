@@ -1224,57 +1224,6 @@ function spawnStoneDebris(x, y) {
 }
 
 
-function createRocketSystem() {
-  const rocket = document.createElement('div');
-  rocket.className = 'rocket-container';
-  rocket.style.position = 'absolute';
-  rocket.style.width = '120px';
-  rocket.style.height = '120px';
-  rocket.style.left = '-150px';
-  rocket.style.bottom = '-100px';
-  rocket.style.zIndex = '20';
-  rocket.style.pointerEvents = 'none';
-
-  const rocketImg = document.createElement('img');
-  rocketImg.src = 'raket-perfect.png';
-  rocketImg.style.width = '100%';
-  rocketImg.style.height = 'auto';
-  rocketImg.style.display = 'block';
-  rocketImg.style.position = 'absolute';
-  rocketImg.style.top = '0';
-  rocketImg.style.left = '0';
-  rocket.appendChild(rocketImg);
-
-  const flame = document.createElement('div');
-  flame.style.position = 'absolute';
-  flame.style.bottom = '-20px';
-  flame.style.left = '88%';
-  flame.style.width = '18px';
-  flame.style.height = '30px';
-  flame.style.borderRadius = '50%';
-  flame.style.background = 'radial-gradient(ellipse at center, orange, red, transparent)';
-  flame.style.filter = 'blur(0.5px)';
-  flame.style.zIndex = '-1';
-  flame.style.animation = 'flamePulse 0.15s infinite alternate';
-  rocket.appendChild(flame);
-
-  // Voeg animatie toe aan document als die nog niet bestaat
-  if (!document.getElementById('flamePulseStyle')) {
-    const style = document.createElement('style');
-    style.id = 'flamePulseStyle';
-    style.innerHTML = `
-      @keyframes flamePulse {
-        0% { transform: scaleY(1); opacity: 1; }
-        100% { transform: scaleY(1.3); opacity: 0.7; }
-      }
-    `;
-    document.head.appendChild(style);
-  }
-
-  document.body.appendChild(rocket);
-  animateRocketWithLoop(rocket);
-}
-
 function animateRocketWithLoop(rocket) {
   const duration = 8000;
   const loopStart = 0.3;
@@ -1286,22 +1235,25 @@ function animateRocketWithLoop(rocket) {
     const t = Math.min(elapsed / duration, 1);
     let x, y, rot;
 
-    const startX = -150, startY = window.innerHeight + 100;
-    const midX = window.innerWidth / 2, midY = window.innerHeight / 2;
-    const endX = -200, endY = -150;
+    const startX = window.innerWidth + 150;
+    const startY = window.innerHeight + 100;
+    const midX = window.innerWidth / 2;
+    const midY = window.innerHeight / 2;
+    const endX = -200;
+    const endY = -200;
 
     if (t < loopStart) {
       const p = t / loopStart;
-      x = startX + p * (midX + 150);
+      x = startX - p * (midX + 150);
       y = startY - p * (midY + 150);
-      rot = -45;
+      rot = -135;
     } else if (t <= loopEnd) {
       const p = (t - loopStart) / (loopEnd - loopStart);
-      const angle = Math.PI * 2 * p - Math.PI; // loop met de klok mee
+      const angle = Math.PI * 2 * p + Math.PI; // begint van linksonder, draait omhoog
       const r = 150;
       x = midX + Math.cos(angle) * r;
       y = midY + Math.sin(angle) * r;
-      rot = (angle * 180 / Math.PI) - 90;
+      rot = (angle * 180 / Math.PI) + 90;
     } else {
       const p = (t - loopEnd) / (1 - loopEnd);
       x = midX - 150 - p * (midX + 150);
@@ -1313,7 +1265,6 @@ function animateRocketWithLoop(rocket) {
     rocket.style.top = `${y}px`;
     rocket.style.transform = `rotate(${rot}deg)`;
 
-    // Rook
     if (t % 0.02 < 0.005) {
       const smoke = document.createElement('div');
       smoke.className = 'rocket-smoke';
@@ -1344,8 +1295,3 @@ function animateRocketWithLoop(rocket) {
 
   requestAnimationFrame(draw);
 }
-
-// 🚀 Start direct & herhaal elke 30 sec
-createRocketSystem();
-setInterval(createRocketSystem, 30000);
-
