@@ -109,70 +109,67 @@
 
 
 <script>
-  function animateFlyer(flyerId, duration, delay) {
-    setTimeout(() => {
-      const flyer = document.getElementById(flyerId);
-      flyer.style.display = "block";
+function animateFlyer(flyerId, duration, delay) {
+  setTimeout(() => {
+    const flyer = document.getElementById(flyerId);
+    flyer.style.display = "block";
 
-      const startX = window.innerWidth + 100;
-      const endX = -200;
-      const startY = window.innerHeight * 0.6;
-      const endY = window.innerHeight * 0.2;
-      let startTime = null;
+    const startX = window.innerWidth + 100;
+    const endX = -200;
+    const startY = window.innerHeight * 0.6;
+    const endY = window.innerHeight * 0.2;
+    let startTime = null;
 
-      const loopStart = 0.3;
-      const loopDuration = 0.3;
-      const loopRadius = 80;
+    const loopStart = 0.4;         // 40% van het pad
+    const loopDuration = 0.2;      // loop duurt 20% van het pad
+    const loopRadius = 100;
 
-      function animate(timestamp) {
-        if (!startTime) startTime = timestamp;
-        const elapsed = timestamp - startTime;
-        const progress = Math.min(elapsed / duration, 1);
+    function animate(timestamp) {
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+      const progress = Math.min(elapsed / duration, 1);
 
-        // Bereken basispositie
-        const baseX = startX + (endX - startX) * progress;
-        const baseY = startY + (endY - startY) * progress;
+      const baseX = startX + (endX - startX) * progress;
+      const baseY = startY + (endY - startY) * progress;
 
-        let x = baseX;
-        let y = baseY;
-        let rotation = 0;
+      let x = baseX;
+      let y = baseY;
+      let rotation = 0;
 
-        // Loop uitvoeren tijdens het middenstuk
-        if (progress >= loopStart && progress < loopStart + loopDuration) {
-          const loopProgress = (progress - loopStart) / loopDuration;
-          const angle = loopProgress * 2 * Math.PI;
+      // Één enkele voorwaartse loop
+      if (progress >= loopStart && progress < loopStart + loopDuration) {
+        const loopProgress = (progress - loopStart) / loopDuration;
+        const angle = loopProgress * 2 * Math.PI;
 
-          const loopCenterX = baseX;
-          const loopCenterY = baseY;
+        const loopCenterX = baseX;
+        const loopCenterY = baseY;
 
-          // Loop met klok mee (omhoog en dan omlaag)
-          x = loopCenterX + Math.sin(angle) * loopRadius;
-          y = loopCenterY - Math.cos(angle) * loopRadius;
+        // Voorwaartse looping (rechtsom, omhoog)
+        x = loopCenterX + Math.sin(angle) * loopRadius;
+        y = loopCenterY - Math.cos(angle) * loopRadius;
 
-          // Roteer met de loop mee
-          rotation = (Math.sin(angle) * 180) + 180;
-        }
-
-        // Toepassen op flyer
-        flyer.style.left = `${x}px`;
-        flyer.style.top = `${y}px`;
-        flyer.style.transform = `rotate(${rotation}deg)`;
-
-        if (progress < 1) {
-          requestAnimationFrame(animate);
-        } else {
-          flyer.style.display = "none";
-          flyer.style.transform = "rotate(0deg)";
-        }
+        rotation = angle * 180 / Math.PI; // mee roteren
       }
 
-      requestAnimationFrame(animate);
-    }, delay);
-  }
+      flyer.style.left = `${x}px`;
+      flyer.style.top = `${y}px`;
+      flyer.style.transform = `rotate(${rotation}deg)`;
 
-  // Start & herhaal
-  animateFlyer("bikeFlyer", 20000, 1000);
-  setInterval(() => animateFlyer("bikeFlyer", 20000, 1000), 30000);
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        flyer.style.display = "none";
+        flyer.style.transform = "rotate(0deg)";
+      }
+    }
+
+    requestAnimationFrame(animate);
+  }, delay);
+}
+
+// Start en herhaal
+animateFlyer("bikeFlyer", 20000, 1000);
+setInterval(() => animateFlyer("bikeFlyer", 20000, 1000), 30000);
 </script>
 
 <!-- PXP Coin Banner -->
