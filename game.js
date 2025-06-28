@@ -1275,19 +1275,20 @@ const loopRadius = 120;
 
 function createRocketSystem() {
   const rocket = document.createElement('div');
+  rocket.style.position = 'absolute';
   rocket.style.width = rocketSize + 'px';
   rocket.style.height = rocketSize + 'px';
   rocket.style.zIndex = '100';
   rocket.style.pointerEvents = 'none';
+  rocket.style.transformOrigin = 'center center';
 
   const img = document.createElement('img');
-img.src = 'raket-perfect.png';
-img.style.width = '100%';
-img.style.height = 'auto';
-img.style.display = 'block'; // voorkomt whitespace
-img.style.transformOrigin = 'center center'; // draait netjes om midden
-rocket.appendChild(img);
-
+  img.src = 'raket-perfect kopie.png'; // jouw raketplaatje
+  img.style.width = '100%';
+  img.style.height = 'auto';
+  img.style.display = 'block';
+  img.style.pointerEvents = 'none';
+  rocket.appendChild(img);
 
   document.body.appendChild(rocket);
   animateRocketFlight(rocket);
@@ -1326,15 +1327,16 @@ function animateRocketFlight(rocket) {
       y = loopCenterY + loopRadius - p * (loopCenterY + 100);
     }
 
+    // Bereken richting en rotatie
     if (prevX !== null && prevY !== null) {
       const dx = x - prevX;
       const dy = y - prevY;
       const angleRad = Math.atan2(dy, dx);
-      const rot = angleRad * 180 / Math.PI + 45;
+      const rot = angleRad * 180 / Math.PI + 45; // ← Jouw afbeelding wijst schuin omhoog
 
-      rocket.style.transform = `rotate(${rot}deg)`;
+      rocket.style.transform = `translate(${x}px, ${y}px) rotate(${rot}deg)`;
 
-      // 🔥 Vlam achter raket
+      // Vlam
       const flameOffset = 40;
       const flameX = x - Math.cos(angleRad) * flameOffset;
       const flameY = y - Math.sin(angleRad) * flameOffset;
@@ -1354,7 +1356,7 @@ function animateRocketFlight(rocket) {
       document.body.appendChild(flame);
       setTimeout(() => flame.remove(), 100);
 
-      // ☁️ Rook achter raket
+      // Rook
       if (t % 0.03 < 0.01) {
         const smokeOffset = 50;
         const smokeX = x - Math.cos(angleRad) * smokeOffset;
@@ -1379,9 +1381,6 @@ function animateRocketFlight(rocket) {
       }
     }
 
-    rocket.style.left = `${x}px`;
-    rocket.style.top = `${y}px`;
-
     prevX = x;
     prevY = y;
 
@@ -1395,7 +1394,6 @@ function animateRocketFlight(rocket) {
   requestAnimationFrame(draw);
 }
 
-// Start en herhaal elke 30 sec
+// Start en herhaal
 createRocketSystem();
 setInterval(createRocketSystem, 30000);
-
