@@ -1271,6 +1271,10 @@ function triggerPaddleExplosion() {
 
 
 
+ const rocketSize = 100;
+ const animatedRocketSpeed = 10000;
+ const loopRadius = 120;
+
 
 function animateRocketFlight(rocket) {
   const startTime = performance.now();
