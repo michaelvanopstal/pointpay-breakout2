@@ -1274,6 +1274,10 @@ const rocketSize = 100;
 const animatedRocketSpeed = 10000;
 const loopRadius = 150;
 
+const rocketSize = 100;
+const animatedRocketSpeed = 10000;
+const loopRadius = 120;
+
 function createRocketSystem() {
   const rocket = document.createElement('div');
   rocket.style.position = 'absolute';
@@ -1301,31 +1305,36 @@ function animateRocketFlight(rocket) {
     const t = Math.min(elapsed / animatedRocketSpeed, 1);
     let x, y, rot;
 
-    const startX = window.innerWidth + 100;
-    const startY = window.innerHeight - 100;
-    const midX = window.innerWidth / 2;
-    const midY = window.innerHeight / 1.3; // lager voor de loop
+    const canvasW = window.innerWidth;
+    const canvasH = window.innerHeight;
+
+    const startX = canvasW + 150;
+    const startY = canvasH - 50;
+
+    const loopCenterX = canvasW / 2;
+    const loopCenterY = canvasH / 1.5;
+
     const endX = -200;
     const endY = -200;
 
     if (t < 0.3) {
-      // Fase 1: naar startpunt loop
+      // Fase 1: schuin omhoog naar het beginpunt van de loop
       const p = t / 0.3;
-      x = startX - p * (midX - loopRadius);
-      y = startY;
+      x = startX - p * (loopCenterX + loopRadius);
+      y = startY - p * (canvasH - loopCenterY);
       rot = -135;
     } else if (t < 0.6) {
-      // Fase 2: volledige looping (rechtsom, 360°)
+      // Fase 2: rechtsom looping
       const p = (t - 0.3) / 0.3;
-      const angle = Math.PI * 2 * p + Math.PI; // met klok mee
-      x = midX + Math.cos(angle) * loopRadius;
-      y = midY + Math.sin(angle) * loopRadius;
+      const angle = Math.PI * 2 * p + Math.PI / 2;
+      x = loopCenterX + Math.cos(angle) * loopRadius;
+      y = loopCenterY + Math.sin(angle) * loopRadius;
       rot = angle * 180 / Math.PI + 90;
     } else {
-      // Fase 3: verder omhoog naar linksboven
+      // Fase 3: schuin verder omhoog naar linksboven
       const p = (t - 0.6) / 0.4;
-      x = midX - loopRadius - p * (midX + 200);
-      y = midY + loopRadius - p * (midY + 100);
+      x = loopCenterX - loopRadius - p * (loopCenterX + 200);
+      y = loopCenterY + loopRadius - p * (loopCenterY + 100);
       rot = -135;
     }
 
@@ -1333,7 +1342,7 @@ function animateRocketFlight(rocket) {
     rocket.style.top = `${y}px`;
     rocket.style.transform = `rotate(${rot}deg)`;
 
-    // 🔥 Vlam (flikkerend)
+    // 🔥 Vlam (levendig)
     const flame = document.createElement('div');
     flame.style.position = 'absolute';
     flame.style.width = `${18 + Math.random() * 4}px`;
@@ -1379,6 +1388,11 @@ function animateRocketFlight(rocket) {
 
   requestAnimationFrame(draw);
 }
+
+// Start en herhaal
+createRocketSystem();
+setInterval(createRocketSystem, 30000);
+
 
 
 // 🚀 Start de eerste raket, en herhaal elke 30 sec
