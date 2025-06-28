@@ -194,14 +194,17 @@ function keyDownHandler(e) {
   console.log("Toets ingedrukt:", e.key);
 
   // 🛡️ Voorkom acties als gebruiker in een inputveld of knop zit
-  if (["INPUT", "TEXTAREA", "BUTTON"].includes(document.activeElement.tagName)) return;
+if (["INPUT", "TEXTAREA", "BUTTON"].includes(document.activeElement.tagName)) return;
 
-  if (e.key === "Right" || e.key === "ArrowRight") rightPressed = true;
-  else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = true;
+if (e.key === "Right" || e.key === "ArrowRight") rightPressed = true;
+else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = true;
 
-  if ((e.key === "ArrowUp" || e.key === "Up" || e.code === "Space") && !ballLaunched) {
-    ballLaunched = true;
-    ballMoving = true;
+if ((e.key === "ArrowUp" || e.key === "Up" || e.code === "Space") && !ballLaunched) {
+  ballLaunched = true;
+  ballMoving = true;
+
+  startTimer(); // ✅ Timer pas starten bij eerste schot
+}
 
     // 🎯 Speel schiet-geluid af
     shootSound.currentTime = 0;
