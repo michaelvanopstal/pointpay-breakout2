@@ -1284,7 +1284,7 @@ function createRocketSystem() {
   rocket.style.transformOrigin = 'center center';
 
   const img = document.createElement('img');
-  img.src = 'raket-perfect kopie.png';
+  img.src = 'raket-perfect.png';
   img.style.width = '100%';
   img.style.height = 'auto';
   img.style.display = 'block';
