@@ -246,7 +246,7 @@ body {
 .flame {
   position: absolute;
   bottom: -18px;        /* iets verder onder de raket */
-  left: 54%;            /* precies onder de uitlaat */
+  left: 60%;            /* precies onder de uitlaat */
   width: 16px;
   height: 28px;
   background: radial-gradient(ellipse at center, orange 0%, red 60%, transparent 100%);
