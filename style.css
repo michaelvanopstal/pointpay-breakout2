@@ -231,14 +231,13 @@ body {
   bottom: -100px;
   right: -100px;
   pointer-events: none;
-  animation: fly-diagonal 6s linear infinite;
+  animation: fly-diagonal 6s linear;
   z-index: 10;
 }
 
 .rocket-img {
   width: 100%;
   height: auto;
-  display: block;
 }
 
 .flame {
@@ -266,40 +265,16 @@ body {
 }
 
 @keyframes fly-diagonal {
-  0% {
-    transform: translate(0, 0) rotate(-5deg);
-    opacity: 1;
-  }
-  100% {
-    transform: translate(-120vw, -120vh) rotate(-5deg);
-    opacity: 0;
-  }
+  0% { transform: translate(0, 0) rotate(-5deg); opacity: 1; }
+  100% { transform: translate(-120vw, -120vh) rotate(-5deg); opacity: 0; }
 }
 
 @keyframes flame-anim {
-  0% {
-    transform: scaleY(1);
-    opacity: 1;
-  }
-  100% {
-    transform: scaleY(1.4);
-    opacity: 0.7;
-  }
+  0% { transform: scaleY(1); opacity: 1; }
+  100% { transform: scaleY(1.4); opacity: 0.7; }
 }
 
 @keyframes smoke-rise {
-  0% {
-    transform: scale(1) translateY(0);
-    opacity: 0.3;
-  }
-  100% {
-    transform: scale(1.4) translateY(-40px);
-    opacity: 0;
-  }
+  0% { transform: scale(1) translateY(0); opacity: 0.3; }
+  100% { transform: scale(1.4) translateY(-40px); opacity: 0; }
 }
-
-
-
-
-
-
