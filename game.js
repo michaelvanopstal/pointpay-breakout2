@@ -1329,7 +1329,7 @@ function animateRocketFlight(rocket) {
       const dx = x - prevX;
       const dy = y - prevY;
       const angleRad = Math.atan2(dy, dx);
-      const rot = angleRad * 180 / Math.PI;
+      const rot = angleRad * 180 / Math.PI + 45;
 
       rocket.style.transform = `rotate(${rot}deg)`;
 
