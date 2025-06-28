@@ -38,9 +38,6 @@ let stoneDebris = [];
 
 
 
-const rocketSize = 100;      // breedte/hoogte van de raket
-const rocketSpeed = 10000;   // in ms (duur)
-const loopRadius = 150;      // grootte van de loop
 
 let speedBoostActive = false;
 let speedBoostStart = 0;
