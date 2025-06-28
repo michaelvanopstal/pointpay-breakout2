@@ -1229,7 +1229,6 @@ function animateRocketWithLoop(rocket) {
   const loopEnd = 0.6;
   const startTime = performance.now();
 
-  // ✅ Voeg hier direct debugstijl toe voor positionering
   rocket.style.background = 'lime';
   rocket.style.opacity = '0.5';
 
@@ -1295,5 +1294,8 @@ function animateRocketWithLoop(rocket) {
       rocket.remove();
     }
   }
+
+  requestAnimationFrame(draw); // ← belangrijk: start animatie
+}
 
   
