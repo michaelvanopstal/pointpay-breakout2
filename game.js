@@ -1275,21 +1275,24 @@ const loopRadius = 120;
 
 function createRocketSystem() {
   const rocket = document.createElement('div');
+  rocket.id = 'animated-rocket';
   rocket.style.position = 'absolute';
   rocket.style.width = rocketSize + 'px';
   rocket.style.height = rocketSize + 'px';
-  rocket.style.zIndex = '100';
+  rocket.style.zIndex = '9999';
   rocket.style.pointerEvents = 'none';
   rocket.style.transformOrigin = 'center center';
 
   const img = document.createElement('img');
-  img.src = 'raket-perfect kopie.png'; // jouw afbeelding
+  img.src = 'raket-perfect kopie.png';
   img.style.width = '100%';
   img.style.height = 'auto';
   img.style.display = 'block';
-  rocket.appendChild(img);
+  img.style.pointerEvents = 'none';
 
+  rocket.appendChild(img);
   document.body.appendChild(rocket);
+
   animateRocketFlight(rocket);
 }
 
@@ -1348,7 +1351,6 @@ function animateRocketFlight(rocket) {
   requestAnimationFrame(draw);
 }
 
-// Start animatie
+// Start direct (of roep dit aan vanuit je bestaande spelsysteem)
 createRocketSystem();
 setInterval(createRocketSystem, 30000);
-
