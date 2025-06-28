@@ -1209,7 +1209,6 @@ function stopTimer() {
   document.getElementById("timeDisplay").textContent = "time 00:00";
 }
 
-
 function spawnStoneDebris(x, y) {
   for (let i = 0; i < 8; i++) {
     stoneDebris.push({
@@ -1222,8 +1221,6 @@ function spawnStoneDebris(x, y) {
     });
   }
 }
-
-
 
 function triggerPaddleExplosion() {
   paddleExploding = true;
@@ -1242,33 +1239,30 @@ function triggerPaddleExplosion() {
   }
 
   const paddleExplodeSound = new Audio("paddle_explode.mp3");
-paddleExplodeSound.play();
+  paddleExplodeSound.play();
 
-// ⏱️ Na 1 seconde paddle resetten + alles wissen
-setTimeout(() => {
-  stopTimer();               // ⏹️ Timer stoppen en terug op 00:00 zetten
-  ballReleased = false;      // ⛔ Timer pas starten bij volgende afvuuractie
+  // ⏱️ Na 1 seconde paddle resetten + alles wissen
+  setTimeout(() => {
+    stopTimer();               // ⏹️ Timer stoppen en terug op 00:00 zetten
+    ballReleased = false;      // ⛔ Timer pas starten bij volgende afvuuractie
 
-  paddleExploding = false;
-  paddleExplosionParticles = [];
+    paddleExploding = false;
+    paddleExplosionParticles = [];
 
-  speedBoostActive = false;
-  doublePointsActive = false;
-  flagsOnPaddle = false;
-  rocketActive = false;
-  rocketFired = false;
-  rocketAmmo = 0;
-  flyingCoins = [];
-  smokeParticles = [];
-  explosions = [];
-  coins = [];
-  pxpBags = [];
+    speedBoostActive = false;
+    doublePointsActive = false;
+    flagsOnPaddle = false;
+    rocketActive = false;
+    rocketFired = false;
+    rocketAmmo = 0;
+    flyingCoins = [];
+    smokeParticles = [];
+    explosions = [];
+    coins = [];
+    pxpBags = [];
 
-  saveHighscore();
-  resetBricks();
-  resetBall();
-}, 1000);
-
+    saveHighscore();
+    resetBricks();
+    resetBall();
+  }, 1000);
 }
-
-
