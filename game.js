@@ -1306,7 +1306,6 @@ function triggerPaddleExplosion() {
     paddleExploding = true;
     paddleExplosionParticles = [];
 
-    // ✅ Voeg hier explosiedeeltjes toe
     for (let i = 0; i < 50; i++) {
       paddleExplosionParticles.push({
         x: paddleX + paddleWidth / 2,
@@ -1318,7 +1317,6 @@ function triggerPaddleExplosion() {
       });
     }
 
-    // ✅ Geluid terugzetten als je wilt
     paddleExplodeSound.currentTime = 0;
     paddleExplodeSound.play();
 
@@ -1340,34 +1338,58 @@ function triggerPaddleExplosion() {
     }, 1000);
 
   } else {
-    // ⚠️ Leven = 0 → volledig reset
-    saveHighscore();
-    stopTimer();
+    // ✅ Laatste leven: eerst paddle laten ontploffen
+    paddleExploding = true;
+    paddleExplosionParticles = [];
 
-    lives = 3;
-    updateLivesDisplay(); // ✅ Zet 3 zakjes weer terug
-    score = 0;
-    level = 1;
-    elapsedTime = 0;
+    for (let i = 0; i < 50; i++) {
+      paddleExplosionParticles.push({
+        x: paddleX + paddleWidth / 2,
+        y: canvas.height - paddleHeight / 2,
+        dx: (Math.random() - 0.5) * 10,
+        dy: (Math.random() - 0.5) * 10,
+        radius: Math.random() * 4 + 2,
+        alpha: 1
+      });
+    }
 
-    speedBoostActive = false;
-    doublePointsActive = false;
-    flagsOnPaddle = false;
-    rocketActive = false;
-    rocketFired = false;
-    rocketAmmo = 0;
-    flyingCoins = [];
-    smokeParticles = [];
-    explosions = [];
-    coins = [];
-    pxpBags = [];
+    paddleExplodeSound.currentTime = 0;
+    paddleExplodeSound.play();
 
-    resetBricks();
-    resetBall();
-    resetPaddle();
+    // ⏱️ Wacht 1 seconde, daarna reset
+    setTimeout(() => {
+      saveHighscore();
+      stopTimer();
 
-    document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
-    document.getElementById("timeDisplay").textContent = "time 00:00";
+      lives = 3;
+      updateLivesDisplay();
+
+      score = 0;
+      level = 1;
+      elapsedTime = 0;
+
+      paddleExploding = false;
+      paddleExplosionParticles = [];
+
+      speedBoostActive = false;
+      doublePointsActive = false;
+      flagsOnPaddle = false;
+      rocketActive = false;
+      rocketFired = false;
+      rocketAmmo = 0;
+      flyingCoins = [];
+      smokeParticles = [];
+      explosions = [];
+      coins = [];
+      pxpBags = [];
+
+      resetBricks();
+      resetBall();
+      resetPaddle();
+
+      document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
+      document.getElementById("timeDisplay").textContent = "time 00:00";
+    }, 1000);
   }
 }
 
