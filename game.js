@@ -134,6 +134,10 @@ for (let c = 0; c < brickColumnCount; c++) {
   }
 }
 
+
+const lifeImg = new Image();
+lifeImg.src = "level.png";
+
 const dollarPxpImg = new Image();
 dollarPxpImg.src = "dollarpxp.png";
 
@@ -1381,4 +1385,20 @@ function startLevelTransition() {
     radius: ballRadius,
     isMain: true
   }];
+}
+
+function updateLivesDisplay() {
+  const display = document.getElementById("livesDisplay");
+  if (!display) return;
+
+  display.innerHTML = ""; // Leegmaken
+
+  for (let i = 0; i < lives; i++) {
+    const img = document.createElement("img");
+    img.src = "level.png";
+    img.style.width = "30px";
+    img.style.height = "30px";
+    img.style.marginRight = "5px";
+    display.appendChild(img);
+  }
 }
