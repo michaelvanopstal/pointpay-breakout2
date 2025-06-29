@@ -1398,18 +1398,3 @@ function startLevelTransition() {
   }];
 }
 
-function updateLivesDisplay() {
-  const display = document.getElementById("livesDisplay");
-  if (!display) return;
-
-  display.innerHTML = ""; // Leegmaken
-
-  for (let i = 0; i < lives; i++) {
-    const img = document.createElement("img");
-    img.src = "level.png";
-    img.style.width = "30px";
-    img.style.height = "30px";
-    img.style.marginRight = "5px";
-    display.appendChild(img);
-  }
-}
