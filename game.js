@@ -278,7 +278,7 @@ function mouseMoveHandler(e) {
 
 function drawBricks() {
   const totalBricksWidth = brickColumnCount * brickWidth;
-const offsetX = Math.floor((canvas.width - totalBricksWidth) / 2 - 5);
+const offsetX = Math.floor((canvas.width - totalBricksWidth) / 2 - 3);
 
 
   for (let c = 0; c < brickColumnCount; c++) {
