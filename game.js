@@ -410,6 +410,17 @@ function resetPaddle() {
 
 }
 
+function drawLivesOnCanvas() {
+  for (let i = 0; i < lives; i++) {
+    const iconSize = 30;
+    const spacing = 10;
+    const x = 10 + i * (iconSize + spacing); // linksboven
+    const y = 10;
+
+    ctx.drawImage(lifeImg, x, y, iconSize, iconSize);
+  }
+}
+
 
 function drawPaddleFlags() {
   if (flagsOnPaddle && Date.now() - flagTimer < 20000) {
