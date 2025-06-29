@@ -1327,6 +1327,4 @@ function triggerPaddleExplosion() {
   levelMessageTimer = 0;
   levelMessageVisible = true;
   levelTransitionActive = true;
- 
-  }
 }
