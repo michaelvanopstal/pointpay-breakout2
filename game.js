@@ -1314,12 +1314,26 @@ function triggerPaddleExplosion() {
   }, 1000);
 }
 
-  function startLevelTransition() {
+ function startLevelTransition() {
   level = 2;
   resetBricks(); // bouwt opnieuw de blokken op
-  transitionOffsetY = -300; // startpositie blokken boven canvas
+  transitionOffsetY = -300;
+
   levelMessageAlpha = 0;
   levelMessageTimer = 0;
   levelMessageVisible = true;
   levelTransitionActive = true;
+
+  // 🔄 Bal centreren op paddle, maar niet afgevuurd
+  ballLaunched = false;
+  ballMoving = false;
+
+  balls = [{
+    x: paddleX + paddleWidth / 2 - ballRadius,
+    y: canvas.height - paddleHeight - ballRadius * 2,
+    dx: 0,
+    dy: -6,
+    radius: ballRadius,
+    isMain: true
+  }];
 }
