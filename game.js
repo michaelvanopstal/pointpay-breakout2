@@ -960,13 +960,15 @@ function spawnExtraBall(originBall) {
   });
 }
 
-pxpBags.push({
+function spawnPxpBag(x, y) {
+  pxpBags.push({
     x: x,
     y: y,
     dy: 2,
     caught: false
   });
 }
+
 
 
 function draw() {
