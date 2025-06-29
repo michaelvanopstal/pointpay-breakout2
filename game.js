@@ -1298,9 +1298,11 @@ function spawnStoneDebris(x, y) {
     });
   }
 }
+
 function triggerPaddleExplosion() {
   if (lives > 1) {
     lives--;
+    updateLivesDisplay(); // ✅ TEKEN NIEUWE STAND VAN LEVENS
 
     paddleExploding = true;
     paddleExplosionParticles = [];
@@ -1316,6 +1318,7 @@ function triggerPaddleExplosion() {
         alpha: 1
       });
     }
+
 
     const paddleExplodeSound = new Audio("paddle_explode.mp3");
     paddleExplodeSound.play();
