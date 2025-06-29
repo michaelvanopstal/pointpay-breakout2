@@ -942,7 +942,6 @@ function spawnPxpBag(x, y) {
 }
 
 
-
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -998,22 +997,18 @@ function draw() {
       wallSound.play();
     }
 
+    if (ball.y + ball.dy > canvas.height) {
+      balls.splice(index, 1);
 
-    
- if (ball.y + ball.dy > canvas.height) {
-   balls.splice(index, 1);
+      if (balls.length === 0 && !paddleExploding) {
+        triggerPaddleExplosion();
+        return;
+      } else if (ball.isMain && balls.length > 0) {
+        balls[0].isMain = true;
+      }
 
-  if (balls.length === 0 && !paddleExploding) {
-    triggerPaddleExplosion(); // 💥 start explosie + animatie + reset
-    return;
-  } else if (ball.isMain && balls.length > 0) {
-    balls[0].isMain = true;
-  }
-
-  return;
-}
-
-
+      return;
+    }
 
     ctx.drawImage(ballImg, ball.x, ball.y, ball.radius * 2, ball.radius * 2);
   });
@@ -1041,21 +1036,23 @@ function draw() {
       alpha: 1
     });
 
-  if (rocketY < -48) {
-  rocketFired = false;
-  if (rocketAmmo <= 0) {
-    rocketActive = false;
-  }
-} else {
-  ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
-  checkRocketCollision();
-}
+    if (rocketY < -48) {
+      rocketFired = false;
+      if (rocketAmmo <= 0) {
+        rocketActive = false;
+      }
+    } else {
+      ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
+      checkRocketCollision();
+    }
+  } // ✅ DIT is de juiste afsluitende accolade voor rocketFired-block
 
-// 🔁 Start level 2 zodra alle blokjes weg zijn
-if (bricks.every(col => col.every(b => b.status === 0)) && !levelTransitionActive) {
-  startLevelTransition();
-}
- // Explosies tekenen
+  // 🔁 Start level 2 zodra alle blokjes weg zijn
+  if (bricks.every(col => col.every(b => b.status === 0)) && !levelTransitionActive) {
+    startLevelTransition();
+  }
+
+  // Explosies tekenen
   explosions.forEach(e => {
     ctx.beginPath();
     ctx.arc(e.x, e.y, e.radius, 0, Math.PI * 2);
@@ -1076,109 +1073,107 @@ if (bricks.every(col => col.every(b => b.status === 0)) && !levelTransitionActiv
     p.radius += 0.3;
     p.alpha -= 0.02;
   });
+  smokeParticles = smokeParticles.filter(p => p.alpha > 0);
 
   if (speedBoostActive && Date.now() - speedBoostStart >= speedBoostDuration) {
-  speedBoostActive = false;
-}
+    speedBoostActive = false;
+  }
 
-// Zakjes tekenen en vangen
-for (let i = pxpBags.length - 1; i >= 0; i--) {
-  let bag = pxpBags[i];
-  bag.y += bag.dy;
+  // Zakjes tekenen en vangen
+  for (let i = pxpBags.length - 1; i >= 0; i--) {
+    let bag = pxpBags[i];
+    bag.y += bag.dy;
 
-  ctx.drawImage(pxpBagImg, bag.x - 20, bag.y, 40, 40);
+    ctx.drawImage(pxpBagImg, bag.x - 20, bag.y, 40, 40);
 
-  const bagBottom = bag.y + 40;
-  const paddleTop = canvas.height - paddleHeight;
+    const bagBottom = bag.y + 40;
+    const paddleTop = canvas.height - paddleHeight;
 
-  if (
-    bagBottom >= paddleTop &&
-    bagBottom <= canvas.height &&
-    bag.x > paddleX &&
-    bag.x < paddleX + paddleWidth
-  ) {
-    pxpBagSound.currentTime = 0;
-    pxpBagSound.play(); // 🎵 Speel geluid als zakje wordt gevangen
+    if (
+      bagBottom >= paddleTop &&
+      bagBottom <= canvas.height &&
+      bag.x > paddleX &&
+      bag.x < paddleX + paddleWidth
+    ) {
+      pxpBagSound.currentTime = 0;
+      pxpBagSound.play();
 
-    const earned = doublePointsActive ? 160 : 80;
-    score += earned;
-    document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+      const earned = doublePointsActive ? 160 : 80;
+      score += earned;
+      document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
 
-    pointPopups.push({
-      x: bag.x,
-      y: bag.y,
-      value: "+" + earned + " pxp",
-      alpha: 1
+      pointPopups.push({
+        x: bag.x,
+        y: bag.y,
+        value: "+" + earned + " pxp",
+        alpha: 1
+      });
+
+      pxpBags.splice(i, 1);
+    } else if (bag.y > canvas.height) {
+      pxpBags.splice(i, 1);
+    }
+  }
+
+  // ✨ Level 2 tekst weergeven
+  if (levelMessageVisible) {
+    ctx.save();
+    ctx.globalAlpha = levelMessageAlpha;
+    ctx.fillStyle = "#00ffff";
+    ctx.font = "bold 36px Arial";
+    ctx.textAlign = "center";
+    ctx.fillText("PointPay Breakout Level 2", canvas.width / 2, canvas.height / 2);
+    ctx.restore();
+  }
+
+  if (levelTransitionActive) {
+    if (transitionOffsetY < 0) {
+      transitionOffsetY += 2;
+    } else {
+      transitionOffsetY = 0;
+    }
+
+    if (levelMessageAlpha < 1 && levelMessageTimer < 60) {
+      levelMessageAlpha += 0.05;
+      levelMessageTimer++;
+    } else if (levelMessageTimer >= 60 && levelMessageAlpha > 0) {
+      levelMessageAlpha -= 0.03;
+    } else if (levelMessageAlpha <= 0 && transitionOffsetY === 0) {
+      levelMessageVisible = false;
+      levelTransitionActive = false;
+    }
+  }
+
+  // 🎇 Paddle-explosie tekenen
+  if (paddleExploding) {
+    paddleExplosionParticles.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255, 100, 0, ${p.alpha})`;
+      ctx.fill();
+      p.x += p.dx;
+      p.y += p.dy;
+      p.alpha -= 0.02;
     });
 
-    pxpBags.splice(i, 1);
-  } else if (bag.y > canvas.height) {
-    pxpBags.splice(i, 1);
-  }
-}
-// ✨ Level 2 tekst weergeven
-if (levelMessageVisible) {
-  ctx.save();
-  ctx.globalAlpha = levelMessageAlpha;
-  ctx.fillStyle = "#00ffff";
-  ctx.font = "bold 36px Arial";
-  ctx.textAlign = "center";
-  ctx.fillText("PointPay Breakout Level 2", canvas.width / 2, canvas.height / 2);
-  ctx.restore();
-}
-
-if (levelTransitionActive) {
-  if (transitionOffsetY < 0) {
-    transitionOffsetY += 2; // schuif blokken naar beneden
-  } else {
-    transitionOffsetY = 0;
+    paddleExplosionParticles = paddleExplosionParticles.filter(p => p.alpha > 0);
   }
 
-  if (levelMessageAlpha < 1 && levelMessageTimer < 60) {
-    levelMessageAlpha += 0.05;
-    levelMessageTimer++;
-  } else if (levelMessageTimer >= 60 && levelMessageAlpha > 0) {
-    levelMessageAlpha -= 0.03;
-  } else if (levelMessageAlpha <= 0 && transitionOffsetY === 0) {
-  levelMessageVisible = false;
-  levelTransitionActive = false;
-
-  }
-}
-
-// 🎇 Paddle-explosie tekenen
-if (paddleExploding) {
-  paddleExplosionParticles.forEach(p => {
+  // 🧱 Steenpuin tekenen
+  stoneDebris.forEach(p => {
     ctx.beginPath();
     ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(255, 100, 0, ${p.alpha})`;
+    ctx.fillStyle = `rgba(140, 120, 100, ${p.alpha})`;
     ctx.fill();
     p.x += p.dx;
     p.y += p.dy;
     p.alpha -= 0.02;
   });
+  stoneDebris = stoneDebris.filter(p => p.alpha > 0);
 
-  paddleExplosionParticles = paddleExplosionParticles.filter(p => p.alpha > 0);
+  requestAnimationFrame(draw);
 }
 
-// 🧱 Steenpuin tekenen – altijd uitvoeren
-stoneDebris.forEach(p => {
-  ctx.beginPath();
-  ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-  ctx.fillStyle = `rgba(140, 120, 100, ${p.alpha})`; // Bruin-grijze kleur
-  ctx.fill();
-  p.x += p.dx;
-  p.y += p.dy;
-  p.alpha -= 0.02;
-});
-stoneDebris = stoneDebris.filter(p => p.alpha > 0);
-
-// Extra updates onderaan draw()
-smokeParticles = smokeParticles.filter(p => p.alpha > 0);
-
-
-requestAnimationFrame(draw);
-} // ⬅️ Deze sluit de draw() functie correct af
 
 
 
