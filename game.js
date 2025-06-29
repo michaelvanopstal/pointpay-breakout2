@@ -1134,9 +1134,10 @@ if (levelTransitionActive) {
     levelMessageTimer++;
   } else if (levelMessageTimer >= 60 && levelMessageAlpha > 0) {
     levelMessageAlpha -= 0.03;
-  } else if (levelMessageAlpha <= 0) {
-    levelMessageVisible = false;
-    levelTransitionActive = false;
+  } else if (levelMessageAlpha <= 0 && transitionOffsetY === 0) {
+  levelMessageVisible = false;
+  levelTransitionActive = false;
+
   }
 }
 
