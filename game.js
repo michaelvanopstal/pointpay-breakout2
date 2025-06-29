@@ -89,7 +89,7 @@ const pxpMap = [
   { col: 1, row: 5 },   { col: 1, row: 10 },      { col: 1, row: 14 },   { col: 1, row: 13 },   { col: 8, row: 4, type: "power" },        
   { col: 2, row: 5 },   { col: 2, row: 10 },      { col: 2, row: 14 },   { col: 2, row: 13 },   { col: 2, row: 3, type: "speed" },         
   { col: 3, row: 5 },   { col: 3, row: 10 },      { col: 3, row: 14 },   { col: 3, row: 13 },   { col: 4, row: 7, type: "2x" },
-  { col: 4, row: 5 },   { col: 4, row: 10 },      { col: 4, row: 14 },   { col: 4, row: 13 },             
+  { col: 4, row: 5 },   { col: 4, row: 10 },      { col: 4, row: 14 },   { col: 4, row: 13 },   { col: 2, row: 7, type: "doubleball" },         
   { col: 5, row: 5 },   { col: 5, row: 10 },      { col: 5, row: 14 },   { col: 5, row: 13 },               
   { col: 6, row: 5 },   { col: 6, row: 10 },      { col: 6, row: 14 },   { col: 6, row: 13 },                   
   { col: 7, row: 5 },   { col: 7, row: 10 },      { col: 7, row: 14 },   { col: 7, row: 13 },                                       
