@@ -85,15 +85,15 @@ const bonusBricks = [
 ];
 // 📦 PXP layout voor level 2 (alleen steen-blokken)
 const pxpMap = [
-  { col: 0, row: 0 }, { col: 1, row: 0 },     { col: 3, row: 1 },   { col: 6, row: 0 },  { col: 7, row: 0 },  
-  { col: 0, row: 1 }, { col: 2, row: 0 },     { col: 4, row: 2 },   { col: 6, row: 1 },  { col: 7, row: 3 },          
-  { col: 0, row: 2 }, { col: 2, row: 1 },     { col: 3, row: 3 },   { col: 6, row: 2 },  { col: 8, row: 0 },           
-  { col: 0, row: 3 }, { col: 2, row: 2 },     { col: 5, row: 3 },   { col: 6, row: 3 },  { col: 8, row: 1 }, 
-  { col: 0, row: 4 }, { col: 2, row: 3 },     { col: 5, row: 1 },   { col: 6, row: 4 },  { col: 8, row: 2 },           
-  { col: 0, row: 5 }, { col: 2, row: 4 },                           { col: 6, row: 5 },  { col: 8, row: 3 }, 
-  { col: 0, row: 6 }, { col: 1, row: 1 },                           { col: 6, row: 6 },  { col: 8, row: 4 }, 
-  { col: 0, row: 7 },                                               { col: 6, row: 7 },     
-  { col: 0, row: 8 },                                               { col: 6, row: 8 },
+  { col: 0, row: 5 },   { col: 0, row: 10 },      { col: 0, row: 14 },   { col: 0, row: 13 },   { col: 5, row: 3, type: "rocket" }, 
+  { col: 1, row: 5 },   { col: 1, row: 10 },      { col: 1, row: 14 },   { col: 1, row: 13 },   { col: 8, row: 4, type: "power" },        
+  { col: 2, row: 5 },   { col: 2, row: 10 },      { col: 2, row: 14 },   { col: 2, row: 13 },   { col: 2, row: 3, type: "speed" },         
+  { col: 3, row: 5 },   { col: 3, row: 10 },      { col: 3, row: 14 },   { col: 3, row: 13 },   { col: 4, row: 7, type: "2x" },
+  { col: 4, row: 5 },   { col: 4, row: 10 },      { col: 4, row: 14 },   { col: 4, row: 13 },             
+  { col: 5, row: 5 },   { col: 5, row: 10 },      { col: 5, row: 14 },   { col: 5, row: 13 },               
+  { col: 6, row: 5 },   { col: 6, row: 10 },      { col: 6, row: 14 },   { col: 6, row: 13 },                   
+  { col: 7, row: 5 },   { col: 7, row: 10 },      { col: 7, row: 14 },   { col: 7, row: 13 },                                       
+  { col: 8, row: 5 },   { col: 8, row: 10 },      { col: 8, row: 14 },   { col: 8, row: 13 },                              
                                                                   
 ];
 
