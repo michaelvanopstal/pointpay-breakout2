@@ -189,7 +189,7 @@ const pxpBagImg = new Image();
 pxpBagImg.src = "pxp_bag.png"; // of "bag.png"
 
 
-let speedMultiplier = (speedBoostActive && Date.now() - speedBoostStart < speedBoostDuration) ? speedBoostMultiplier : 1.5;
+
 
 let rocketActive = false; // Voor nu altijd zichtbaar om te testen
 let rocketX = 0;
