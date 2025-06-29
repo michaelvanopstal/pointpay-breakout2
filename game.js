@@ -390,7 +390,7 @@ function resetBall() {
     x: paddleX + paddleWidth / 2 - ballRadius,
     y: canvas.height - paddleHeight - ballRadius * 2,
     dx: 0,
-    dy: -10,
+    dy: -6,
     radius: ballRadius,
     isMain: true
   }];
