@@ -1306,7 +1306,21 @@ function triggerPaddleExplosion() {
     paddleExploding = true;
     paddleExplosionParticles = [];
 
-    // ... explosie deeltjes etc.
+    // ✅ Voeg hier explosiedeeltjes toe
+    for (let i = 0; i < 50; i++) {
+      paddleExplosionParticles.push({
+        x: paddleX + paddleWidth / 2,
+        y: canvas.height - paddleHeight / 2,
+        dx: (Math.random() - 0.5) * 10,
+        dy: (Math.random() - 0.5) * 10,
+        radius: Math.random() * 4 + 2,
+        alpha: 1
+      });
+    }
+
+    // ✅ Geluid terugzetten als je wilt
+    paddleExplodeSound.currentTime = 0;
+    paddleExplodeSound.play();
 
     setTimeout(() => {
       paddleExploding = false;
@@ -1331,13 +1345,23 @@ function triggerPaddleExplosion() {
     stopTimer();
 
     lives = 3;
-    updateLivesDisplay(); // ✅ ZET DE 3 ZAKJES WEER TERUG
-
+    updateLivesDisplay(); // ✅ Zet 3 zakjes weer terug
     score = 0;
     level = 1;
     elapsedTime = 0;
 
-    // ... rest reset
+    speedBoostActive = false;
+    doublePointsActive = false;
+    flagsOnPaddle = false;
+    rocketActive = false;
+    rocketFired = false;
+    rocketAmmo = 0;
+    flyingCoins = [];
+    smokeParticles = [];
+    explosions = [];
+    coins = [];
+    pxpBags = [];
+
     resetBricks();
     resetBall();
     resetPaddle();
