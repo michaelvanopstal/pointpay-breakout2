@@ -367,16 +367,15 @@ function resetBricks() {
     for (let r = 0; r < brickRowCount; r++) {
       bricks[c][r].status = 1;
 
-      let brickType = "normal";
+      let brickType = "normal"; // ✅ slechts één keer
 
-      // 📦 Level 2: specifieke PXP layout met stenen
-      if (level === 2) {
-        const isStone = pxpMap.some(p => p.col === c && p.row === r);
-        if (isStone) brickType = "stone";
-      } else {
-        // Andere levels: gebruik bonusBricks systeem
-        const bonus = bonusBricks.find(b => b.col === c && b.row === r);
-        if (bonus) brickType = bonus.type;
+      const bonus = bonusBricks.find(b => b.col === c && b.row === r);
+      const isStone = level === 2 && pxpMap.some(p => p.col === c && p.row === r);
+
+      if (isStone) {
+        brickType = "stone";
+      } else if (bonus) {
+        brickType = bonus.type;
       }
 
       bricks[c][r].type = brickType;
@@ -392,6 +391,7 @@ function resetBricks() {
     }
   }
 }
+
 
 
 
