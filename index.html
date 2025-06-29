@@ -59,16 +59,25 @@
     { name: "—", score: 0, time: "00:00" }
   ];
 
-  function updateHighscoreBoard() {
-    const highscoreList = document.getElementById("highscore-list");
-    if (!highscoreList) return;
-    highscoreList.innerHTML = "";
-    highscores.forEach((entry, index) => {
-      const li = document.createElement("li");
-      li.textContent = `${index + 1}. ${entry.name} — ${entry.score} PXP — ${entry.time}`;
-      highscoreList.appendChild(li);
-    });
-  }
+function updateHighscoreBoard() {
+  const highscoreList = document.getElementById("highscore-list");
+  if (!highscoreList) return;
+
+  let highscores = JSON.parse(localStorage.getItem("highscores")) || [];
+
+  highscoreList.innerHTML = "";
+  highscores.forEach((entry, index) => {
+    const levelText = entry.level ? `— Level ${entry.level}` : "";
+    const li = document.createElement("li");
+    li.textContent = `${index + 1}. ${entry.name} — ${entry.score} PXP — ${entry.time} ${levelText}`;
+    highscoreList.appendChild(li);
+  });
+}
+
+// ✅ Automatisch bij laden van de pagina
+window.addEventListener("load", () => {
+  updateHighscoreBoard();
+});
 
   function checkAndUpdateHighscores(name, score, time) {
     const newEntry = { name, score, time };
