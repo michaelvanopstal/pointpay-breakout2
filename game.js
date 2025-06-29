@@ -1328,17 +1328,17 @@ function triggerPaddleExplosion() {
   }, 1000);
 }
 
- function startLevelTransition() {
-  level = 2;
-  resetBricks(); // bouwt opnieuw de blokken op
-  transitionOffsetY = -300;
+function startLevelTransition() {
+  level = 2; // 📈 Verhoog level
+  resetBricks(); // 🔁 Bouw nieuwe blokken voor het volgende level
+  transitionOffsetY = -300; // 📦 Laat ze van boven naar beneden komen
 
   levelMessageAlpha = 0;
   levelMessageTimer = 0;
   levelMessageVisible = true;
   levelTransitionActive = true;
 
-  // 🔄 Bal centreren op paddle, maar niet afgevuurd
+  // 🔄 Bal opnieuw positioneren op paddle, zonder reset van score of tijd
   ballLaunched = false;
   ballMoving = false;
 
