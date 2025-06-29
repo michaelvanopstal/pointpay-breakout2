@@ -1055,7 +1055,7 @@ ctx.drawImage(ballImg, ball.x, ball.y, ball.radius * 2, ball.radius * 2);
 // ✅ Toevoegen net buiten de balls.forEach-lus
 if (balls.length === 0 && !paddleExploding) {
   triggerPaddleExplosion();
-  return;
+  
 }
 
   if (rightPressed && paddleX < canvas.width - paddleWidth) {
