@@ -1029,35 +1029,38 @@ function draw() {
       wallSound.play();
     }
 
-   if (
-  ball.y + ball.dy > canvas.height - paddleHeight - ball.radius &&
-  ball.y + ball.dy < canvas.height + 2 &&
-  ball.x + ball.radius > paddleX &&
-  ball.x - ball.radius < paddleX + paddleWidth
-) {
-  const hitPos = (ball.x - paddleX) / paddleWidth;
-  const angle = (hitPos - 0.5) * Math.PI / 2;
-  const speed = Math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy);
-  ball.dx = speed * Math.sin(angle);
-  ball.dy = -Math.abs(speed * Math.cos(angle));
+    if (
+      ball.y + ball.dy > canvas.height - paddleHeight - ball.radius &&
+      ball.y + ball.dy < canvas.height + 2 &&
+      ball.x + ball.radius > paddleX &&
+      ball.x - ball.radius < paddleX + paddleWidth
+    ) {
+      const hitPos = (ball.x - paddleX) / paddleWidth;
+      const angle = (hitPos - 0.5) * Math.PI / 2;
+      const speed = Math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy);
+      ball.dx = speed * Math.sin(angle);
+      ball.dy = -Math.abs(speed * Math.cos(angle));
 
-  wallSound.currentTime = 0;
-  wallSound.play();
+      wallSound.currentTime = 0;
+      wallSound.play();
+    }
+
+    if (ball.y + ball.dy > canvas.height) {
+   balls.splice(index, 1);
+
+   if (ball.isMain && !paddleExploding) {
+    triggerPaddleExplosion();
+    return;
+  }
+
+  return;
 }
 
-if (ball.y + ball.dy > canvas.height) {
-  balls.splice(index, 1);
-}
 
-ctx.drawImage(ballImg, ball.x, ball.y, ball.radius * 2, ball.radius * 2);
-});
+    ctx.drawImage(ballImg, ball.x, ball.y, ball.radius * 2, ball.radius * 2);
+  });
 
-// ✅ Toevoegen net buiten de balls.forEach-lus
-if (balls.length === 0 && !paddleExploding) {
-  triggerPaddleExplosion();
-  
-}
-
+  // Paddle bewegen
   if (rightPressed && paddleX < canvas.width - paddleWidth) {
     paddleX += 7;
   } else if (leftPressed && paddleX > 0) {
