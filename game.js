@@ -945,25 +945,22 @@ function collisionDetection() {
 
 
 function spawnExtraBall(originBall) {
-  const speed = Math.sqrt(originBall.dx ** 2 + originBall.dy ** 2);
-
   // Huidige bal krijgt een lichte afwijking
   originBall.dx = -1;
-  originBall.dy = -Math.abs(speed);
+  originBall.dy = -6;
 
-  // Tweede bal gaat recht omhoog
+  // Tweede bal gaat recht omhoog met vaste snelheid
   balls.push({
     x: originBall.x,
     y: originBall.y,
     dx: 0,
-    dy: -speed,
+    dy: -6,
     radius: ballRadius,
     isMain: false
   });
 }
 
-function spawnPxpBag(x, y) {
-  pxpBags.push({
+pxpBags.push({
     x: x,
     y: y,
     dy: 2,
