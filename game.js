@@ -391,8 +391,13 @@ function resetBall() {
   }];
   ballLaunched = false;
   ballMoving = false;
-}
 
+  // 🧱 Zorg dat bij level 1 blokken direct zichtbaar zijn
+  if (level === 1) {
+    levelTransitionActive = false;
+    transitionOffsetY = 0;
+  }
+}
 
 function resetPaddle() {
   paddleX = (canvas.width - paddleWidth) / 2;
