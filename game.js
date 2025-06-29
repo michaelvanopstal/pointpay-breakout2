@@ -1282,31 +1282,57 @@ function spawnStoneDebris(x, y) {
     });
   }
 }
-
 function triggerPaddleExplosion() {
-  paddleExploding = true;
-  paddleExplosionParticles = [];
+  if (lives > 1) {
+    lives--;
 
-  // Maak 50 deeltjes aan die uit elkaar vliegen
-  for (let i = 0; i < 50; i++) {
-    paddleExplosionParticles.push({
-      x: paddleX + paddleWidth / 2,
-      y: canvas.height - paddleHeight / 2,
-      dx: (Math.random() - 0.5) * 10,
-      dy: (Math.random() - 0.5) * 10,
-      radius: Math.random() * 4 + 2,
-      alpha: 1
-    });
-  }
+    paddleExploding = true;
+    paddleExplosionParticles = [];
 
-  const paddleExplodeSound = new Audio("paddle_explode.mp3");
-  paddleExplodeSound.play();
+    // Maak 50 deeltjes aan die uit elkaar vliegen
+    for (let i = 0; i < 50; i++) {
+      paddleExplosionParticles.push({
+        x: paddleX + paddleWidth / 2,
+        y: canvas.height - paddleHeight / 2,
+        dx: (Math.random() - 0.5) * 10,
+        dy: (Math.random() - 0.5) * 10,
+        radius: Math.random() * 4 + 2,
+        alpha: 1
+      });
+    }
 
-  // ⏱️ Na 1 seconde paddle resetten + alles wissen
-  setTimeout(() => {
-    saveHighscore();           // ✅ Eerst de score en TIJD opslaan
-    stopTimer();               // ⏹️ Daarna timer resetten
-    ballReleased = false;      // ⛔ Timer pas starten bij volgende afvuuractie
+    const paddleExplodeSound = new Audio("paddle_explode.mp3");
+    paddleExplodeSound.play();
+
+    // ⏱️ Na 1 seconde paddle en bal opnieuw plaatsen (score/tijd blijven!)
+    setTimeout(() => {
+      paddleExploding = false;
+      paddleExplosionParticles = [];
+
+      // Zet bal terug op paddle
+      balls = [{
+        x: paddleX + paddleWidth / 2 - ballRadius,
+        y: canvas.height - paddleHeight - ballRadius * 2,
+        dx: 0,
+        dy: -6,
+        radius: ballRadius,
+        isMain: true
+      }];
+
+      ballLaunched = false;
+      ballMoving = false;
+
+    }, 1000);
+
+  } else {
+    // ⚠️ Leven = 0 → volledig reset
+    saveHighscore();
+    stopTimer();
+
+    lives = 3;
+    score = 0;
+    level = 1;
+    elapsedTime = 0;
 
     paddleExploding = false;
     paddleExplosionParticles = [];
@@ -1325,8 +1351,13 @@ function triggerPaddleExplosion() {
 
     resetBricks();
     resetBall();
-  }, 1000);
+    resetPaddle();
+
+    document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
+    document.getElementById("timeDisplay").textContent = "time 00:00";
+  }
 }
+
 
 function startLevelTransition() {
   level = 2; // 📈 Verhoog level
