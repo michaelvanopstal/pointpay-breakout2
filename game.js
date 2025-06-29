@@ -1399,3 +1399,18 @@ function startLevelTransition() {
   }];
 }
 
+function updateLivesDisplay() {
+  const display = document.getElementById("livesDisplay");
+  if (!display) return;
+
+  display.innerHTML = "";
+
+  for (let i = 0; i < lives; i++) {
+    const img = document.createElement("img");
+    img.src = "level.png";
+    img.style.width = "28px";
+    img.style.height = "28px";
+    display.appendChild(img);
+  }
+}
+
