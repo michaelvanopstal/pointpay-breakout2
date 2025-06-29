@@ -562,20 +562,28 @@ function saveHighscore() {
   const seconds = String(elapsedTime % 60).padStart(2, '0');
   const timeFormatted = `${minutes}:${seconds}`;
 
- const newScore = {
-  name: playerName,
-  score: score,
-  time: timeFormatted,
-  level: level  // ✅ voeg level toe
-};
-
+  const newScore = {
+    name: playerName,
+    score: score,
+    time: timeFormatted,
+    level: level // ✅ Voeg level toe
+  };
 
   let highscores = JSON.parse(localStorage.getItem("highscores")) || [];
 
-  if (!highscores.some(h => h.name === newScore.name && h.score === newScore.score && h.time === newScore.time)) {
+  // ✅ Voeg alleen toe als score uniek is
+  const isDuplicate = highscores.some(h =>
+    h.name === newScore.name &&
+    h.score === newScore.score &&
+    h.time === newScore.time &&
+    h.level === newScore.level
+  );
+
+  if (!isDuplicate) {
     highscores.push(newScore);
   }
 
+  // ✅ Sorteer op score eerst, dan snelste tijd
   highscores.sort((a, b) => {
     if (b.score === a.score) {
       const [amin, asec] = a.time.split(":").map(Number);
@@ -588,12 +596,14 @@ function saveHighscore() {
   highscores = highscores.slice(0, 10);
   localStorage.setItem("highscores", JSON.stringify(highscores));
 
+  // ✅ Highscorelijst tonen inclusief level
   const list = document.getElementById("highscore-list");
   if (list) {
     list.innerHTML = "";
     highscores.forEach((entry, index) => {
+      const lvl = entry.level || 1; // fallback naar 1 voor oude entries
       const li = document.createElement("li");
-      li.textContent = `${index + 1} ${entry.name} - ${entry.score} pxp - ${entry.time}`;
+      li.textContent = `${index + 1}. ${entry.name} — ${entry.score} pxp — ${entry.time} — Level ${lvl}`;
       list.appendChild(li);
     });
   }
