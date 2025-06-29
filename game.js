@@ -1353,44 +1353,47 @@ function triggerPaddleExplosion() {
       });
     }
 
-    paddleExplodeSound.currentTime = 0;
-    paddleExplodeSound.play();
+   paddleExplodeSound.currentTime = 0;
+paddleExplodeSound.play();
 
-    // ⏱️ Wacht 1 seconde, daarna reset
-    setTimeout(() => {
-      saveHighscore();
-      stopTimer();
+// ⏱️ Wacht 1 seconde, daarna reset
+setTimeout(() => {
+  saveHighscore();
+  stopTimer();
 
-      lives = 3;
-      updateLivesDisplay();
+  lives = 3;
+  updateLivesDisplay();
 
-      score = 0;
-      level = 1;
-      elapsedTime = 0;
+  score = 0;
+  level = 1;
+  elapsedTime = 0;
 
-      paddleExploding = false;
-      paddleExplosionParticles = [];
+  paddleExploding = false;
+  paddleExplosionParticles = [];
 
-      speedBoostActive = false;
-      doublePointsActive = false;
-      flagsOnPaddle = false;
-      rocketActive = false;
-      rocketFired = false;
-      rocketAmmo = 0;
-      flyingCoins = [];
-      smokeParticles = [];
-      explosions = [];
-      coins = [];
-      pxpBags = [];
+  // ✅ Essentiële resets toegevoegd
+  speedBoostActive = false;
+  speedBoostStart = 0;
+  doublePointsActive = false;
+  doublePointsStartTime = 0;
+  flagsOnPaddle = false;
+  rocketActive = false;
+  rocketFired = false;
+  rocketAmmo = 0;
+  flyingCoins = [];
+  smokeParticles = [];
+  explosions = [];
+  coins = [];
+  pxpBags = [];
 
-      resetBricks();
-      resetBall();
-      resetPaddle();
+  resetBricks();
+  resetBall();
+  resetPaddle();
 
-      document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
-      document.getElementById("timeDisplay").textContent = "time 00:00";
-    }, 1000);
-  }
+  document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
+  document.getElementById("timeDisplay").textContent = "time 00:00";
+  }, 1000);
+ }
 }
 
 function startLevelTransition() {
