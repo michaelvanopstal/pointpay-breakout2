@@ -558,6 +558,7 @@ function checkFlyingCoinHits() {
 
 function saveHighscore() {
   const playerName = window.currentPlayer || "Unknown";
+
   const minutes = String(Math.floor(elapsedTime / 60)).padStart(2, '0');
   const seconds = String(elapsedTime % 60).padStart(2, '0');
   const timeFormatted = `${minutes}:${seconds}`;
@@ -566,12 +567,12 @@ function saveHighscore() {
     name: playerName,
     score: score,
     time: timeFormatted,
-    level: level // ✅ Voeg level toe
+    level: level || 1  // fallback naar level 1 als het niet gedefinieerd is
   };
 
   let highscores = JSON.parse(localStorage.getItem("highscores")) || [];
 
-  // ✅ Voeg alleen toe als score uniek is
+  // 🔒 Voeg alleen toe als deze combinatie nog niet bestaat
   const isDuplicate = highscores.some(h =>
     h.name === newScore.name &&
     h.score === newScore.score &&
@@ -583,7 +584,7 @@ function saveHighscore() {
     highscores.push(newScore);
   }
 
-  // ✅ Sorteer op score eerst, dan snelste tijd
+  // 🏆 Sorteer op score, daarna op snelste tijd
   highscores.sort((a, b) => {
     if (b.score === a.score) {
       const [amin, asec] = a.time.split(":").map(Number);
@@ -593,15 +594,16 @@ function saveHighscore() {
     return b.score - a.score;
   });
 
+  // ✂️ Beperk tot top 10
   highscores = highscores.slice(0, 10);
   localStorage.setItem("highscores", JSON.stringify(highscores));
 
-  // ✅ Highscorelijst tonen inclusief level
+  // 📋 Toon in de highscorelijst
   const list = document.getElementById("highscore-list");
   if (list) {
     list.innerHTML = "";
     highscores.forEach((entry, index) => {
-      const lvl = entry.level || 1; // fallback naar 1 voor oude entries
+      const lvl = entry.level || 1;
       const li = document.createElement("li");
       li.textContent = `${index + 1}. ${entry.name} — ${entry.score} pxp — ${entry.time} — Level ${lvl}`;
       list.appendChild(li);
