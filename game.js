@@ -36,6 +36,14 @@ let paddleExploding = false;
 let paddleExplosionParticles = [];
 let stoneDebris = [];
 
+// 🌟 Level 2 overgang
+let levelTransitionActive = false;
+let transitionOffsetY = -300;
+
+let levelMessageAlpha = 0;
+let levelMessageTimer = 0;
+let levelMessageVisible = false;
+
 
 
 
@@ -278,7 +286,8 @@ const offsetX = Math.floor((canvas.width - totalBricksWidth) / 2 - 5);
       const b = bricks[c][r];
       if (b.status === 1) {
         const brickX = offsetX + c * brickWidth;
-        const brickY = r * brickHeight;
+        const brickY = r * brickHeight + (levelTransitionActive ? transitionOffsetY : 0);
+
 
         b.x = brickX;
         b.y = brickY;
@@ -1027,18 +1036,21 @@ function draw() {
       alpha: 1
     });
 
-    if (rocketY < -48) {
-      rocketFired = false;
-      if (rocketAmmo <= 0) {
-        rocketActive = false;
-      }
-    } else {
-      ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
-      checkRocketCollision();
-    }
+  if (rocketY < -48) {
+  rocketFired = false;
+  if (rocketAmmo <= 0) {
+    rocketActive = false;
   }
+} else {
+  ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
+  checkRocketCollision();
+}
 
-  // Explosies tekenen
+// 🔁 Start level 2 zodra alle blokjes weg zijn
+if (bricks.every(col => col.every(b => b.status === 0)) && !levelTransitionActive) {
+  startLevelTransition();
+}
+ // Explosies tekenen
   explosions.forEach(e => {
     ctx.beginPath();
     ctx.arc(e.x, e.y, e.radius, 0, Math.PI * 2);
@@ -1099,6 +1111,34 @@ for (let i = pxpBags.length - 1; i >= 0; i--) {
     pxpBags.splice(i, 1);
   }
 }
+// ✨ Level 2 tekst weergeven
+if (levelMessageVisible) {
+  ctx.save();
+  ctx.globalAlpha = levelMessageAlpha;
+  ctx.fillStyle = "#00ffff";
+  ctx.font = "bold 36px Arial";
+  ctx.textAlign = "center";
+  ctx.fillText("PointPay Breakout Level 2", canvas.width / 2, canvas.height / 2);
+  ctx.restore();
+}
+
+if (levelTransitionActive) {
+  if (transitionOffsetY < 0) {
+    transitionOffsetY += 2; // schuif blokken naar beneden
+  } else {
+    transitionOffsetY = 0;
+  }
+
+  if (levelMessageAlpha < 1 && levelMessageTimer < 60) {
+    levelMessageAlpha += 0.05;
+    levelMessageTimer++;
+  } else if (levelMessageTimer >= 60 && levelMessageAlpha > 0) {
+    levelMessageAlpha -= 0.03;
+  } else if (levelMessageAlpha <= 0) {
+    levelMessageVisible = false;
+    levelTransitionActive = false;
+  }
+}
 
 // 🎇 Paddle-explosie tekenen
 if (paddleExploding) {
@@ -1129,6 +1169,7 @@ stoneDebris = stoneDebris.filter(p => p.alpha > 0);
 
 // Extra updates onderaan draw()
 smokeParticles = smokeParticles.filter(p => p.alpha > 0);
+
 
 requestAnimationFrame(draw);
 } // ⬅️ Deze sluit de draw() functie correct af
@@ -1270,4 +1311,15 @@ function triggerPaddleExplosion() {
     resetBricks();
     resetBall();
   }, 1000);
+}
+
+  function startLevelTransition() {
+  level = 2;
+  resetBricks(); // bouwt opnieuw de blokken op
+  transitionOffsetY = -300; // startpositie blokken boven canvas
+  levelMessageAlpha = 0;
+  levelMessageTimer = 0;
+  levelMessageVisible = true;
+  levelTransitionActive = true;
+ 
 }
