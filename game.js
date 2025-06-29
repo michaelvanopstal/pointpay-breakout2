@@ -1210,13 +1210,13 @@ function draw() {
 
 function onImageLoad() {
   imagesLoaded++;
-  console.log("Afbeelding geladen:", imagesLoaded);
-
   if (imagesLoaded === 16) {
-    resetBricks();  // <-- deze toevoegen!
+    resetBricks();
+    updateLivesDisplay(); // ✅ laat bij start meteen levens zien
     draw();
   }
 }
+
 
 
 
