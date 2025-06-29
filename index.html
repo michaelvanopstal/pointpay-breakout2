@@ -72,11 +72,6 @@
     });
   }
 
-  window.addEventListener("load", () => {
-    updateHighscoreBoard();
-  });
-</script>
-
   function checkAndUpdateHighscores(name, score, time) {
     const newEntry = { name, score, time };
     highscores.push(newEntry);
