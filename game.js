@@ -1200,7 +1200,7 @@ function draw() {
   });
   stoneDebris = stoneDebris.filter(p => p.alpha > 0);
 
-  drawLivesOnCanvas();
+
   requestAnimationFrame(draw);
 }
 
