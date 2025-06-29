@@ -216,22 +216,18 @@ function keyDownHandler(e) {
     leftPressed = true;
   }
 
-  if ((e.key === "ArrowUp" || e.key === "Up" || e.code === "Space") && !ballLaunched) {
-    ballLaunched = true;
-    ballMoving = true;
+if ((e.key === "ArrowUp" || e.key === "Up" || e.code === "Space") && !ballLaunched) {
+  ballLaunched = true;
+  ballMoving = true;
 
-    // 🎯 Speel schiet-geluid af
-    shootSound.currentTime = 0;
-    shootSound.play();
+  shootSound.currentTime = 0;
+  shootSound.play();
 
-    balls[0].dx = 0;
-    balls[0].dy = -6;
+  balls[0].dx = 0;
+  balls[0].dy = -6;
 
-    if (!timerRunning) startTimer(); // ✅ Timer starten bij eerste afschot
-
-    score = 0;
-    document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
-  }
+  if (!timerRunning) startTimer(); // ✅ Start timer bij eerste afschot
+}
 
   if ((e.code === "ArrowUp" || e.code === "Space") && rocketActive && rocketAmmo > 0 && !rocketFired) {
     rocketFired = true;
@@ -1250,20 +1246,20 @@ document.addEventListener("mousedown", function (e) {
     rocketLaunchSound.play();
   }
 
-  // 🎯 Bal afschieten met muisklik (trackpad)
-  if (!ballLaunched && !ballMoving) {
-    ballLaunched = true;
-    ballMoving = true;
-    shootSound.currentTime = 0;
-    shootSound.play();
+ // 🎯 Bal afschieten met muisklik (trackpad)
+if (!ballLaunched && !ballMoving) {
+  ballLaunched = true;
+  ballMoving = true;
 
-    balls[0].dx = 0;
-    balls[0].dy = -6;
+  shootSound.currentTime = 0;
+  shootSound.play();
 
-    if (!timerRunning) startTimer();
-    score = 0;
-    document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
-  }
+  balls[0].dx = 0;
+  balls[0].dy = -6;
+
+  if (!timerRunning) startTimer(); // ✅ Alleen timer starten
+
+}
 });
 
 
