@@ -1027,17 +1027,16 @@ function draw() {
     }
 
     if (ball.y + ball.dy > canvas.height) {
-      balls.splice(index, 1);
+   balls.splice(index, 1);
 
-      if (balls.length === 0 && !paddleExploding) {
-        triggerPaddleExplosion();
-        return;
-      } else if (ball.isMain && balls.length > 0) {
-        balls[0].isMain = true;
-      }
+   if (ball.isMain && !paddleExploding) {
+    triggerPaddleExplosion();
+    return;
+  }
 
-      return;
-    }
+  return;
+}
+
 
     ctx.drawImage(ballImg, ball.x, ball.y, ball.radius * 2, ball.radius * 2);
   });
