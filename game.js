@@ -55,11 +55,12 @@ const speedBoostMultiplier = 1.5;
 balls.push({
   x: canvas.width / 2,
   y: canvas.height - paddleHeight - 10,
-  dx: 10,
-  dy: -10,
+  dx: 0,
+  dy: -6,
   radius: 8,
   isMain: true
 });
+
 
 
 
