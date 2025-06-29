@@ -85,15 +85,16 @@ const bonusBricks = [
 ];
 // 📦 PXP layout voor level 2 (alleen steen-blokken)
 const pxpMap = [
-  { col: 1, row: 2 }, { col: 1, row: 3 }, { col: 1, row: 4 }, // linker p-rug
-  { col: 2, row: 2 }, { col: 2, row: 3 },                     // linker p-boog
-  { col: 3, row: 2 },                                         // top p-kop
-  { col: 5, row: 2 }, { col: 5, row: 3 }, { col: 5, row: 4 }, // x diagonaal links
-  { col: 6, row: 3 },                                         // x midden
-  { col: 7, row: 2 }, { col: 7, row: 3 }, { col: 7, row: 4 }, // x diagonaal rechts
-  { col: 9, row: 2 }, { col: 9, row: 3 }, { col: 9, row: 4 }, // rechter p-rug
-  { col: 10, row: 2 }, { col: 10, row: 3 },                   // rechter p-boog
-  { col: 11, row: 2 }                                         // top p-kop
+  { col: 0, row: 0 }, { col: 1, row: 0 },     { col: 3, row: 1 },   { col: 6, row: 0 }  { col: 7, row: 0 }  
+  { col: 0, row: 1 }, { col: 2, row: 0 },     { col: 4, row: 2 },   { col: 6, row: 1 }  { col: 7, row: 3 }          
+  { col: 0, row: 2 },                         { col: 3, row: 3 },   { col: 6, row: 2 }  { col: 8, row: 0 }           
+  { col: 0, row: 3 }, { col: 2, row: 1 },     { col: 5, row: 3 },   { col: 6, row: 3 }  { col: 8, row: 1 }  
+  { col: 0, row: 4 },                         { col: 5, row: 1 },   { col: 6, row: 4 }             
+  { col: 0, row: 5 }, { col: 2, row: 2 },                           { col: 6, row: 5 }  { col: 8, row: 2 }  
+                                                                    { col: 6, row: 6 }  { col: 8, row: 3 }  
+  { col: 0, row: 6 }, { col: 2, row: 3 },                           { col: 6, row: 7 }  { col: 8, row: 4 }  
+  { col: 0, row: 7 }, { col: 2, row: 4 },                           { col: 6, row: 8 }                
+  { col: 0, row: 8 },  {col:  1, row:1},                                                               
 ];
 
 
