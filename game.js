@@ -562,11 +562,13 @@ function saveHighscore() {
   const seconds = String(elapsedTime % 60).padStart(2, '0');
   const timeFormatted = `${minutes}:${seconds}`;
 
-  const newScore = {
-    name: playerName,
-    score: score,
-    time: timeFormatted
-  };
+ const newScore = {
+  name: playerName,
+  score: score,
+  time: timeFormatted,
+  level: level  // ✅ voeg level toe
+};
+
 
   let highscores = JSON.parse(localStorage.getItem("highscores")) || [];
 
