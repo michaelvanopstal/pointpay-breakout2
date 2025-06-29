@@ -35,6 +35,7 @@ let pxpBags = [];
 let paddleExploding = false;
 let paddleExplosionParticles = [];
 let stoneDebris = [];
+let animationFrameId = null;
 
 // 🌟 Level 2 overgang
 let levelTransitionActive = false;
@@ -407,8 +408,7 @@ function resetBall() {
 function resetPaddle() {
   paddleX = (canvas.width - paddleWidth) / 2;
   resetBall();  // maakt de eerste bal aan
-  draw();
-
+ 
 }
 
 function drawLivesOnCanvas() {
@@ -1200,7 +1200,8 @@ function draw() {
   stoneDebris = stoneDebris.filter(p => p.alpha > 0);
 
 
-  requestAnimationFrame(draw);
+animationFrameId = requestAnimationFrame(draw);
+
 }
 
 
