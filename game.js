@@ -1290,7 +1290,8 @@ function triggerPaddleExplosion() {
 
   // ⏱️ Na 1 seconde paddle resetten + alles wissen
   setTimeout(() => {
-    stopTimer();               // ⏹️ Timer stoppen en terug op 00:00 zetten
+    saveHighscore();           // ✅ Eerst de score en TIJD opslaan
+    stopTimer();               // ⏹️ Daarna timer resetten
     ballReleased = false;      // ⛔ Timer pas starten bij volgende afvuuractie
 
     paddleExploding = false;
@@ -1308,7 +1309,6 @@ function triggerPaddleExplosion() {
     coins = [];
     pxpBags = [];
 
-    saveHighscore();
     resetBricks();
     resetBall();
   }, 1000);
