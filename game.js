@@ -83,6 +83,18 @@ const bonusBricks = [
   { col: 7, row: 6, type: "stone" },
   { col: 6, row: 7, type: "stone" },
 ];
+// 📦 PXP layout voor level 2 (alleen steen-blokken)
+const pxpMap = [
+  { col: 1, row: 2 }, { col: 1, row: 3 }, { col: 1, row: 4 }, // linker p-rug
+  { col: 2, row: 2 }, { col: 2, row: 3 },                     // linker p-boog
+  { col: 3, row: 2 },                                         // top p-kop
+  { col: 5, row: 2 }, { col: 5, row: 3 }, { col: 5, row: 4 }, // x diagonaal links
+  { col: 6, row: 3 },                                         // x midden
+  { col: 7, row: 2 }, { col: 7, row: 3 }, { col: 7, row: 4 }, // x diagonaal rechts
+  { col: 9, row: 2 }, { col: 9, row: 3 }, { col: 9, row: 4 }, // rechter p-rug
+  { col: 10, row: 2 }, { col: 10, row: 3 },                   // rechter p-boog
+  { col: 11, row: 2 }                                         // top p-kop
+];
 
 
 const paddleExplodeSound = new Audio("paddle_explode.mp3");
@@ -354,11 +366,18 @@ function resetBricks() {
     for (let r = 0; r < brickRowCount; r++) {
       bricks[c][r].status = 1;
 
-      // Haal bonusinfo op (inclusief eventueel "stone")
-      const bonus = bonusBricks.find(b => b.col === c && b.row === r);
-      const brickType = bonus ? bonus.type : "normal";
+      let brickType = "normal";
 
-      // Type instellen
+      // 📦 Level 2: specifieke PXP layout met stenen
+      if (level === 2) {
+        const isStone = pxpMap.some(p => p.col === c && p.row === r);
+        if (isStone) brickType = "stone";
+      } else {
+        // Andere levels: gebruik bonusBricks systeem
+        const bonus = bonusBricks.find(b => b.col === c && b.row === r);
+        if (bonus) brickType = bonus.type;
+      }
+
       bricks[c][r].type = brickType;
 
       // Extra eigenschappen voor stone blokken
