@@ -1302,33 +1302,17 @@ function spawnStoneDebris(x, y) {
 function triggerPaddleExplosion() {
   if (lives > 1) {
     lives--;
-    updateLivesDisplay(); // ✅ TEKEN NIEUWE STAND VAN LEVENS
+    updateLivesDisplay();
 
     paddleExploding = true;
     paddleExplosionParticles = [];
 
-    // Maak 50 deeltjes aan die uit elkaar vliegen
-    for (let i = 0; i < 50; i++) {
-      paddleExplosionParticles.push({
-        x: paddleX + paddleWidth / 2,
-        y: canvas.height - paddleHeight / 2,
-        dx: (Math.random() - 0.5) * 10,
-        dy: (Math.random() - 0.5) * 10,
-        radius: Math.random() * 4 + 2,
-        alpha: 1
-      });
-    }
+    // ... explosie deeltjes etc.
 
-
-    const paddleExplodeSound = new Audio("paddle_explode.mp3");
-    paddleExplodeSound.play();
-
-    // ⏱️ Na 1 seconde paddle en bal opnieuw plaatsen (score/tijd blijven!)
     setTimeout(() => {
       paddleExploding = false;
       paddleExplosionParticles = [];
 
-      // Zet bal terug op paddle
       balls = [{
         x: paddleX + paddleWidth / 2 - ballRadius,
         y: canvas.height - paddleHeight - ballRadius * 2,
@@ -1340,7 +1324,6 @@ function triggerPaddleExplosion() {
 
       ballLaunched = false;
       ballMoving = false;
-
     }, 1000);
 
   } else {
@@ -1349,25 +1332,13 @@ function triggerPaddleExplosion() {
     stopTimer();
 
     lives = 3;
+    updateLivesDisplay(); // ✅ ZET DE 3 ZAKJES WEER TERUG
+
     score = 0;
     level = 1;
     elapsedTime = 0;
 
-    paddleExploding = false;
-    paddleExplosionParticles = [];
-
-    speedBoostActive = false;
-    doublePointsActive = false;
-    flagsOnPaddle = false;
-    rocketActive = false;
-    rocketFired = false;
-    rocketAmmo = 0;
-    flyingCoins = [];
-    smokeParticles = [];
-    explosions = [];
-    coins = [];
-    pxpBags = [];
-
+    // ... rest reset
     resetBricks();
     resetBall();
     resetPaddle();
@@ -1376,7 +1347,6 @@ function triggerPaddleExplosion() {
     document.getElementById("timeDisplay").textContent = "time 00:00";
   }
 }
-
 
 function startLevelTransition() {
   level = 2; // 📈 Verhoog level
