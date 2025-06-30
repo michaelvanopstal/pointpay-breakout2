@@ -1580,8 +1580,9 @@ function detectBallStuck() {
 
   if (lastBallPositions.length === sampleSize) {
     let totalMovement = 0;
-    let minX = ball.x, maxX = ball.x;
-    let minY = ball.y, maxY = ball.y;
+    let minX = lastBallPositions[0].x, maxX = lastBallPositions[0].x;
+    let minY = lastBallPositions[0].y, maxY = lastBallPositions[0].y;
+
 
     for (let i = 1; i < sampleSize; i++) {
       const prev = lastBallPositions[i - 1];
