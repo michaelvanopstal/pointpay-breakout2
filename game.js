@@ -1057,7 +1057,7 @@ function draw() {
   if (balls.length === 0 && !paddleExploding) {
     triggerPaddleExplosion(); // pas nu verlies van leven
   }
-}
+
 
   // Paddle bewegen
   if (rightPressed && paddleX < canvas.width - paddleWidth) {
