@@ -373,13 +373,13 @@ function resetBricks() {
       let brickType = "normal"; // ✅ slechts één keer
 
       const bonus = bonusBricks.find(b => b.col === c && b.row === r);
-      const isStone = level === 2 && pxpMap.some(p => p.col === c && p.row === r);
+      let pxp = pxpMap.find(p => p.col === c && p.row === r);
 
-      if (isStone) {
-        brickType = "stone";
-      } else if (bonus) {
-        brickType = bonus.type;
-      }
+        if (level === 2 && pxp) {
+        brickType = pxp.type || "stone"; // 👈 gebruik type indien aanwezig, anders "stone"
+        } else if (bonus) {
+         brickType = bonus.type;
+        }
 
       bricks[c][r].type = brickType;
 
