@@ -1566,3 +1566,7 @@ function triggerBallReset() {
     btn.textContent = "RESET\nBALL";
   }, 10000);
 }
+
+// Koppel knop aan functie
+document.getElementById("resetBallBtn").addEventListener("click", triggerBallReset);
+
