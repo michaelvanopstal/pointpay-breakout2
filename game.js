@@ -1500,3 +1500,44 @@ function updateLivesDisplay() {
     display.appendChild(img);
   }
 }
+
+function triggerBallReset() {
+  const btn = document.getElementById("resetBallBtn");
+  btn.disabled = true;
+  btn.style.animation = "none";
+  btn.textContent = "Resetting...";
+
+  // 🔊 Speel alarmgeluid
+  resetBallSound.currentTime = 0;
+  resetBallSound.play();
+
+  // 🔴 Rood knipperend canvas-overlay
+  let blinkCount = 0;
+  const blinkInterval = setInterval(() => {
+    ctx.fillStyle = `rgba(255, 0, 0, ${blinkCount % 2 === 0 ? 0.3 : 0})`;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    blinkCount++;
+    if (blinkCount >= 20) clearInterval(blinkInterval);  // 10s lang
+  }, 500);
+
+  // 💥 Na 10 seconden: reset bal
+  setTimeout(() => {
+    balls = [{
+      x: paddleX + paddleWidth / 2 - ballRadius,
+      y: canvas.height - paddleHeight - ballRadius * 2,
+      dx: 0,
+      dy: -6,
+      radius: ballRadius,
+      isMain: true
+    }];
+    ballLaunched = false;
+    ballMoving = false;
+
+    btn.textContent = "RESET\nBALL";
+    btn.disabled = false;
+  }, 10000);
+}
+
+// ▶️ Koppel knop aan klikactie
+document.getElementById("resetBallBtn").addEventListener("click", triggerBallReset);
+
