@@ -1565,10 +1565,9 @@ function updateLivesDisplay() {
 
 
 function detectBallStuck() {
-  const sampleSize = 10;
-  const movementThreshold = 6; // totale afstand in 10 samples
-  const zoneSize = 6; // max gebied
-  const directionChangeThreshold = 6; // trillen
+  const sampleSize = 12;
+  const movementThreshold = 6;   // totaal max beweging (x+y)
+  const positionRange = 8;       // maximale spreiding in px
 
   if (!balls[0] || balls.length === 0 || !ballLaunched) return;
 
@@ -1580,51 +1579,45 @@ function detectBallStuck() {
   }
 
   if (lastBallPositions.length === sampleSize) {
-    const xs = lastBallPositions.map(p => p.x);
-    const ys = lastBallPositions.map(p => p.y);
-    const minX = Math.min(...xs), maxX = Math.max(...xs);
-    const minY = Math.min(...ys), maxY = Math.max(...ys);
-    const inSmallZone = (maxX - minX < zoneSize) && (maxY - minY < zoneSize);
+    let totalMovement = 0;
+    let minX = ball.x, maxX = ball.x;
+    let minY = ball.y, maxY = ball.y;
 
-    let dxChanges = 0;
-    let dyChanges = 0;
-    for (let i = 2; i < lastBallPositions.length; i++) {
-      const dx1 = lastBallPositions[i].x - lastBallPositions[i - 1].x;
-      const dx2 = lastBallPositions[i - 1].x - lastBallPositions[i - 2].x;
-      if (dx1 * dx2 < 0) dxChanges++;
+    for (let i = 1; i < sampleSize; i++) {
+      const prev = lastBallPositions[i - 1];
+      const curr = lastBallPositions[i];
+      const dx = Math.abs(curr.x - prev.x);
+      const dy = Math.abs(curr.y - prev.y);
+      totalMovement += dx + dy;
 
-      const dy1 = lastBallPositions[i].y - lastBallPositions[i - 1].y;
-      const dy2 = lastBallPositions[i - 1].y - lastBallPositions[i - 2].y;
-      if (dy1 * dy2 < 0) dyChanges++;
+      minX = Math.min(minX, curr.x);
+      maxX = Math.max(maxX, curr.x);
+      minY = Math.min(minY, curr.y);
+      maxY = Math.max(maxY, curr.y);
     }
 
-    const changesEnough = dxChanges + dyChanges >= directionChangeThreshold;
+    const spreadX = maxX - minX;
+    const spreadY = maxY - minY;
+
+    const isTrembling = totalMovement < movementThreshold;
+    const isTrapped = spreadX < positionRange && spreadY < positionRange;
 
     const btn = document.getElementById("resetBallBtn");
-    const debugIcon = document.getElementById("debugStuck");
 
-    if (inSmallZone && changesEnough) {
+    if (isTrembling && isTrapped) {
       if (!ballStuck) {
         ballStuck = true;
-
-        // 🔊 Sirene
         if (typeof resetWarningSound !== "undefined") {
           resetWarningSound.currentTime = 0;
           resetWarningSound.play();
         }
-
-        // 🐞 Debug icoon zichtbaar
-        if (debugIcon) debugIcon.style.display = "block";
       }
-
       btn.style.display = "block";
       btn.style.animation = "blinkRedWhite 1s infinite";
     } else {
       ballStuck = false;
       btn.style.display = "none";
       btn.style.animation = "none";
-
-      if (debugIcon) debugIcon.style.display = "none";
     }
   }
 }
