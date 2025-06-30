@@ -103,6 +103,7 @@ const pxpMap = [
 
 const resetBallSound = new Audio("resetball.mp3");
 
+
 const levelUpSound = new Audio("levelup.mp3");
 const paddleExplodeSound = new Audio("paddle_explode.mp3");
 const gameOverSound = new Audio("gameover.mp3");
@@ -1006,6 +1007,11 @@ function draw() {
   checkFlyingCoinHits();
   drawPointPopups();
 
+  if (resetOverlayActive && Date.now() % 1000 < 500) {
+  ctx.fillStyle = 'rgba(255, 0, 0, 0.25)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+}
+
   if (doublePointsActive && Date.now() - doublePointsStartTime > doublePointsDuration) {
     doublePointsActive = false;
   }
@@ -1522,15 +1528,15 @@ function triggerBallReset() {
   btn.disabled = true;
   btn.textContent = "RESETTING...";
 
-  const resetBallAudio = new Audio("resetball.mp3");
-  resetBallAudio.currentTime = 0;
-  resetBallAudio.play();
+  resetBallSound.currentTime = 0;
+  resetBallSound.play();
 
+  // 🔴 Activeer overlay
   resetOverlayActive = true;
 
-  // 💥 Bal ontploffen (visueel effect)
+  // 💥 Visuele explosie van de huidige ballen
   balls.forEach(ball => {
-    for (let i = 0; i < 12; i++) {
+    for (let i = 0; i < 15; i++) {
       stoneDebris.push({
         x: ball.x + ball.radius,
         y: ball.y + ball.radius,
@@ -1542,6 +1548,7 @@ function triggerBallReset() {
     }
   });
 
+  // ⏳ Na 10 seconden bal resetten
   setTimeout(() => {
     balls = [{
       x: paddleX + paddleWidth / 2 - ballRadius,
@@ -1551,12 +1558,11 @@ function triggerBallReset() {
       radius: ballRadius,
       isMain: true
     }];
-
     ballLaunched = false;
     ballMoving = false;
-    resetOverlayActive = false;
 
-    btn.textContent = "RESET\nBALL";
+    resetOverlayActive = false;
     btn.disabled = false;
+    btn.textContent = "RESET\nBALL";
   }, 10000);
 }
