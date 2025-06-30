@@ -298,7 +298,7 @@ function keyUpHandler(e) {
 function mouseMoveHandler(e) {
   const relativeX = e.clientX - canvas.offsetLeft;
   if (relativeX > 0 && relativeX < canvas.width) {
-    paddleX = relativeX - paddleWidth / 2;
+    paddleX = Math.max(0, Math.min(canvas.width - paddleWidth, relativeX - paddleWidth / 2));
   }
 }
 
