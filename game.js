@@ -73,7 +73,7 @@ balls.push({
 const bonusBricks = [
   { col: 5, row: 3, type: "rocket" },
   { col: 8, row: 4, type: "power" },
-  { col: 2, row: 7, type: "doubleball" },
+  { col: 2, row: 14, type: "doubleball" },
   { col: 4, row: 7, type: "2x" },
   { col: 2, row: 3, type: "speed" },
   { col: 3, row: 14, type: "stone" },
