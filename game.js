@@ -47,6 +47,7 @@ let transitionOffsetY = -300;
 let levelMessageAlpha = 0;
 let levelMessageTimer = 0;
 let levelMessageVisible = false;
+let resetOverlayActive = false;
 
 
 
@@ -995,7 +996,6 @@ function spawnPxpBag(x, y) {
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
   collisionDetection();
   drawCoins();
   checkCoinCollision();
@@ -1055,6 +1055,15 @@ function draw() {
 
     ctx.drawImage(ballImg, ball.x, ball.y, ball.radius * 2, ball.radius * 2);
   });
+
+  // 🔴 Rode knipper-overlay bij reset
+  if (resetOverlayActive) {
+    if (Date.now() % 1000 < 500) {
+      ctx.fillStyle = 'rgba(255, 0, 0, 0.25)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+  }
+
 
   // ✅ Na de loop: check of alle ballen weg zijn
   if (balls.length === 0 && !paddleExploding) {
@@ -1217,7 +1226,6 @@ if (showGameOver) {
 }
 
 
-
   // 🎇 Paddle-explosie tekenen
   if (paddleExploding) {
     paddleExplosionParticles.forEach(p => {
@@ -1232,6 +1240,13 @@ if (showGameOver) {
 
     paddleExplosionParticles = paddleExplosionParticles.filter(p => p.alpha > 0);
   }
+  
+  if (resetOverlayActive) {
+  if (Date.now() % 1000 < 500) {
+    ctx.fillStyle = 'rgba(255, 0, 0, 0.25)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
+}
 
   // 🧱 Steenpuin tekenen
   stoneDebris.forEach(p => {
@@ -1511,13 +1526,21 @@ function triggerBallReset() {
   resetBallAudio.currentTime = 0;
   resetBallAudio.play();
 
-  let blinkCount = 0;
-  const blinkInterval = setInterval(() => {
-    ctx.fillStyle = `rgba(255, 0, 0, ${blinkCount % 2 === 0 ? 0.3 : 0})`;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    blinkCount++;
-    if (blinkCount >= 20) clearInterval(blinkInterval); // 10 sec = 20x 500ms
-  }, 500);
+  resetOverlayActive = true;
+
+  // 💥 Bal ontploffen (visueel effect)
+  balls.forEach(ball => {
+    for (let i = 0; i < 12; i++) {
+      stoneDebris.push({
+        x: ball.x + ball.radius,
+        y: ball.y + ball.radius,
+        dx: (Math.random() - 0.5) * 6,
+        dy: (Math.random() - 0.5) * 6,
+        radius: Math.random() * 3 + 2,
+        alpha: 1
+      });
+    }
+  });
 
   setTimeout(() => {
     balls = [{
@@ -1528,13 +1551,12 @@ function triggerBallReset() {
       radius: ballRadius,
       isMain: true
     }];
+
     ballLaunched = false;
     ballMoving = false;
+    resetOverlayActive = false;
 
     btn.textContent = "RESET\nBALL";
     btn.disabled = false;
   }, 10000);
 }
-
-// ✅ Koppel de knop aan de functie
-document.getElementById("resetBallBtn").addEventListener("click", triggerBallReset);
