@@ -1059,11 +1059,6 @@ function draw() {
   }
 }
 
-
-
-    ctx.drawImage(ballImg, ball.x, ball.y, ball.radius * 2, ball.radius * 2);
-  });
-
   // Paddle bewegen
   if (rightPressed && paddleX < canvas.width - paddleWidth) {
     paddleX += 7;
