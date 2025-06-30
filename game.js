@@ -48,10 +48,6 @@ let levelMessageAlpha = 0;
 let levelMessageTimer = 0;
 let levelMessageVisible = false;
 
-let lastBallPositions = [];
-let stuckCheckInterval = null;
-let ballStuck = false;
-let ballResetInProgress = false;
 
 
 
@@ -103,10 +99,6 @@ const pxpMap = [
   { col: 8, row: 5 },   { col: 8, row: 8 },      { col: 8, row: 14 },   { col: 8, row: 13 },                              
                                                                   
 ];
-
-
-const resetWarningSound = new Audio("reset_warning.mp3");   // 🚨 sirene
-const resetExplodeSound = new Audio("reset_explode.mp3");   // 💥 explosie
 
 const levelUpSound = new Audio("levelup.mp3");
 const paddleExplodeSound = new Audio("paddle_explode.mp3");
@@ -298,7 +290,7 @@ function keyUpHandler(e) {
 function mouseMoveHandler(e) {
   const relativeX = e.clientX - canvas.offsetLeft;
   if (relativeX > 0 && relativeX < canvas.width) {
-    paddleX = Math.max(0, Math.min(canvas.width - paddleWidth, relativeX - paddleWidth / 2));
+    paddleX = relativeX - paddleWidth / 2;
   }
 }
 
@@ -1266,9 +1258,6 @@ function onImageLoad() {
     resetBricks();
     updateLivesDisplay(); // ✅ laat bij start meteen levens zien
     draw();
-
-    // ✅ Start bal-vastzit-detectie zodra alles geladen is
-    stuckCheckInterval = setInterval(detectBallStuck, 1000);
   }
 }
 
@@ -1357,59 +1346,6 @@ function spawnStoneDebris(x, y) {
     });
   }
 }
-
-
-function triggerBallReset() {
-  if (!ballStuck || ballResetInProgress || balls.length === 0) return;
-
-  ballResetInProgress = true;
-
-  const btn = document.getElementById("resetBallBtn");
-  btn.style.animation = "none";
-  btn.textContent = "Resetting...";
-  btn.disabled = true;
-
-  // 🔴 Rood knipperend canvas-overlay
-  let blinkCount = 0;
-  const blinkInterval = setInterval(() => {
-    ctx.fillStyle = `rgba(255, 0, 0, ${blinkCount % 2 === 0 ? 0.2 : 0})`;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    blinkCount++;
-    if (blinkCount >= 10) clearInterval(blinkInterval);
-  }, 500);
-
-  // 💥 Na 5 seconden: bal resetten en geluid afspelen
-  setTimeout(() => {
-    // 🎵 Speel explosiegeluid
-    if (typeof resetExplodeSound !== "undefined") {
-      resetExplodeSound.currentTime = 0;
-      resetExplodeSound.play();
-    }
-
-    balls = [{
-      x: paddleX + paddleWidth / 2 - ballRadius,
-      y: canvas.height - paddleHeight - ballRadius * 2,
-      dx: 0,
-      dy: -6,
-      radius: ballRadius,
-      isMain: true
-    }];
-
-    ballLaunched = false;
-    ballMoving = false;
-    lastBallPositions = [];
-    ballStuck = false;
-    ballResetInProgress = false;
-
-    btn.textContent = "RESET\nBALL";
-    btn.style.display = "none";
-    btn.disabled = false;
-  }, 5000);
-}
-
-// ▶️ Koppel knop aan actie
-document.getElementById("resetBallBtn").addEventListener("click", triggerBallReset);
-
 
 function triggerPaddleExplosion() {
   if (lives > 1) {
@@ -1560,65 +1496,5 @@ function updateLivesDisplay() {
     img.style.width = "28px";
     img.style.height = "28px";
     display.appendChild(img);
-  }
-}
-
-
-function detectBallStuck() {
-  const sampleSize = 12;
-  const movementThreshold = 6;   // totaal max beweging (x+y)
-  const positionRange = 8;       // maximale spreiding in px
-
-  if (!balls[0] || balls.length === 0 || !ballLaunched) return;
-
-  const ball = balls[0];
-  lastBallPositions.push({ x: ball.x, y: ball.y });
-
-  if (lastBallPositions.length > sampleSize) {
-    lastBallPositions.shift();
-  }
-
-  if (lastBallPositions.length === sampleSize) {
-    let totalMovement = 0;
-    let minX = lastBallPositions[0].x, maxX = lastBallPositions[0].x;
-    let minY = lastBallPositions[0].y, maxY = lastBallPositions[0].y;
-
-
-    for (let i = 1; i < sampleSize; i++) {
-      const prev = lastBallPositions[i - 1];
-      const curr = lastBallPositions[i];
-      const dx = Math.abs(curr.x - prev.x);
-      const dy = Math.abs(curr.y - prev.y);
-      totalMovement += dx + dy;
-
-      minX = Math.min(minX, curr.x);
-      maxX = Math.max(maxX, curr.x);
-      minY = Math.min(minY, curr.y);
-      maxY = Math.max(maxY, curr.y);
-    }
-
-    const spreadX = maxX - minX;
-    const spreadY = maxY - minY;
-
-    const isTrembling = totalMovement < movementThreshold;
-    const isTrapped = spreadX < positionRange && spreadY < positionRange;
-
-    const btn = document.getElementById("resetBallBtn");
-
-    if (isTrembling && isTrapped) {
-      if (!ballStuck) {
-        ballStuck = true;
-        if (typeof resetWarningSound !== "undefined") {
-          resetWarningSound.currentTime = 0;
-          resetWarningSound.play();
-        }
-      }
-      btn.style.display = "block";
-      btn.style.animation = "blinkRedWhite 1s infinite";
-    } else {
-      ballStuck = false;
-      btn.style.display = "none";
-      btn.style.animation = "none";
-    }
   }
 }
