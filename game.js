@@ -102,6 +102,7 @@ const pxpMap = [
 
 
 const paddleExplodeSound = new Audio("paddle_explode.mp3");
+const gameOverSound = new Audio("gameover.mp3");
 
 const doubleBallSound = new Audio("double_ball.mp3");
 const speedBoostSound = new Audio("speed_boost.mp3");
@@ -1388,10 +1389,15 @@ function triggerPaddleExplosion() {
       ballMoving = false;
     }, 1000);
 
-  } else {
-    // ✅ Laatste leven: eerst paddle laten ontploffen
-    paddleExploding = true;
-    paddleExplosionParticles = [];
+ } else {
+  // ✅ Laatste leven: eerst paddle laten ontploffen
+  paddleExploding = true;
+
+  gameOverSound.currentTime = 0;
+  gameOverSound.play(); // 🔊 Speel "GAME OVER" geluid
+
+  paddleExplosionParticles = [];
+  // ...
 
     for (let i = 0; i < 50; i++) {
       paddleExplosionParticles.push({
