@@ -100,7 +100,7 @@ const pxpMap = [
                                                                   
 ];
 
-
+const levelUpSound = new Audio("levelup.mp3");
 const paddleExplodeSound = new Audio("paddle_explode.mp3");
 const gameOverSound = new Audio("gameover.mp3");
 
