@@ -1525,13 +1525,14 @@ function triggerBallReset() {
   btn.disabled = true;
   btn.textContent = "RESETTING...";
 
+  // 🔊 Speel alarmgeluid af
   resetBallSound.currentTime = 0;
   resetBallSound.play();
 
-  // 🔴 Activeer overlay
+  // 🔴 Activeer rode overlay
   resetOverlayActive = true;
 
-  // 💥 Visuele explosie van de huidige ballen
+  // 💥 Visueel: explodeer alle actieve ballen in deeltjes
   balls.forEach(ball => {
     for (let i = 0; i < 15; i++) {
       stoneDebris.push({
@@ -1545,7 +1546,7 @@ function triggerBallReset() {
     }
   });
 
-  // ⏳ Na 10 seconden bal resetten
+  // ⏳ Na 10 seconden: nieuwe bal centreren en resetten
   setTimeout(() => {
     balls = [{
       x: paddleX + paddleWidth / 2 - ballRadius,
@@ -1564,6 +1565,5 @@ function triggerBallReset() {
   }, 10000);
 }
 
-// Koppel knop aan functie
+// ✅ Koppel de knop altijd aan deze functie
 document.getElementById("resetBallBtn").addEventListener("click", triggerBallReset);
-
