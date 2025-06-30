@@ -1486,13 +1486,12 @@ function startLevelTransition() {
   }];
 }
 
-function updateLivesDisplay() {
-  const resetBallAudio = new Audio("resetball.mp3");
-
-document.getElementById("resetBallBtn").addEventListener("click", () => {
+function triggerBallReset() {
   const btn = document.getElementById("resetBallBtn");
   btn.disabled = true;
   btn.textContent = "RESETTING...";
+
+  const resetBallAudio = new Audio("resetball.mp3");
   resetBallAudio.currentTime = 0;
   resetBallAudio.play();
 
@@ -1519,4 +1518,7 @@ document.getElementById("resetBallBtn").addEventListener("click", () => {
     btn.textContent = "RESET\nBALL";
     btn.disabled = false;
   }, 10000);
-});
+}
+
+// ✅ Koppel de knop aan de functie
+document.getElementById("resetBallBtn").addEventListener("click", triggerBallReset);
