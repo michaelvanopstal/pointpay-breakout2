@@ -1453,15 +1453,26 @@ function triggerPaddleExplosion() {
 
 function startLevelTransition() {
   level = 2; // 📈 Verhoog level
+
+  // ❌ Stop ALLE actieve bonussen van level 1
+  doublePointsActive = false;
+  doublePointsStartTime = 0;
+  speedBoostActive = false;
+  speedBoostStart = 0;
+  flagsOnPaddle = false;
+  rocketActive = false;
+  rocketAmmo = 0;
+  rocketFired = false;
+  flyingCoins = [];
+
   resetBricks(); // 🔁 Bouw nieuwe blokken voor het volgende level
-  transitionOffsetY = -300; // 📦 Laat ze van boven naar beneden komen
+  transitionOffsetY = -300;
 
   levelMessageAlpha = 0;
   levelMessageTimer = 0;
   levelMessageVisible = true;
   levelTransitionActive = true;
 
-  // 🔄 Bal opnieuw positioneren op paddle, zonder reset van score of tijd
   ballLaunched = false;
   ballMoving = false;
 
@@ -1474,6 +1485,7 @@ function startLevelTransition() {
     isMain: true
   }];
 }
+
 
 function updateLivesDisplay() {
   const display = document.getElementById("livesDisplay");
