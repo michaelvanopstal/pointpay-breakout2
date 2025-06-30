@@ -100,8 +100,6 @@ const pxpMap = [
                                                                   
 ];
 
-const resetBallSound = new Audio("resetball.mp3"); // 🔊 upload: resetball.mp3
-
 const levelUpSound = new Audio("levelup.mp3");
 const paddleExplodeSound = new Audio("paddle_explode.mp3");
 const gameOverSound = new Audio("gameover.mp3");
@@ -1486,39 +1484,17 @@ function startLevelTransition() {
   }];
 }
 
-function triggerBallReset() {
-  const btn = document.getElementById("resetBallBtn");
-  btn.disabled = true;
-  btn.textContent = "RESETTING...";
+function updateLivesDisplay() {
+  const display = document.getElementById("livesDisplay");
+  if (!display) return;
 
-  const resetBallAudio = new Audio("resetball.mp3");
-  resetBallAudio.currentTime = 0;
-  resetBallAudio.play();
+  display.innerHTML = "";
 
-  let blinkCount = 0;
-  const blinkInterval = setInterval(() => {
-    ctx.fillStyle = `rgba(255, 0, 0, ${blinkCount % 2 === 0 ? 0.3 : 0})`;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    blinkCount++;
-    if (blinkCount >= 20) clearInterval(blinkInterval); // 10 sec = 20x 500ms
-  }, 500);
-
-  setTimeout(() => {
-    balls = [{
-      x: paddleX + paddleWidth / 2 - ballRadius,
-      y: canvas.height - paddleHeight - ballRadius * 2,
-      dx: 0,
-      dy: -6,
-      radius: ballRadius,
-      isMain: true
-    }];
-    ballLaunched = false;
-    ballMoving = false;
-
-    btn.textContent = "RESET\nBALL";
-    btn.disabled = false;
-  }, 10000);
+  for (let i = 0; i < lives; i++) {
+    const img = document.createElement("img");
+    img.src = "level.png";
+    img.style.width = "28px";
+    img.style.height = "28px";
+    display.appendChild(img);
+  }
 }
-
-// ✅ Koppel de knop aan de functie
-document.getElementById("resetBallBtn").addEventListener("click", triggerBallReset);
