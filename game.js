@@ -1565,40 +1565,56 @@ function updateLivesDisplay() {
 
 
 function detectBallStuck() {
-  const threshold = 3; // aantal pixels verschil
   const sampleSize = 10;
+  const movementThreshold = 6; // totale afstand in 10 samples
+  const zoneSize = 6; // max gebied
+  const directionChangeThreshold = 6; // trillen
 
   if (!balls[0] || balls.length === 0 || !ballLaunched) return;
 
-  // Voeg laatste positie toe
-  lastBallPositions.push({ x: balls[0].x, y: balls[0].y });
+  const ball = balls[0];
+  lastBallPositions.push({ x: ball.x, y: ball.y });
 
-  // Max aantal samples bewaren
   if (lastBallPositions.length > sampleSize) {
     lastBallPositions.shift();
   }
 
-  // Alleen checken als we genoeg data hebben
   if (lastBallPositions.length === sampleSize) {
-    const deltas = lastBallPositions.map((p, i, arr) => {
-      if (i === 0) return 0;
-      const dx = Math.abs(p.x - arr[i - 1].x);
-      const dy = Math.abs(p.y - arr[i - 1].y);
-      return dx + dy;
-    });
+    const xs = lastBallPositions.map(p => p.x);
+    const ys = lastBallPositions.map(p => p.y);
+    const minX = Math.min(...xs), maxX = Math.max(...xs);
+    const minY = Math.min(...ys), maxY = Math.max(...ys);
+    const inSmallZone = (maxX - minX < zoneSize) && (maxY - minY < zoneSize);
 
-    const totalMovement = deltas.reduce((a, b) => a + b, 0);
+    let dxChanges = 0;
+    let dyChanges = 0;
+    for (let i = 2; i < lastBallPositions.length; i++) {
+      const dx1 = lastBallPositions[i].x - lastBallPositions[i - 1].x;
+      const dx2 = lastBallPositions[i - 1].x - lastBallPositions[i - 2].x;
+      if (dx1 * dx2 < 0) dxChanges++;
+
+      const dy1 = lastBallPositions[i].y - lastBallPositions[i - 1].y;
+      const dy2 = lastBallPositions[i - 1].y - lastBallPositions[i - 2].y;
+      if (dy1 * dy2 < 0) dyChanges++;
+    }
+
+    const changesEnough = dxChanges + dyChanges >= directionChangeThreshold;
+
     const btn = document.getElementById("resetBallBtn");
+    const debugIcon = document.getElementById("debugStuck");
 
-    if (totalMovement < threshold) {
+    if (inSmallZone && changesEnough) {
       if (!ballStuck) {
         ballStuck = true;
 
-        // 🎵 Speel sirene-geluid zodra bal vastzit
+        // 🔊 Sirene
         if (typeof resetWarningSound !== "undefined") {
           resetWarningSound.currentTime = 0;
           resetWarningSound.play();
         }
+
+        // 🐞 Debug icoon zichtbaar
+        if (debugIcon) debugIcon.style.display = "block";
       }
 
       btn.style.display = "block";
@@ -1607,6 +1623,8 @@ function detectBallStuck() {
       ballStuck = false;
       btn.style.display = "none";
       btn.style.animation = "none";
+
+      if (debugIcon) debugIcon.style.display = "none";
     }
   }
 }
