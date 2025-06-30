@@ -48,6 +48,10 @@ let levelMessageAlpha = 0;
 let levelMessageTimer = 0;
 let levelMessageVisible = false;
 
+let lastBallPositions = [];
+let stuckCheckInterval = null;
+let ballStuck = false;
+let ballResetInProgress = false;
 
 
 
@@ -99,6 +103,10 @@ const pxpMap = [
   { col: 8, row: 5 },   { col: 8, row: 8 },      { col: 8, row: 14 },   { col: 8, row: 13 },                              
                                                                   
 ];
+
+
+const resetWarningSound = new Audio("reset_warning.mp3");   // 🚨 sirene
+const resetExplodeSound = new Audio("reset_explode.mp3");   // 💥 explosie
 
 const levelUpSound = new Audio("levelup.mp3");
 const paddleExplodeSound = new Audio("paddle_explode.mp3");
@@ -1258,6 +1266,9 @@ function onImageLoad() {
     resetBricks();
     updateLivesDisplay(); // ✅ laat bij start meteen levens zien
     draw();
+
+    // ✅ Start bal-vastzit-detectie zodra alles geladen is
+    stuckCheckInterval = setInterval(detectBallStuck, 1000);
   }
 }
 
@@ -1346,6 +1357,59 @@ function spawnStoneDebris(x, y) {
     });
   }
 }
+
+
+function triggerBallReset() {
+  if (!ballStuck || ballResetInProgress || balls.length === 0) return;
+
+  ballResetInProgress = true;
+
+  const btn = document.getElementById("resetBallBtn");
+  btn.style.animation = "none";
+  btn.textContent = "Resetting...";
+  btn.disabled = true;
+
+  // 🔴 Rood knipperend canvas-overlay
+  let blinkCount = 0;
+  const blinkInterval = setInterval(() => {
+    ctx.fillStyle = `rgba(255, 0, 0, ${blinkCount % 2 === 0 ? 0.2 : 0})`;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    blinkCount++;
+    if (blinkCount >= 10) clearInterval(blinkInterval);
+  }, 500);
+
+  // 💥 Na 5 seconden: bal resetten en geluid afspelen
+  setTimeout(() => {
+    // 🎵 Speel explosiegeluid
+    if (typeof resetExplodeSound !== "undefined") {
+      resetExplodeSound.currentTime = 0;
+      resetExplodeSound.play();
+    }
+
+    balls = [{
+      x: paddleX + paddleWidth / 2 - ballRadius,
+      y: canvas.height - paddleHeight - ballRadius * 2,
+      dx: 0,
+      dy: -6,
+      radius: ballRadius,
+      isMain: true
+    }];
+
+    ballLaunched = false;
+    ballMoving = false;
+    lastBallPositions = [];
+    ballStuck = false;
+    ballResetInProgress = false;
+
+    btn.textContent = "RESET\nBALL";
+    btn.style.display = "none";
+    btn.disabled = false;
+  }, 5000);
+}
+
+// ▶️ Koppel knop aan actie
+document.getElementById("resetBallBtn").addEventListener("click", triggerBallReset);
+
 
 function triggerPaddleExplosion() {
   if (lives > 1) {
@@ -1496,5 +1560,53 @@ function updateLivesDisplay() {
     img.style.width = "28px";
     img.style.height = "28px";
     display.appendChild(img);
+  }
+}
+
+
+function detectBallStuck() {
+  const threshold = 3; // aantal pixels verschil
+  const sampleSize = 10;
+
+  if (!balls[0] || balls.length === 0 || !ballLaunched) return;
+
+  // Voeg laatste positie toe
+  lastBallPositions.push({ x: balls[0].x, y: balls[0].y });
+
+  // Max aantal samples bewaren
+  if (lastBallPositions.length > sampleSize) {
+    lastBallPositions.shift();
+  }
+
+  // Alleen checken als we genoeg data hebben
+  if (lastBallPositions.length === sampleSize) {
+    const deltas = lastBallPositions.map((p, i, arr) => {
+      if (i === 0) return 0;
+      const dx = Math.abs(p.x - arr[i - 1].x);
+      const dy = Math.abs(p.y - arr[i - 1].y);
+      return dx + dy;
+    });
+
+    const totalMovement = deltas.reduce((a, b) => a + b, 0);
+    const btn = document.getElementById("resetBallBtn");
+
+    if (totalMovement < threshold) {
+      if (!ballStuck) {
+        ballStuck = true;
+
+        // 🎵 Speel sirene-geluid zodra bal vastzit
+        if (typeof resetWarningSound !== "undefined") {
+          resetWarningSound.currentTime = 0;
+          resetWarningSound.play();
+        }
+      }
+
+      btn.style.display = "block";
+      btn.style.animation = "blinkRedWhite 1s infinite";
+    } else {
+      ballStuck = false;
+      btn.style.display = "none";
+      btn.style.animation = "none";
+    }
   }
 }
