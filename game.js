@@ -1023,6 +1023,7 @@ function draw() {
       wallSound.currentTime = 0;
       wallSound.play();
     }
+
     if (ball.y < ball.radius) {
       ball.dy *= -1;
       wallSound.currentTime = 0;
@@ -1046,15 +1047,18 @@ function draw() {
     }
 
     if (ball.y + ball.dy > canvas.height) {
-   balls.splice(index, 1);
+      balls.splice(index, 1); // verwijder bal zonder actie
+    }
 
-   if (ball.isMain && !paddleExploding) {
-    triggerPaddleExplosion();
-    return;
+    ctx.drawImage(ballImg, ball.x, ball.y, ball.radius * 2, ball.radius * 2);
+  });
+
+  // ✅ Na de loop: check of alle ballen weg zijn
+  if (balls.length === 0 && !paddleExploding) {
+    triggerPaddleExplosion(); // pas nu verlies van leven
   }
-
-  return;
 }
+
 
 
     ctx.drawImage(ballImg, ball.x, ball.y, ball.radius * 2, ball.radius * 2);
