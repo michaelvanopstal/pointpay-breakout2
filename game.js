@@ -1162,37 +1162,35 @@ function draw() {
     }
   }
 
-  // ✨ Level 2 tekst weergeven
-  if (levelMessageVisible) {
-    ctx.save();
-    ctx.globalAlpha = levelMessageAlpha;
-    ctx.fillStyle = "#00ffff";
-    ctx.font = "bold 36px Arial";
-    ctx.textAlign = "center";
-    ctx.fillText("PointPay Breakout Level 2", canvas.width / 2, canvas.height / 2);
-    ctx.restore();
+ // ✨ Leveltekst weergeven
+if (levelMessageVisible) {
+  ctx.save();
+  ctx.globalAlpha = levelMessageAlpha;
+  ctx.fillStyle = "#00ffff";
+  ctx.font = "bold 36px Arial";
+  ctx.textAlign = "center";
+  ctx.fillText(`PointPay Breakout Level ${level}`, canvas.width / 2, canvas.height / 2);
+  ctx.restore();
+}
+
+// 🎬 Overgangstimer & animatie
+if (levelTransitionActive) {
+  levelMessageAlpha = 1;
+
+  levelMessageTimer++;
+
+  if (levelMessageTimer >= 360) {
+    levelMessageVisible = false;
+    levelTransitionActive = false;
   }
 
- if (levelTransitionActive) {
   if (transitionOffsetY < 0) {
     transitionOffsetY += 2;
   } else {
     transitionOffsetY = 0;
   }
-
-  if (levelMessageTimer < 60) {
-    levelMessageAlpha += 0.05; // fade-in
-  } else if (levelMessageTimer >= 60 && levelMessageTimer < 120) {
-    levelMessageAlpha -= 0.05; // fade-out
-  }
-
-  levelMessageTimer++;
-
-  if (levelMessageTimer >= 120 && levelMessageAlpha <= 0 && transitionOffsetY === 0) {
-    levelMessageVisible = false;
-    levelTransitionActive = false;
-  }
 }
+
 
 if (showGameOver) {
   ctx.save();
@@ -1458,26 +1456,20 @@ function triggerPaddleExplosion() {
 
 
 function startLevelTransition() {
-  level = 2; // 📈 Verhoog level
+  level++;
 
-  // ❌ Stop ALLE actieve bonussen van level 1
-  doublePointsActive = false;
-  doublePointsStartTime = 0;
-  speedBoostActive = false;
-  speedBoostStart = 0;
-  flagsOnPaddle = false;
-  rocketActive = false;
-  rocketAmmo = 0;
-  rocketFired = false;
-  flyingCoins = [];
+  // 🎧 Speel level-up geluid
+  levelUpSound.currentTime = 0;
+  levelUpSound.play();
 
-  resetBricks(); // 🔁 Bouw nieuwe blokken voor het volgende level
-  transitionOffsetY = -300;
-
+  // Toon de overgangstekst
   levelMessageAlpha = 0;
   levelMessageTimer = 0;
   levelMessageVisible = true;
   levelTransitionActive = true;
+
+  resetBricks();
+  transitionOffsetY = -300;
 
   ballLaunched = false;
   ballMoving = false;
@@ -1491,7 +1483,6 @@ function startLevelTransition() {
     isMain: true
   }];
 }
-
 
 function updateLivesDisplay() {
   const display = document.getElementById("livesDisplay");
