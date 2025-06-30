@@ -1007,10 +1007,7 @@ function draw() {
   checkFlyingCoinHits();
   drawPointPopups();
 
-  if (resetOverlayActive && Date.now() % 1000 < 500) {
-  ctx.fillStyle = 'rgba(255, 0, 0, 0.25)';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-}
+
 
   if (doublePointsActive && Date.now() - doublePointsStartTime > doublePointsDuration) {
     doublePointsActive = false;
