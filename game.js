@@ -1525,45 +1525,52 @@ function triggerBallReset() {
   btn.disabled = true;
   btn.textContent = "RESETTING...";
 
-  // 🔊 Speel alarmgeluid af
   resetBallSound.currentTime = 0;
   resetBallSound.play();
 
-  // 🔴 Activeer rode overlay
+  // 🔴 Activeer knipperende overlay
   resetOverlayActive = true;
 
-  // 💥 Visueel: explodeer alle actieve ballen in deeltjes
-  balls.forEach(ball => {
-    for (let i = 0; i < 15; i++) {
-      stoneDebris.push({
-        x: ball.x + ball.radius,
-        y: ball.y + ball.radius,
-        dx: (Math.random() - 0.5) * 6,
-        dy: (Math.random() - 0.5) * 6,
-        radius: Math.random() * 3 + 2,
-        alpha: 1
-      });
-    }
-  });
-
-  // ⏳ Na 10 seconden: nieuwe bal centreren en resetten
+  // ⏳ Na 10 seconden: BAL EXPLOSIE + RESET
   setTimeout(() => {
-    balls = [{
+    // 💥 Grote explosie op positie van de bal(len)
+    balls.forEach(ball => {
+      for (let i = 0; i < 25; i++) {
+        stoneDebris.push({
+          x: ball.x + ball.radius,
+          y: ball.y + ball.radius,
+          dx: (Math.random() - 0.5) * 8,
+          dy: (Math.random() - 0.5) * 8,
+          radius: Math.random() * 4 + 2,
+          alpha: 1
+        });
+      }
+    });
+
+    // ❌ Verwijder huidige ballen
+    balls = [];
+
+    // 🎯 Nieuwe bal gecentreerd
+    balls.push({
       x: paddleX + paddleWidth / 2 - ballRadius,
       y: canvas.height - paddleHeight - ballRadius * 2,
       dx: 0,
       dy: -6,
       radius: ballRadius,
       isMain: true
-    }];
+    });
+
     ballLaunched = false;
     ballMoving = false;
-
     resetOverlayActive = false;
     btn.disabled = false;
     btn.textContent = "RESET\nBALL";
   }, 10000);
 }
+
+// 🟢 BELANGRIJK: knop koppelen aan functie
+document.getElementById("resetBallBtn").addEventListener("click", triggerBallReset);
+
 
 // ✅ Koppel de knop altijd aan deze functie
 document.getElementById("resetBallBtn").addEventListener("click", triggerBallReset);
