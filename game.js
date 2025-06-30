@@ -1528,14 +1528,17 @@ function triggerBallReset() {
   resetBallSound.currentTime = 0;
   resetBallSound.play();
 
-  // 🔴 Activeer knipperende overlay
   resetOverlayActive = true;
 
-  // ⏳ Na 10 seconden: BAL EXPLOSIE + RESET
+  // ⏱️ 6.5 sec: bal weg + explosie
   setTimeout(() => {
-    // 💥 Grote explosie op positie van de bal(len)
+    // 💣 Explosiegeluid
+    paddleExplodeSound.currentTime = 0;
+    paddleExplodeSound.play();
+
+    // 💥 Explosie-deeltjes op huidige balposities
     balls.forEach(ball => {
-      for (let i = 0; i < 25; i++) {
+      for (let i = 0; i < 30; i++) {
         stoneDebris.push({
           x: ball.x + ball.radius,
           y: ball.y + ball.radius,
@@ -1547,19 +1550,20 @@ function triggerBallReset() {
       }
     });
 
-    // ❌ Verwijder huidige ballen
+    // 🧨 Bal verwijderen (verdwijnt tijdens explosie)
     balls = [];
+  }, 6500);
 
-    // 🎯 Nieuwe bal gecentreerd
-    balls.push({
+  // ⏱️ 10 sec: bal reset op paddle
+  setTimeout(() => {
+    balls = [{
       x: paddleX + paddleWidth / 2 - ballRadius,
       y: canvas.height - paddleHeight - ballRadius * 2,
       dx: 0,
       dy: -6,
       radius: ballRadius,
       isMain: true
-    });
-
+    }];
     ballLaunched = false;
     ballMoving = false;
     resetOverlayActive = false;
@@ -1568,9 +1572,8 @@ function triggerBallReset() {
   }, 10000);
 }
 
+
 // 🟢 BELANGRIJK: knop koppelen aan functie
 document.getElementById("resetBallBtn").addEventListener("click", triggerBallReset);
 
 
-// ✅ Koppel de knop altijd aan deze functie
-document.getElementById("resetBallBtn").addEventListener("click", triggerBallReset);
