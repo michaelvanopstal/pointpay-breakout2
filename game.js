@@ -1520,60 +1520,147 @@ function updateLivesDisplay() {
 }
 
 
-function triggerBallReset() {
-  const btn = document.getElementById("resetBallBtn");
-  btn.disabled = true;
-  btn.textContent = "RESETTING...";
+function triggerPaddleExplosion() {
+  if (resetTriggered) {
+    // 🔴 Paddle mag ontploffen, maar GEEN leven aftrekken of game over
+    paddleExploding = true;
+    paddleExplosionParticles = [];
 
-  resetBallSound.currentTime = 0;
-  resetBallSound.play();
+    for (let i = 0; i < 50; i++) {
+      paddleExplosionParticles.push({
+        x: paddleX + paddleWidth / 2,
+        y: canvas.height - paddleHeight / 2,
+        dx: (Math.random() - 0.5) * 10,
+        dy: (Math.random() - 0.5) * 10,
+        radius: Math.random() * 4 + 2,
+        alpha: 1
+      });
+    }
 
-  resetOverlayActive = true;
-  resetTriggered = true; // ✅ belangrijk: zet deze flag om paddle-explosie te herkennen als reset
-
-  // ⏱️ 6.5 sec: bal weg + explosie
-  setTimeout(() => {
-    // 💣 Explosiegeluid
     paddleExplodeSound.currentTime = 0;
     paddleExplodeSound.play();
 
-    // 💥 Explosie-deeltjes op huidige balposities
-    balls.forEach(ball => {
-      for (let i = 0; i < 30; i++) {
-        stoneDebris.push({
-          x: ball.x + ball.radius,
-          y: ball.y + ball.radius,
-          dx: (Math.random() - 0.5) * 8,
-          dy: (Math.random() - 0.5) * 8,
-          radius: Math.random() * 4 + 2,
-          alpha: 1
-        });
-      }
-    });
+    setTimeout(() => {
+      paddleExploding = false;
+      paddleExplosionParticles = [];
 
-    // 🧨 Bal verwijderen (verdwijnt tijdens explosie)
-    balls = [];
-  }, 6500);
+      balls = [{
+        x: paddleX + paddleWidth / 2 - ballRadius,
+        y: canvas.height - paddleHeight - ballRadius * 2,
+        dx: 0,
+        dy: -6,
+        radius: ballRadius,
+        isMain: true
+      }];
 
-  // ⏱️ 10 sec: bal reset op paddle
-  setTimeout(() => {
-    balls = [{
-      x: paddleX + paddleWidth / 2 - ballRadius,
-      y: canvas.height - paddleHeight - ballRadius * 2,
-      dx: 0,
-      dy: -6,
-      radius: ballRadius,
-      isMain: true
-    }];
-    ballLaunched = false;
-    ballMoving = false;
-    resetOverlayActive = false;
-    btn.disabled = false;
-    btn.textContent = "RESET\nBALL";
+      ballLaunched = false;
+      ballMoving = false;
 
-    resetTriggered = false; // ✅ flag terugzetten zodat volgende paddle-explosie wél telt
-  }, 10000);
+      resetTriggered = false; // ✅ Flag weer uitzetten
+    }, 1000);
+
+    return; // ⛔ STOP hier, geen leven aftrekken!
+  }
+
+  if (lives > 1) {
+    lives--;
+    updateLivesDisplay();
+    pauseTimer(); 
+
+    paddleExploding = true;
+    paddleExplosionParticles = [];
+
+    for (let i = 0; i < 50; i++) {
+      paddleExplosionParticles.push({
+        x: paddleX + paddleWidth / 2,
+        y: canvas.height - paddleHeight / 2,
+        dx: (Math.random() - 0.5) * 10,
+        dy: (Math.random() - 0.5) * 10,
+        radius: Math.random() * 4 + 2,
+        alpha: 1
+      });
+    }
+
+    paddleExplodeSound.currentTime = 0;
+    paddleExplodeSound.play();
+
+    setTimeout(() => {
+      paddleExploding = false;
+      paddleExplosionParticles = [];
+
+      balls = [{
+        x: paddleX + paddleWidth / 2 - ballRadius,
+        y: canvas.height - paddleHeight - ballRadius * 2,
+        dx: 0,
+        dy: -6,
+        radius: ballRadius,
+        isMain: true
+      }];
+
+      ballLaunched = false;
+      ballMoving = false;
+    }, 1000);
+
+  } else {
+    // ✅ Laatste leven: GAME OVER
+    paddleExploding = true;
+
+    gameOverSound.currentTime = 0;
+    gameOverSound.play();
+
+    paddleExplosionParticles = [];
+
+    for (let i = 0; i < 50; i++) {
+      paddleExplosionParticles.push({
+        x: paddleX + paddleWidth / 2,
+        y: canvas.height - paddleHeight / 2,
+        dx: (Math.random() - 0.5) * 10,
+        dy: (Math.random() - 0.5) * 10,
+        radius: Math.random() * 4 + 2,
+        alpha: 1
+      });
+    }
+
+    paddleExplodeSound.currentTime = 0;
+    paddleExplodeSound.play();
+
+    setTimeout(() => {
+      saveHighscore();
+      stopTimer();
+
+      lives = 3;
+      updateLivesDisplay();
+
+      score = 0;
+      level = 1;
+      elapsedTime = 0;
+
+      paddleExploding = false;
+      paddleExplosionParticles = [];
+
+      speedBoostActive = false;
+      speedBoostStart = 0;
+      doublePointsActive = false;
+      doublePointsStartTime = 0;
+      flagsOnPaddle = false;
+      rocketActive = false;
+      rocketFired = false;
+      rocketAmmo = 0;
+      flyingCoins = [];
+      smokeParticles = [];
+      explosions = [];
+      coins = [];
+      pxpBags = [];
+      showGameOver = true;
+      gameOverAlpha = 0;
+      gameOverTimer = 0;
+
+      resetBricks();
+      resetBall();
+      resetPaddle();
+
+      document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
+      document.getElementById("timeDisplay").textContent = "time 00:00";
+    }, 1000);
+  }
 }
-
-// 🟢 BELANGRIJK: knop koppelen aan functie
-document.getElementById("resetBallBtn").addEventListener("click", triggerBallReset);
