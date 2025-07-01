@@ -1529,6 +1529,7 @@ function triggerBallReset() {
   resetBallSound.play();
 
   resetOverlayActive = true;
+  resetTriggered = true; // ✅ belangrijk: zet deze flag om paddle-explosie te herkennen als reset
 
   // ⏱️ 6.5 sec: bal weg + explosie
   setTimeout(() => {
@@ -1569,11 +1570,10 @@ function triggerBallReset() {
     resetOverlayActive = false;
     btn.disabled = false;
     btn.textContent = "RESET\nBALL";
+
+    resetTriggered = false; // ✅ flag terugzetten zodat volgende paddle-explosie wél telt
   }, 10000);
 }
 
-
 // 🟢 BELANGRIJK: knop koppelen aan functie
 document.getElementById("resetBallBtn").addEventListener("click", triggerBallReset);
-
-
