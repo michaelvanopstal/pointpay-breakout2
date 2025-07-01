@@ -1536,15 +1536,20 @@ function triggerBallReset() {
   resetBallSound.play();
 
   resetOverlayActive = true;
-  resetTriggered = true; // 🟢 activeer flag zodat paddleExplode() weet: niet aftrekken
+
+  // 🛡️ Als we maar 1 leven hebben, verhoog tijdelijk het leven naar 2 zodat paddleExplode geen Game Over triggert
+  const originalLives = lives;
+  if (lives === 1) {
+    lives = 2; // tijdelijk "faken"
+  }
+
+  resetTriggered = true; // 🟢 flag zodat paddleExplode weet: geen leven aftrekken
 
   // ⏱️ 6.5 sec: bal weg + explosie
   setTimeout(() => {
-    // 💣 Explosiegeluid
     paddleExplodeSound.currentTime = 0;
     paddleExplodeSound.play();
 
-    // 💥 Explosie-deeltjes op huidige balposities
     balls.forEach(ball => {
       for (let i = 0; i < 30; i++) {
         stoneDebris.push({
@@ -1558,7 +1563,6 @@ function triggerBallReset() {
       }
     });
 
-    // 🧨 Bal verwijderen (verdwijnt tijdens explosie)
     balls = [];
   }, 6500);
 
@@ -1578,10 +1582,15 @@ function triggerBallReset() {
     btn.disabled = false;
     btn.textContent = "RESET\nBALL";
 
-    resetTriggered = false; // ❗ reset de flag NA de paddle explode logic
+    // 🧠 Zet leven weer terug als het tijdelijk op 2 stond
+    if (originalLives === 1) {
+      lives = 1;
+    }
+
+    resetTriggered = false; // ❗ flag weer uitzetten
   }, 10000);
 }
 
-
 // 🟢 BELANGRIJK: knop koppelen aan functie
 document.getElementById("resetBallBtn").addEventListener("click", triggerBallReset);
+
