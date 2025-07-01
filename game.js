@@ -226,6 +226,18 @@ document.addEventListener("keydown", keyDownHandler);
 document.addEventListener("keyup", keyUpHandler);
 document.addEventListener("mousemove", mouseMoveHandler);
 
+// 🔽 Tooltip gedrag reset-knop
+const resetBtn = document.getElementById("resetBallBtn");
+const tooltip = document.getElementById("resetTooltip");
+
+resetBtn.addEventListener("mouseenter", () => {
+  tooltip.style.display = "block";
+});
+
+resetBtn.addEventListener("mouseleave", () => {
+  tooltip.style.display = "none";
+});
+
 function keyDownHandler(e) {
   console.log("Toets ingedrukt:", e.key);
 
@@ -238,18 +250,18 @@ function keyDownHandler(e) {
     leftPressed = true;
   }
 
-if ((e.key === "ArrowUp" || e.key === "Up" || e.code === "Space") && !ballLaunched) {
-  ballLaunched = true;
-  ballMoving = true;
+  if ((e.key === "ArrowUp" || e.key === "Up" || e.code === "Space") && !ballLaunched) {
+    ballLaunched = true;
+    ballMoving = true;
 
-  shootSound.currentTime = 0;
-  shootSound.play();
+    shootSound.currentTime = 0;
+    shootSound.play();
 
-  balls[0].dx = 0;
-  balls[0].dy = -6;
+    balls[0].dx = 0;
+    balls[0].dy = -6;
 
-  if (!timerRunning) startTimer(); // ✅ Start timer bij eerste afschot
-}
+    if (!timerRunning) startTimer(); // ✅ Start timer bij eerste afschot
+  }
 
   if ((e.code === "ArrowUp" || e.code === "Space") && rocketActive && rocketAmmo > 0 && !rocketFired) {
     rocketFired = true;
@@ -285,6 +297,7 @@ if ((e.key === "ArrowUp" || e.key === "Up" || e.code === "Space") && !ballLaunch
     ballMoving = true;
   }
 }
+
 
 function keyUpHandler(e) {
   if (e.key === "Right" || e.key === "ArrowRight") rightPressed = false;
