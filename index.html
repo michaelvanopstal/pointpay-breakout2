@@ -18,26 +18,22 @@
     <span id="timeDisplay">time 00:00</span>
   </div>
 
-  <button id="resetBallBtn" title="Use this when the ball is stuck — no lives will be lost." style="...">RESET<br>BALL</button>
+  <div id="resetTooltip" style="
+  display: none;
   position: absolute;
-  bottom: 20px;
-  right: 10%;
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background-color: red;
-  border: 3px solid white;
+  bottom: 140px; /* boven de knop */
+  right: 40px;
+  background-color: rgba(0, 0, 0, 0.85);
   color: white;
-  font-weight: bold;
-  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 13px;
   font-family: Arial, sans-serif;
-  cursor: pointer;
-  z-index: 9999;
-  text-align: center;
-  line-height: 1.2;
-">
-  RESET<br>BALL
-</button>
+  z-index: 10000;
+  white-space: nowrap;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+">Use when the ball is stuck — no lives will be lost.</div>
+<button id="resetBallBtn" ... >RESET<br>BALL</button>
 
   <div id="game-container">
     <canvas id="gameCanvas" width="645" height="600"></canvas>
