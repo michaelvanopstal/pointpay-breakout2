@@ -6,16 +6,16 @@ body {
   position: relative;
 }
 
-/* Canvas = speelscherm op middenlaag */
 #gameCanvas {
   position: absolute;
   top: 10px;
-  left: 90px;
+  left: 50%;
+  transform: translateX(-50%);
   width: 650px;
   height: 595px;
   background-color: transparent;
   border: 3px solid transparent;
-  z-index: 18; /* komt boven achtergrond, onder overlays */
+  z-index: 18;
 }
 
 #scoreDisplay {
