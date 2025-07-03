@@ -1010,7 +1010,6 @@ function spawnPxpBag(x, y) {
 }
 
 
-
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   collisionDetection();
@@ -1022,8 +1021,6 @@ function draw() {
   drawFlyingCoins();
   checkFlyingCoinHits();
   drawPointPopups();
-
-
 
   if (doublePointsActive && Date.now() - doublePointsStartTime > doublePointsDuration) {
     doublePointsActive = false;
@@ -1040,28 +1037,34 @@ function draw() {
       ball.y = canvas.height - paddleHeight - ballRadius * 2;
     }
 
+    // ✨ Gouden trail opslaan
+    if (!ball.trail) ball.trail = [];
+    ball.trail.push({ x: ball.x, y: ball.y });
+    if (ball.trail.length > 10) {
+      ball.trail.shift(); // verwijder oudste punt
+    }
+
     // Veiliger links/rechts
-if (ball.x <= ball.radius + 1 && ball.dx < 0) {
-  ball.x = ball.radius + 1;
-  ball.dx *= -1;
-  wallSound.currentTime = 0;
-  wallSound.play();
-}
-if (ball.x >= canvas.width - ball.radius - 1 && ball.dx > 0) {
-  ball.x = canvas.width - ball.radius - 1;
-  ball.dx *= -1;
-  wallSound.currentTime = 0;
-  wallSound.play();
-}
+    if (ball.x <= ball.radius + 1 && ball.dx < 0) {
+      ball.x = ball.radius + 1;
+      ball.dx *= -1;
+      wallSound.currentTime = 0;
+      wallSound.play();
+    }
+    if (ball.x >= canvas.width - ball.radius - 1 && ball.dx > 0) {
+      ball.x = canvas.width - ball.radius - 1;
+      ball.dx *= -1;
+      wallSound.currentTime = 0;
+      wallSound.play();
+    }
 
-// Veiliger bovenkant
-if (ball.y <= ball.radius + 1 && ball.dy < 0) {
-  ball.y = ball.radius + 1;
-  ball.dy *= -1;
-  wallSound.currentTime = 0;
-  wallSound.play();
-}
-
+    // Veiliger bovenkant
+    if (ball.y <= ball.radius + 1 && ball.dy < 0) {
+      ball.y = ball.radius + 1;
+      ball.dy *= -1;
+      wallSound.currentTime = 0;
+      wallSound.play();
+    }
 
     if (
       ball.y + ball.dy > canvas.height - paddleHeight - ball.radius &&
@@ -1083,10 +1086,21 @@ if (ball.y <= ball.radius + 1 && ball.dy < 0) {
       balls.splice(index, 1); // verwijder bal zonder actie
     }
 
+    // ✨ Trail tekenen vóór de bal zelf
+    for (let i = 0; i < ball.trail.length; i++) {
+      const point = ball.trail[i];
+      const alpha = i / ball.trail.length;
+
+      ctx.beginPath();
+      ctx.arc(point.x + ball.radius, point.y + ball.radius, ball.radius + 2, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255, 215, 0, ${alpha * 0.5})`; // goudkleurige fade
+      ctx.fill();
+    }
+
     ctx.drawImage(ballImg, ball.x, ball.y, ball.radius * 2, ball.radius * 2);
   });
+}
 
-  // 🔴 Rode knipper-overlay bij reset
   if (resetOverlayActive) {
     if (Date.now() % 1000 < 500) {
       ctx.fillStyle = 'rgba(255, 0, 0, 0.25)';
