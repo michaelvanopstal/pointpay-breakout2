@@ -212,6 +212,8 @@ body {
   bottom: 30px;
   right: 30px;
   z-index: 9999;
+  width: 100px; /* pas aan naar de knop grootte */
+  text-align: center;
 }
 
 #resetBallBtn {
@@ -227,7 +229,7 @@ body {
 
 #resetTooltip {
   position: absolute;
-  bottom: 110%; /* direct boven de knop */
+  bottom: 110%; /* net boven de knop */
   right: 0;
   background-color: rgba(0, 0, 0, 0.85);
   color: white;
@@ -236,8 +238,11 @@ body {
   font-size: 13px;
   font-family: Arial, sans-serif;
   white-space: nowrap;
-  display: none;
+  display: none; /* of block als je altijd wil */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+#resetContainer:hover #resetTooltip {
+  display: block;
 }
 
 
