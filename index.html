@@ -22,25 +22,11 @@
 <div id="game-container">
   <canvas id="gameCanvas" width="645" height="600"></canvas>
 
-  <!-- Resetknop -->
+  <div id="resetContainer">
   <img id="resetBallBtn" src="resetball.png" alt="Reset Ball" />
+  <div id="resetTooltip">Use when the ball is stuck — no lives will be lost.</div>
+</div>
 
-  <!-- Tooltip direct bij de knop -->
-  <div id="resetTooltip" style="
-    display: none;
-    position: absolute;
-    bottom: 140px;
-    right: 40px;
-    background-color: rgba(0, 0, 0, 0.85);
-    color: white;
-    padding: 6px 10px;
-    border-radius: 6px;
-    font-size: 13px;
-    font-family: Arial, sans-serif;
-    z-index: 10000;
-    white-space: nowrap;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  ">Use when the ball is stuck — no lives will be lost.</div>
 
   <!-- Login overlay -->
   <div id="login-overlay">
