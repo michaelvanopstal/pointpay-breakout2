@@ -8,7 +8,7 @@ body {
 
 #gameCanvas {
   position: absolute;
-  top: 10px;
+  top: 15px;
   left: 50%;
   transform: translateX(calc(-50% - 3px)); /* 5px extra naar links */
   width: 650px;
@@ -71,7 +71,7 @@ body {
   justify-content: flex-start;
   align-items: flex-start;
   margin-left: 10px;
-  margin-top: 10px;
+  margin-top: 15px;
 }
 
 
