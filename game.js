@@ -324,7 +324,8 @@ const offsetX = Math.floor((canvas.width - totalBricksWidth) / 2 - 3);
       const b = bricks[c][r];
       if (b.status === 1) {
         const brickX = offsetX + c * brickWidth;
-        const brickY = r * brickHeight - 40 + (levelTransitionActive ? transitionOffsetY : 0);
+        const brickY = r * brickHeight - 25 + (levelTransitionActive ? transitionOffsetY : 0);
+
 
 
 
