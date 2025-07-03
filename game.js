@@ -1086,34 +1086,30 @@ function draw() {
       balls.splice(index, 1); // verwijder bal zonder actie
     }
 // ✨ Gouden smalle energie-staart (taps en iets smaller dan bal)
+// ✨ Rechte gouden energie-staart — iets groter dan de bal en 2x zo lang
 if (ball.trail.length >= 2) {
-  const head = ball.trail[ball.trail.length - 1];
-  const tail = ball.trail[0];
+  const head = ball.trail[ball.trail.length - 1]; // meest recente positie
+  const tail = ball.trail[0]; // oudste positie (ver weg van bal)
 
   ctx.save();
+
   const gradient = ctx.createLinearGradient(
-    tail.x + ball.radius, tail.y + ball.radius,
-    head.x + ball.radius, head.y + ball.radius
+    head.x + ball.radius, head.y + ball.radius,
+    tail.x + ball.radius, tail.y + ball.radius
   );
-  gradient.addColorStop(0, "rgba(255, 215, 0, 0)");
-  gradient.addColorStop(1, "rgba(255, 215, 0, 0.4)");
+  gradient.addColorStop(0, "rgba(255, 215, 0, 0.4)");
+  gradient.addColorStop(1, "rgba(255, 215, 0, 0)");
 
   ctx.beginPath();
-  ctx.moveTo(tail.x + ball.radius, tail.y + ball.radius);
-  ctx.quadraticCurveTo(
-    (tail.x + head.x) / 2,
-    (tail.y + head.y) / 2 + 30,
-    head.x + ball.radius,
-    head.y + ball.radius
-  );
-
+  ctx.moveTo(head.x + ball.radius, head.y + ball.radius);
+  ctx.lineTo(tail.x + ball.radius, tail.y + ball.radius);
   ctx.strokeStyle = gradient;
-  ctx.lineWidth = ball.radius * 0.8; // iets smaller dan bal
+  ctx.lineWidth = ball.radius * 2.2; // net iets groter dan de bal
   ctx.lineCap = "round";
   ctx.stroke();
+
   ctx.restore();
 }
-
 
     ctx.drawImage(ballImg, ball.x, ball.y, ball.radius * 2, ball.radius * 2);
   });
