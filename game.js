@@ -49,6 +49,8 @@ let levelMessageAlpha = 0;
 let levelMessageTimer = 0;
 let levelMessageVisible = false;
 let resetOverlayActive = false;
+let ballTrail = []; // Array om eerdere balposities te bewaren
+const maxTrailLength = 10;
 
 
 
