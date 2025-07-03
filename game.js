@@ -1275,7 +1275,7 @@ if (levelTransitionActive) {
 if (showGameOver) {
   ctx.save();
   ctx.globalAlpha = gameOverAlpha;
-  ctx.fillStyle = "#ff4444";
+  ctx.fillStyle = "#000000";
   ctx.font = "bold 48px Arial";
   ctx.textAlign = "center";
   ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2);
