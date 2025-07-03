@@ -1085,17 +1085,35 @@ function draw() {
     if (ball.y + ball.dy > canvas.height) {
       balls.splice(index, 1); // verwijder bal zonder actie
     }
+// ✨ Gouden smalle energie-staart (taps en iets smaller dan bal)
+if (ball.trail.length >= 2) {
+  const head = ball.trail[ball.trail.length - 1];
+  const tail = ball.trail[0];
 
-    // ✨ Trail tekenen vóór de bal zelf
-    for (let i = 0; i < ball.trail.length; i++) {
-      const point = ball.trail[i];
-      const alpha = i / ball.trail.length;
+  ctx.save();
+  const gradient = ctx.createLinearGradient(
+    tail.x + ball.radius, tail.y + ball.radius,
+    head.x + ball.radius, head.y + ball.radius
+  );
+  gradient.addColorStop(0, "rgba(255, 215, 0, 0)");
+  gradient.addColorStop(1, "rgba(255, 215, 0, 0.4)");
 
-      ctx.beginPath();
-      ctx.arc(point.x + ball.radius, point.y + ball.radius, ball.radius + 2, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(255, 215, 0, ${alpha * 0.5})`; // goudkleurige fade
-      ctx.fill();
-    }
+  ctx.beginPath();
+  ctx.moveTo(tail.x + ball.radius, tail.y + ball.radius);
+  ctx.quadraticCurveTo(
+    (tail.x + head.x) / 2,
+    (tail.y + head.y) / 2 + 30,
+    head.x + ball.radius,
+    head.y + ball.radius
+  );
+
+  ctx.strokeStyle = gradient;
+  ctx.lineWidth = ball.radius * 0.8; // iets smaller dan bal
+  ctx.lineCap = "round";
+  ctx.stroke();
+  ctx.restore();
+}
+
 
     ctx.drawImage(ballImg, ball.x, ball.y, ball.radius * 2, ball.radius * 2);
   });
