@@ -133,7 +133,7 @@ const brickRowCount = 17;
 const brickColumnCount = 9;
 const brickWidth = customBrickWidth;
 const brickHeight = customBrickHeight;
-const brickOffsetTop = 100; // Verhoog dit om de blokjes hoger op het scherm te tekenen
+
 
 
 const bricks = [];
