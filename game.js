@@ -1038,17 +1038,28 @@ function draw() {
       ball.y = canvas.height - paddleHeight - ballRadius * 2;
     }
 
-    if (ball.x < ball.radius || ball.x > canvas.width - ball.radius) {
-      ball.dx *= -1;
-      wallSound.currentTime = 0;
-      wallSound.play();
-    }
+    // Veiliger links/rechts
+if (ball.x <= ball.radius + 1 && ball.dx < 0) {
+  ball.x = ball.radius + 1;
+  ball.dx *= -1;
+  wallSound.currentTime = 0;
+  wallSound.play();
+}
+if (ball.x >= canvas.width - ball.radius - 1 && ball.dx > 0) {
+  ball.x = canvas.width - ball.radius - 1;
+  ball.dx *= -1;
+  wallSound.currentTime = 0;
+  wallSound.play();
+}
 
-    if (ball.y < ball.radius) {
-      ball.dy *= -1;
-      wallSound.currentTime = 0;
-      wallSound.play();
-    }
+// Veiliger bovenkant
+if (ball.y <= ball.radius + 1 && ball.dy < 0) {
+  ball.y = ball.radius + 1;
+  ball.dy *= -1;
+  wallSound.currentTime = 0;
+  wallSound.play();
+}
+
 
     if (
       ball.y + ball.dy > canvas.height - paddleHeight - ball.radius &&
