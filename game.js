@@ -129,7 +129,7 @@ const blockSound = new Audio("tock.mp3");
 
 const customBrickWidth = 70;   // pas aan zoals jij wilt
 const customBrickHeight = 25;  // pas aan zoals jij wilt
-const brickRowCount = 15;
+const brickRowCount = 17;
 const brickColumnCount = 9;
 const brickWidth = customBrickWidth;
 const brickHeight = customBrickHeight;
