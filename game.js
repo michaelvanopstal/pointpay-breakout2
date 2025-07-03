@@ -40,6 +40,7 @@ let showGameOver = false;
 let gameOverAlpha = 0;
 let gameOverTimer = 0;
 let resetTriggered = false;
+let previousBallPos = {};
 
 // 🌟 Level 2 overgang
 let levelTransitionActive = false;
@@ -1036,13 +1037,21 @@ function draw() {
       ball.x = paddleX + paddleWidth / 2 - ballRadius;
       ball.y = canvas.height - paddleHeight - ballRadius * 2;
     }
-
-    // ✨ Gouden trail opslaan
+    
     if (!ball.trail) ball.trail = [];
-    ball.trail.push({ x: ball.x, y: ball.y });
-    if (ball.trail.length > 10) {
-      ball.trail.shift(); // verwijder oudste punt
-    }
+
+    let last = ball.trail[ball.trail.length - 1] || { x: ball.x, y: ball.y };
+    let steps = 3; // hoe meer hoe vloeiender
+    for (let i = 1; i <= steps; i++) {
+    let px = last.x + (ball.x - last.x) * (i / steps);
+    let py = last.y + (ball.y - last.y) * (i / steps);
+    ball.trail.push({ x: px, y: py });
+  }
+
+    while (ball.trail.length > 20) {
+    ball.trail.shift();
+ }
+
 
     // Veiliger links/rechts
     if (ball.x <= ball.radius + 1 && ball.dx < 0) {
@@ -1097,7 +1106,9 @@ if (ball.trail.length >= 2) {
     head.x + ball.radius, head.y + ball.radius,
     tail.x + ball.radius, tail.y + ball.radius
   );
-  gradient.addColorStop(0, "rgba(255, 215, 0, 0.4)");
+
+  ctx.lineWidth = ball.radius * 2.0; // iets kleiner dan 2.2
+  gradient.addColorStop(0, "rgba(255, 215, 0, 0.6)");
   gradient.addColorStop(1, "rgba(255, 215, 0, 0)");
 
   ctx.beginPath();
