@@ -133,6 +133,7 @@ const brickRowCount = 17;
 const brickColumnCount = 9;
 const brickWidth = customBrickWidth;
 const brickHeight = customBrickHeight;
+const brickOffsetTop = 60; // Verhoog dit om de blokjes hoger op het scherm te tekenen
 
 
 const bricks = [];
@@ -323,7 +324,8 @@ const offsetX = Math.floor((canvas.width - totalBricksWidth) / 2 - 3);
       const b = bricks[c][r];
       if (b.status === 1) {
         const brickX = offsetX + c * brickWidth;
-        const brickY = r * brickHeight + (levelTransitionActive ? transitionOffsetY : 0);
+        const brickY = r * brickHeight + brickOffsetTop + (levelTransitionActive ? transitionOffsetY : 0);
+
 
 
         b.x = brickX;
