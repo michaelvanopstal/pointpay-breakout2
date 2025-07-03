@@ -19,24 +19,55 @@
   </div>
 
 
-<div id="game-container">
-  <canvas id="gameCanvas" width="645" height="600"></canvas>
 
-<button id="resetBallBtn"></button>
+  <!-- Tooltip -->
+<div id="resetTooltip" style="
+  display: none;
+  position: absolute;
+  bottom: 140px;
+  right: 40px;
+  background-color: rgba(0, 0, 0, 0.85);
+  color: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: Arial, sans-serif;
+  z-index: 10000;
+  white-space: nowrap;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+">Use when the ball is stuck — no lives will be lost.</div>
+
+<img id="resetBallBtn" 
+     src="resetball.png" 
+     alt="Reset Ball" 
+     style="
+       position: absolute;
+       bottom: 30px;
+       right: 30px;
+       width: 100px;
+       height: 100px;
+       cursor: pointer;
+       z-index: 9999;
+       transition: transform 0.2s ease;
+     "
+     onmouseover="this.style.transform='scale(1.1)'"
+     onmouseout="this.style.transform='scale(1)'"
+>
 
 
 
 
+  <div id="game-container">
+    <canvas id="gameCanvas" width="645" height="600"></canvas>
+    
 
-  <!-- Login overlay -->
-  <div id="login-overlay">
-    <div id="login-box">
-      <input type="text" id="player-name" placeholder="Voer je naam in" />
-      <button id="login-btn">Login</button>
-      <button id="logout-btn" style="display: none;">Logout</button>
+ <div id="login-overlay">
+<div id="login-box">
+  <input type="text" id="player-name" placeholder="Voer je naam in" />
+  <button id="login-btn">Login</button>
+  <button id="logout-btn" style="display: none;">Logout</button>
+</div>
     </div>
-  </div>
-
      <img id="musicToggle" src="playmusic button.png" alt="Play Music" style="cursor: pointer; width: 180px;" />
     <div id="highscore-overlay">
       <img src="beker_clipped_rev_2.png" id="trophy" alt="Trophy" />
@@ -47,8 +78,7 @@
       </ol>
     </div>
   </div>
-
-  <div id="hud" style="position: absolute; top: 40px; left: 40px; z-index: 10;">
+<div id="hud" style="position: absolute; top: 40px; left: 40px; z-index: 10;">
   <div id="livesDisplay" style="display: flex; gap: 6px;"></div>
 </div>
 
@@ -97,8 +127,26 @@
   });
 </script>
 
+<style>
+  #game-container {
+    position: relative; /* nodig voor absolute positionering binnenin */
+  }
 
- 
+  #gameCanvas {
+    position: relative;
+    z-index: 99;
+  }
+
+  #bikeFlyer {
+    position: absolute;
+    left: 100%;  /* buiten scherm starten */
+    top: 100%;   /* buiten onderkant starten */
+    width: 180px;
+    display: none;
+    z-index: 1; /* boven canvas, onder blokken */
+    pointer-events: none; /* niet klikbaar */
+  }
+</style>
   
 <img id="bikeFlyer" src="pointpay-bike.png" style="position:absolute; display:none; width:180px;" />
 
@@ -215,5 +263,3 @@
     document.getElementById("musicToggle").blur();
   });
 </script>
-</body>
-</html>
