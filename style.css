@@ -141,37 +141,7 @@ body {
   white-space: nowrap;
 }
 
-/* PXP Banner Overlay */
-#pxp-banner-overlay {
-  position: fixed;
-  bottom: 10px;
-  right: 0px;
-  left: 685px;
-  width: 770px;
-  height: 36px;
-  background-color: rgba(0, 0, 0, 0.0);
-  color: white;
-  font-size: 14px;
-  font-family: Arial, sans-serif;
-  display: flex;
-  align-items: center;
-  padding: 0 15px;
-  white-space: nowrap;
-  overflow: hidden;
-  border-radius: 6px;
-  z-index: 1020;
-}
-.positive { color: #00ff77; }
-.negative { color: #ff4444; }
 
-
-
-
-#pxp-scroll-text {
-  display: inline-block;
-  white-space: nowrap;
-  animation: scrollText 30s linear infinite;
-}
 
 @keyframes scrollText {
   from { transform: translateX(100%); }
@@ -212,21 +182,16 @@ body {
   position: fixed;
   left: 20px;
   bottom: 20px;
-  background-color: #007bff !important;
-  color: white !important;
-  border: none;
-  padding: 8px 16px;
-  font-size: 16px;
-  border-radius: 6px;
+  width: 180px; /* of wat bij jouw plaatje past */
   cursor: pointer;
-  transition: background-color 0.3s ease;
   z-index: 1000;
+  transition: transform 0.2s ease;
 }
-
 
 #musicToggle:hover {
-  background-color: #790000; /* donkerder blauw op hover */
+  transform: scale(1.05);
 }
+
 
 #rocketFlame {
   position: absolute;
