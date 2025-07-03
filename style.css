@@ -208,7 +208,7 @@ body {
 }
 
 #resetContainer {
-  position: fixed;
+  position: absolute;
   bottom: 30px;
   right: 110px;
   z-index: 10000;
