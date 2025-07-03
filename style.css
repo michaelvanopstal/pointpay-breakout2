@@ -207,35 +207,17 @@ body {
   z-index: 20;
 }
 
-#resetContainer {
+#resetBallBtn {
   position: absolute;
   bottom: 30px;
   right: 30px;
-  z-index: 10000;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-#resetBallBtn {
   width: 100px;
   height: 100px;
   cursor: pointer;
-  transition: transform 0.2s ease;
+  z-index: 9999;
+  transition: transform 0.1s ease;
 }
 
-#resetBallBtn:hover {
-  transform: scale(1.1);
-}
-
-#resetTooltip {
-  margin-bottom: 8px;
-  background-color: rgba(0, 0, 0, 0.85);
-  color: white;
-  padding: 6px 10px;
-  border-radius: 6px;
-  font-size: 13px;
-  font-family: Arial, sans-serif;
-  white-space: nowrap;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+#resetBallBtn:active {
+  transform: scale(0.95);
 }
