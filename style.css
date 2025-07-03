@@ -207,6 +207,20 @@ body {
   z-index: 20;
 }
 
+#resetBallBtn {
+  position: absolute;
+  bottom: 30px;
+  right: 30px;
+  width: 100px;
+  height: 100px;
+  cursor: pointer;
+  z-index: 9999;
+  transition: transform 0.2s ease;
+}
+#resetBallBtn:hover {
+  transform: scale(1.1);
+}
+
 
 
 
