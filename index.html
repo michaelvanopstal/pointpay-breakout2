@@ -18,8 +18,6 @@
     <span id="timeDisplay">time 00:00</span>
   </div>
 
-
-
   <!-- Tooltip -->
 <div id="resetTooltip" style="
   display: none;
@@ -37,38 +35,43 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 ">Use when the ball is stuck — no lives will be lost.</div>
 
-<img id="resetBallBtn" 
-     src="resetball.png" 
-     alt="Reset Ball" 
-     style="
-       position: absolute;
-       bottom: 30px;
-       right: 30px;
-       width: 100px;
-       height: 100px;
-       cursor: pointer;
-       z-index: 9999;
-       transition: transform 0.2s ease;
-     "
-     onmouseover="this.style.transform='scale(1.1)'"
-     onmouseout="this.style.transform='scale(1)'"
->
-
-
-
+<!-- Reset Button -->
+<button id="resetBallBtn" style="
+  display: block;
+  position: absolute;
+  bottom: 30px;
+  right: 30px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: red;
+  border: 4px solid white;
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+  font-family: Arial, sans-serif;
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
+  z-index: 9999;
+  text-align: center;
+  line-height: 1.2;
+">RESET<br>BALL</button>
 
   <div id="game-container">
     <canvas id="gameCanvas" width="645" height="600"></canvas>
+
+    <div id="login-overlay">
     
 
- <div id="login-overlay">
 <div id="login-box">
+  <label for="player-name">Inlog:</label><br />
   <input type="text" id="player-name" placeholder="Voer je naam in" />
   <button id="login-btn">Login</button>
   <button id="logout-btn" style="display: none;">Logout</button>
 </div>
+
     </div>
-     <img id="musicToggle" src="playmusic button.png" alt="Play Music" style="cursor: pointer; width: 180px;" />
+      <button id="musicToggle">🎵 Play Music</button>
     <div id="highscore-overlay">
       <img src="beker_clipped_rev_2.png" id="trophy" alt="Trophy" />
       <h2>High score</h2>
@@ -78,7 +81,7 @@
       </ol>
     </div>
   </div>
-<div id="hud" style="position: absolute; top: 40px; left: 40px; z-index: 10;">
+<div id="hud" style="position: absolute; top: 40px; left: 715px; z-index: 10;">
   <div id="livesDisplay" style="display: flex; gap: 6px;"></div>
 </div>
 
@@ -196,10 +199,22 @@
   animateFlyer("bikeFlyer", 20000, 1000);     // fiets na 1 sec, 20 sec lang
   // Herhaal elke 30 sec
   setInterval(() => animateFlyer("bikeFlyer", 20000, 1000), 30000);
+
 </script>
 
-
-
+<!-- PXP Coin Banner -->
+<div id="pxp-banner-overlay">
+  <div id="pxp-scroll-text"> $0.01731 <span class="positive">+2.91%</span> &nbsp;
+    Market Cap: $517.92K &nbsp;
+    Volume: $145.52K &nbsp;
+    Total Supply: 100M PXP &nbsp;
+    Circulating: 30M PXP;   $0.01731 <span class="positive">+2.91%</span> &nbsp;
+    Market Cap: $517.92K &nbsp;
+    Volume: $145.52K &nbsp;
+    Total Supply: 100M PXP &nbsp;
+    Circulating: 30M PXP
+  </div>
+</div>
 
 <!-- Externe scripts -->
 <script src="login.js"></script>
