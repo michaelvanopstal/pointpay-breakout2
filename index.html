@@ -37,31 +37,13 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 ">Use when the ball is stuck — no lives will be lost.</div>
 
-<img id="resetBallBtn" 
-     src="resetball.png" 
-     alt="Reset Ball" 
-     style="
-       position: absolute;
-       bottom: 30px;
-       right: 30px;
-       width: 100px;
-       height: 100px;
-       cursor: pointer;
-       z-index: 9999;
-       transition: transform 0.2s ease;
-     "
-     onmouseover="this.style.transform='scale(1.1)'"
-     onmouseout="this.style.transform='scale(1)'"
-/>
-
-
-
 
   <div id="game-container">
     <canvas id="gameCanvas" width="645" height="600"></canvas>
     
+ <img id="resetBallBtn" src="resetball.png" alt="Reset Ball" />
 
- <div id="login-overlay">
+    <div id="login-overlay">
 <div id="login-box">
   <input type="text" id="player-name" placeholder="Voer je naam in" />
   <button id="login-btn">Login</button>
