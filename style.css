@@ -208,7 +208,7 @@ body {
 }
 
 #resetBallBtn {
-  position: absolute;
+  position: relative;
   bottom: 30px;
   right: 30px;
   width: 100px;
