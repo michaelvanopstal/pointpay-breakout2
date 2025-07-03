@@ -218,7 +218,7 @@ body {
 
 #hud {
   position: absolute;
-  top: 40px; /* pas aan tot boven de beker */
+  top: 10px; /* pas aan tot boven de beker */
   right: 80px; /* pas aan tot netjes rechts */
   z-index: 20;
 }
