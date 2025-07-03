@@ -213,10 +213,18 @@ body {
   right: 30px;
   width: 100px;
   height: 100px;
+  border-radius: 50%;
+  background-color: red;
+  border: 4px solid white;
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+  font-family: Arial, sans-serif;
   cursor: pointer;
+  box-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
   z-index: 9999;
-  transition: transform 0.1s ease;
 }
+
 
 #resetBallBtn:active {
   transform: scale(0.95);
