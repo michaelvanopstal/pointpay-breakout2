@@ -207,23 +207,39 @@ body {
   z-index: 20;
 }
 
-#resetBallBtn {
+#resetContainer {
   position: absolute;
   bottom: 30px;
   right: 30px;
+  z-index: 9999;
+}
+
+#resetBallBtn {
   width: 100px;
   height: 100px;
   cursor: pointer;
-  z-index: 9999;
   transition: transform 0.2s ease;
 }
+
 #resetBallBtn:hover {
   transform: scale(1.1);
 }
 
-#game-container {
-  position: relative;
+#resetTooltip {
+  position: absolute;
+  bottom: 110%; /* direct boven de knop */
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.85);
+  color: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: Arial, sans-serif;
+  white-space: nowrap;
+  display: none;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
+
 
 
 
