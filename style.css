@@ -11,7 +11,7 @@ body {
   top: 15px;
   left: 50%;
   transform: translateX(calc(-50% - 3px)); /* 5px extra naar links */
-  width: 650px;
+  width: 640px;
   height: 595px;
   background-color: transparent;
   border: 3px solid transparent;
