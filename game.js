@@ -1099,7 +1099,7 @@ function draw() {
 
     ctx.drawImage(ballImg, ball.x, ball.y, ball.radius * 2, ball.radius * 2);
   });
-}
+
 
   if (resetOverlayActive) {
     if (Date.now() % 1000 < 500) {
