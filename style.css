@@ -219,7 +219,7 @@ body {
 #hud {
   position: absolute;
   top: 40px; /* pas aan tot boven de beker */
-  right: 100px; /* pas aan tot netjes rechts */
+  right: 80px; /* pas aan tot netjes rechts */
   z-index: 20;
 }
 
