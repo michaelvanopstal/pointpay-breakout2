@@ -150,34 +150,18 @@ body {
 
 
 
-#bikeFlyby {
-  width: 120px; /* pas aan naar grootte */
-  height: auto;
-  z-index: 1;
-}
-
 #bikeFlyer {
   position: absolute;
+  left: 100%;   /* Start buiten scherm rechts */
+  top: 100%;    /* Start buiten onderkant */
   width: 150px;
   height: auto;
   display: none;
+  z-index: 2; /* boven canvas, onder knoppen */
+  pointer-events: none;
   will-change: transform, left, top;
-  z-index: 1; /* hoger dan andere lagen */
-  pointer-events: none;
 }
-
-#bikeFlyer {
-  position: absolute;
-  width: 150px;
-  height: auto;
-  display: none;
-}
-
-#bike-layer {
-  pointer-events: none;
-  overflow: hidden;
-}
-
+ 
 #musicToggle {
   position: fixed;
   left: 20px;
