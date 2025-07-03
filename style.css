@@ -10,7 +10,7 @@ body {
   position: absolute;
   top: -10px;
   left: 50%;
-  transform: translateX(calc(-50% - 3px)); /* 5px extra naar links */
+  transform: translateX(calc(-50% - 1px)); /* 5px extra naar links */
   width: 650px;
   height: 595px;
   background-color: transparent;
