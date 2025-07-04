@@ -1086,8 +1086,8 @@ function isPaddleBlockedHorizontally(newX) {
       const brick = bricks[c][r];
       if (!brick || brick.status !== 1) continue;
 
-      const brickLeft = brick.x;
-      const brickRight = brick.x + brick.width;
+      const brickRight = brick.x + brickWidth;
+      const brickBottom = brick.y + brickHeight;
       const brickTop = brick.y;
       const brickBottom = brick.y + brick.height;
 
@@ -1115,8 +1115,8 @@ function isPaddleBlockedVertically(newY) {
       const brick = bricks[c][r];
       if (!brick || brick.status !== 1) continue;
 
-      const brickLeft = brick.x;
-      const brickRight = brick.x + brick.width;
+       const brickRight = brick.x + brick.width;
+      const brickBottom = brick.y + brick.height;
       const brickTop = brick.y;
       const brickBottom = brick.y + brick.height;
 
