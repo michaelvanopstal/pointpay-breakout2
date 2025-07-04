@@ -1080,6 +1080,52 @@ function spawnPxpBag(x, y) {
   });
 }
 
+function isPaddleBlockedHorizontally(newX) {
+  return bricks.some(brick => {
+    if (!brick.status) return false;
+
+    const brickLeft = brick.x;
+    const brickRight = brick.x + brick.width;
+    const brickTop = brick.y;
+    const brickBottom = brick.y + brick.height;
+
+    const paddleLeft = newX;
+    const paddleRight = newX + paddleWidth;
+    const paddleTop = paddleY;
+    const paddleBottom = paddleY + paddleHeight;
+
+    return (
+      paddleRight > brickLeft &&
+      paddleLeft < brickRight &&
+      paddleBottom > brickTop &&
+      paddleTop < brickBottom
+    );
+  });
+}
+
+function isPaddleBlockedVertically(newY) {
+  return bricks.some(brick => {
+    if (!brick.status) return false;
+
+    const brickLeft = brick.x;
+    const brickRight = brick.x + brick.width;
+    const brickTop = brick.y;
+    const brickBottom = brick.y + brick.height;
+
+    const paddleLeft = paddleX;
+    const paddleRight = paddleX + paddleWidth;
+    const paddleTop = newY;
+    const paddleBottom = newY + paddleHeight;
+
+    return (
+      paddleRight > brickLeft &&
+      paddleLeft < brickRight &&
+      paddleBottom > brickTop &&
+      paddleTop < brickBottom
+    );
+  });
+}
+
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -1236,21 +1282,34 @@ if (ball.trail.length >= 2) {
   }
 
 
- // Horizontale beweging
-if (rightPressed && paddleX < canvas.width - paddleWidth) {
-  paddleX += paddleSpeed;
-}
-if (leftPressed && paddleX > 0) {
-  paddleX -= paddleSpeed;
+if (leftPressed) {
+  const newX = paddleX - paddleSpeed;
+  if (newX > 0 && !isPaddleBlockedHorizontally(newX)) {
+    paddleX = newX;
+  }
 }
 
-// Verticale beweging
-if (upPressed && paddleY > 0) {
-  paddleY -= paddleSpeed;
+if (rightPressed) {
+  const newX = paddleX + paddleSpeed;
+  if (newX + paddleWidth < canvas.width && !isPaddleBlockedHorizontally(newX)) {
+    paddleX = newX;
+  }
 }
-if (downPressed && paddleY < canvas.height - paddleHeight) {
-  paddleY += paddleSpeed;
+
+if (upPressed) {
+  const newY = paddleY - paddleSpeed;
+  if (newY > 0 && !isPaddleBlockedVertically(newY)) {
+    paddleY = newY;
+  }
 }
+
+if (downPressed) {
+  const newY = paddleY + paddleSpeed;
+  if (newY + paddleHeight < canvas.height && !isPaddleBlockedVertically(newY)) {
+    paddleY = newY;
+  }
+}
+
 
 
   if (rocketActive && !rocketFired && rocketAmmo > 0) {
