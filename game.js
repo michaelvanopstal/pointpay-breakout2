@@ -1616,7 +1616,7 @@ if (showGameOver) {
   stoneDebris = stoneDebris.filter(p => p.alpha > 0);
 
   animationFrameId = requestAnimationFrame(draw);
-
+} // ✅ Sluit draw() AF!
 
 function onImageLoad() {
   imagesLoaded++;
