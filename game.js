@@ -949,14 +949,18 @@ function checkCoinCollision() {
     if (!coin.active) return;
 
     const coinBottom = coin.y + coin.radius;
-    const paddleTop = canvas.height - paddleHeight;
+    const paddleTop = paddleY;
+   const paddleBottom = paddleY + paddleHeight;
+
 
     // Paddle vangt muntje
     if (
       coinBottom >= paddleTop &&
-      coinBottom <= canvas.height &&
-      coin.x + coin.radius > paddleX &&
-      coin.x < paddleX + paddleWidth
+     coinBottom <= paddleBottom &&
+     coin.x + coin.radius > paddleX &&
+     coin.x < paddleX + paddleWidth
+     )
+
     ) {
       coin.active = false;
 
@@ -1383,41 +1387,43 @@ if (downPressed) {
     speedBoostActive = false;
   }
 
-  // Zakjes tekenen en vangen
-  for (let i = pxpBags.length - 1; i >= 0; i--) {
-    let bag = pxpBags[i];
-    bag.y += bag.dy;
+ // Zakjes tekenen en vangen
+for (let i = pxpBags.length - 1; i >= 0; i--) {
+  let bag = pxpBags[i];
+  bag.y += bag.dy;
 
-    ctx.drawImage(pxpBagImg, bag.x - 20, bag.y, 40, 40);
+  ctx.drawImage(pxpBagImg, bag.x - 20, bag.y, 40, 40);
 
-    const bagBottom = bag.y + 40;
-    const paddleTop = canvas.height - paddleHeight;
+  const bagBottom = bag.y + 40;
+  const paddleTop = paddleY;
+  const paddleBottom = paddleY + paddleHeight;
 
-    if (
-      bagBottom >= paddleTop &&
-      bagBottom <= canvas.height &&
-      bag.x > paddleX &&
-      bag.x < paddleX + paddleWidth
-    ) {
-      pxpBagSound.currentTime = 0;
-      pxpBagSound.play();
+  if (
+    bagBottom >= paddleTop &&
+    bagBottom <= paddleBottom &&
+    bag.x > paddleX &&
+    bag.x < paddleX + paddleWidth
+  ) {
+    pxpBagSound.currentTime = 0;
+    pxpBagSound.play();
 
-      const earned = doublePointsActive ? 160 : 80;
-      score += earned;
-      document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+    const earned = doublePointsActive ? 160 : 80;
+    score += earned;
+    document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
 
-      pointPopups.push({
-        x: bag.x,
-        y: bag.y,
-        value: "+" + earned + " pxp",
-        alpha: 1
-      });
+    pointPopups.push({
+      x: bag.x,
+      y: bag.y,
+      value: "+" + earned + " pxp",
+      alpha: 1
+    });
 
-       pxpBags.splice(i, 1);
-    } else if (bag.y > canvas.height) {
-      pxpBags.splice(i, 1);
-    }
+    pxpBags.splice(i, 1); // ✅ vergeet deze niet!
+  } else if (bag.y > canvas.height) {
+    pxpBags.splice(i, 1); // zakje uit beeld → verwijderen
   }
+}
+
 
  if (machineGunActive && !machineGunCooldownActive) {
   // Volg paddle
