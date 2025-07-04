@@ -1132,8 +1132,6 @@ function draw() {
   collisionDetection();
   drawCoins();
   checkCoinCollision();
-  drawBricks();
-  drawPaddle();
   drawPaddleFlags();
   drawFlyingCoins();
   checkFlyingCoinHits();
@@ -1281,8 +1279,9 @@ if (ball.trail.length >= 2) {
     triggerPaddleExplosion(); // pas nu verlies van leven
   }
 
+ drawBricks();
 
-if (leftPressed) {
+  if (leftPressed) {
   const newX = paddleX - paddleSpeed;
   if (newX > 0 && !isPaddleBlockedHorizontally(newX)) {
     paddleX = newX;
@@ -1310,6 +1309,7 @@ if (downPressed) {
   }
 }
 
+  drawPaddle();
 
 
   if (rocketActive && !rocketFired && rocketAmmo > 0) {
