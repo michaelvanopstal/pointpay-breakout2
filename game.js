@@ -520,8 +520,8 @@ function drawLivesOnCanvas() {
 
 function drawPaddleFlags() {
   if (flagsOnPaddle && Date.now() - flagTimer < 20000) {
-    ctx.drawImage(vlagImgLeft, paddleX - 5, canvas.height - paddleHeight - 40, 45, 45);
-    ctx.drawImage(vlagImgRight, paddleX + paddleWidth - 31, canvas.height - paddleHeight - 40, 45, 45);
+    ctx.drawImage(vlagImgLeft, paddleX - 5, paddleY - 40, 45, 45);
+    ctx.drawImage(vlagImgRight, paddleX + paddleWidth - 31, paddleY - 40, 45, 45);
   } else if (flagsOnPaddle && Date.now() - flagTimer >= 20000) {
     flagsOnPaddle = false;
   }
@@ -1254,7 +1254,7 @@ if (downPressed && paddleY < canvas.height - paddleHeight) {
 
   if (rocketActive && !rocketFired && rocketAmmo > 0) {
     rocketX = paddleX + paddleWidth / 2 - 12;
-    rocketY = canvas.height - paddleHeight - 48;
+    rocketY = paddleY - 48; // ✅ boven de paddle, waar die zich ook bevindt
     ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
   }
 
