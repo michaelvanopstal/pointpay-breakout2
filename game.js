@@ -1841,31 +1841,44 @@ function triggerPaddleExplosion() {
 function startLevelTransition() {
   level++;
 
+  // ❌ Stop actieve bonussen bij overgang naar nieuw level
+  rocketActive = false;
+  rocketAmmo = 0;
+  rocketFired = false;
+  flagsOnPaddle = false;
+  flyingCoins = [];
+  doublePointsActive = false;
+  speedBoostActive = false;
+  machineGunActive = false;
+  machineGunCooldownActive = false;
+  paddleDamageZones = [];
+
   // 🎧 Speel level-up geluid
   levelUpSound.currentTime = 0;
   levelUpSound.play();
 
   // Toon de overgangstekst
-    levelMessageAlpha = 0;
-    levelMessageTimer = 0;
-    levelMessageVisible = true;
-    levelTransitionActive = true;
+  levelMessageAlpha = 0;
+  levelMessageTimer = 0;
+  levelMessageVisible = true;
+  levelTransitionActive = true;
 
-    resetBricks();
-    transitionOffsetY = -300;
+  resetBricks();
+  transitionOffsetY = -300;
 
-    ballLaunched = false;
-    ballMoving = false;
+  ballLaunched = false;
+  ballMoving = false;
 
-    balls = [{
+  balls = [{
     x: paddleX + paddleWidth / 2 - ballRadius,
     y: paddleY - ballRadius * 2,
     dx: 0,
     dy: -6,
-   radius: ballRadius,
-   isMain: true
- }];
+    radius: ballRadius,
+    isMain: true
+  }];
 }
+
 
 function updateLivesDisplay() {
   const display = document.getElementById("livesDisplay");
