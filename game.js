@@ -458,13 +458,12 @@ function resetBricks() {
   }
 }
 
-
 function drawPaddle() {
   if (paddleExploding) return;
 
-  // Teken de paddle vanuit het canvas met schade (in plaats van direct de afbeelding)
-  ctx.drawImage(paddleCanvas, paddleX, canvas.height - paddleHeight);
+  ctx.drawImage(paddleCanvas, paddleX, paddleY);
 }
+
 
 
 
@@ -1232,12 +1231,22 @@ if (ball.trail.length >= 2) {
   }
 
 
-  // Paddle bewegen
-  if (rightPressed && paddleX < canvas.width - paddleWidth) {
-    paddleX += 7;
-  } else if (leftPressed && paddleX > 0) {
-    paddleX -= 7;
-  }
+ // Horizontale beweging
+if (rightPressed && paddleX < canvas.width - paddleWidth) {
+  paddleX += paddleSpeed;
+}
+if (leftPressed && paddleX > 0) {
+  paddleX -= paddleSpeed;
+}
+
+// Verticale beweging
+if (upPressed && paddleY > 0) {
+  paddleY -= paddleSpeed;
+}
+if (downPressed && paddleY < canvas.height - paddleHeight) {
+  paddleY += paddleSpeed;
+}
+
 
   if (rocketActive && !rocketFired && rocketAmmo > 0) {
     rocketX = paddleX + paddleWidth / 2 - 12;
