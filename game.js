@@ -1496,12 +1496,12 @@ if (machineGunActive && !machineGunCooldownActive) {
   }
 });
 
-  // ⏳ Stop na 30 kogels → cooldownfase start
+  
   if (machineGunShotsFired >= 30 && machineGunBullets.length === 0 && !machineGunCooldownActive) {
     machineGunCooldownActive = true;
     machineGunStartTime = Date.now();
   }
-} // ✅ EINDE van machineGunActive blok
+} 
 
  if (machineGunCooldownActive && Date.now() - machineGunStartTime > machineGunCooldownTime) {
   machineGunCooldownActive = false;
@@ -1515,11 +1515,11 @@ if (machineGunActive && !machineGunCooldownActive) {
     alpha: 1
   });
 
-  resetPaddle(true, true); // ✅ geen ball reset, geen centrering
+  resetPaddle(true, true); 
 }
 
 
-// ✅ Game over als paddle volledig is gesloopt
+
 if ((machineGunActive || machineGunCooldownActive) && paddleDamageZones.length >= 10) {
   machineGunActive = false;
   machineGunCooldownActive = false;
@@ -1616,14 +1616,14 @@ if (showGameOver) {
   stoneDebris = stoneDebris.filter(p => p.alpha > 0);
 
   animationFrameId = requestAnimationFrame(draw);
-} // ✅ Sluit draw() AF!
+} 
 
 function onImageLoad() {
   imagesLoaded++;
   if (imagesLoaded === 19) {
     resetBricks();
-    updateLivesDisplay(); // ✅ laat bij start meteen levens zien
-    resetPaddle(); // 🔥 paddletekening klaarzetten
+    updateLivesDisplay();
+    resetPaddle(); 
     draw();
   }
 }
@@ -1672,8 +1672,7 @@ if (!ballLaunched && !ballMoving) {
   balls[0].dy = -6;
 
   if (!timerRunning) startTimer(); // ✅ Alleen timer starten
-
-}
+ }
 });
 
 
@@ -1715,7 +1714,7 @@ function spawnStoneDebris(x, y) {
 
 function triggerPaddleExplosion() {
   if (lives > 1) {
-    if (!resetTriggered) { // ✅ Alleen aftrekken als het GEEN reset is
+    if (!resetTriggered) { 
       lives--;
       updateLivesDisplay();
     }
@@ -1725,7 +1724,7 @@ function triggerPaddleExplosion() {
     paddleExploding = true;
     paddleExplosionParticles = [];
 
-    // ❌ Machinegun direct stoppen bij levenverlies
+   
     machineGunActive = false;
     machineGunCooldownActive = false;
 
@@ -1748,19 +1747,19 @@ function triggerPaddleExplosion() {
       paddleExplosionParticles = [];
 
       balls = [{
-  x: paddleX + paddleWidth / 2 - ballRadius,
-  y: paddleY - ballRadius * 2,
-  dx: 0,
-  dy: -6,
-  radius: ballRadius,
-  isMain: true
-}];
+      x: paddleX + paddleWidth / 2 - ballRadius,
+      y: paddleY - ballRadius * 2,
+      dx: 0,
+      dy: -6,
+      radius: ballRadius,
+      isMain: true
+    }];
 
 
       ballLaunched = false;
       ballMoving = false;
 
-      resetTriggered = false; // ✅ reset na normale explosie
+      resetTriggered = false; 
 
       resetPaddle(); // visuele schade weg
     }, 1000);
@@ -1832,7 +1831,7 @@ function triggerPaddleExplosion() {
       document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
       document.getElementById("timeDisplay").textContent = "time 00:00";
 
-      resetTriggered = false; // ✅ reset ook hier voor zekerheid
+      resetTriggered = false; 
     }, 1000);
   }
 }
@@ -1841,7 +1840,7 @@ function triggerPaddleExplosion() {
 function startLevelTransition() {
   level++;
 
-  // ❌ Stop actieve bonussen bij overgang naar nieuw level
+  
   rocketActive = false;
   rocketAmmo = 0;
   rocketFired = false;
