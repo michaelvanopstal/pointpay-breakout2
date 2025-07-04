@@ -548,8 +548,8 @@ function drawLivesOnCanvas() {
 
 function drawPaddleFlags() {
   if (flagsOnPaddle && Date.now() - flagTimer < 20000) {
-    ctx.drawImage(vlagImgLeft, paddleX - 5, canvas.height - paddleHeight - 40, 45, 45);
-    ctx.drawImage(vlagImgRight, paddleX + paddleWidth - 31, canvas.height - paddleHeight - 40, 45, 45);
+    ctx.drawImage(vlagImgLeft, paddleX - 5, paddleY - 40, 45, 45);
+    ctx.drawImage(vlagImgRight, paddleX + paddleWidth - 31, paddleY - 40, 45, 45);
   } else if (flagsOnPaddle && Date.now() - flagTimer >= 20000) {
     flagsOnPaddle = false;
   }
@@ -562,7 +562,7 @@ function shootFromFlags() {
   // Linkervlag
   flyingCoins.push({
     x: paddleX - 5 + 12,
-    y: canvas.height - paddleHeight - 40,
+    y: paddleY - 40,
     dy: -coinSpeed,
     active: true
   });
@@ -570,7 +570,7 @@ function shootFromFlags() {
   // Rechtervlag
   flyingCoins.push({
     x: paddleX + paddleWidth - 19 + 12,
-    y: canvas.height - paddleHeight - 40,
+    y: paddleY - 40,
     dy: -coinSpeed,
     active: true
   });
@@ -1323,11 +1323,12 @@ if (downPressed) {
 
 
 
-  if (rocketActive && !rocketFired && rocketAmmo > 0) {
-    rocketX = paddleX + paddleWidth / 2 - 12;
-    rocketY = canvas.height - paddleHeight - 48;
-    ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
-  }
+ if (rocketActive && !rocketFired && rocketAmmo > 0) {
+  rocketX = paddleX + paddleWidth / 2 - 12;
+  rocketY = paddleY - 48;
+  ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
+}
+
 
   if (rocketFired) {
     rocketY -= rocketSpeed;
