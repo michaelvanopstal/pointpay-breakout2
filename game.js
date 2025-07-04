@@ -470,7 +470,7 @@ function drawPaddle() {
 function resetBall() {
   balls = [{
     x: paddleX + paddleWidth / 2 - ballRadius,
-    y: canvas.height - paddleHeight - ballRadius * 2,
+    y: paddleY - ballRadius * 2,
     dx: 0,
     dy: -6,
     radius: ballRadius,
@@ -1104,8 +1104,9 @@ function draw() {
       ball.x += ball.dx * speedMultiplier;
       ball.y += ball.dy * speedMultiplier;
     } else {
-      ball.x = paddleX + paddleWidth / 2 - ballRadius;
-      ball.y = canvas.height - paddleHeight - ballRadius * 2;
+       ball.x = paddleX + paddleWidth / 2 - ballRadius;
+       ball.y = paddleY - ballRadius * 2;
+
     }
     
     if (!ball.trail) ball.trail = [];
@@ -1671,7 +1672,8 @@ function triggerPaddleExplosion() {
 
       balls = [{
         x: paddleX + paddleWidth / 2 - ballRadius,
-        y: canvas.height - paddleHeight - ballRadius * 2,
+        y: paddleY - ballRadius * 2,
+
         dx: 0,
         dy: -6,
         radius: ballRadius,
@@ -1780,7 +1782,7 @@ function startLevelTransition() {
 
   balls = [{
     x: paddleX + paddleWidth / 2 - ballRadius,
-    y: canvas.height - paddleHeight - ballRadius * 2,
+    y: paddleY - ballRadius * 2,
     dx: 0,
     dy: -6,
     radius: ballRadius,
@@ -1847,7 +1849,7 @@ function triggerBallReset() {
   setTimeout(() => {
     balls = [{
       x: paddleX + paddleWidth / 2 - ballRadius,
-      y: canvas.height - paddleHeight - ballRadius * 2,
+      y: paddleY - ballRadius * 2,
       dx: 0,
       dy: -6,
       radius: ballRadius,
