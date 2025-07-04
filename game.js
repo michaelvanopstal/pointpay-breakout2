@@ -1080,16 +1080,46 @@ function spawnPxpBag(x, y) {
   });
 }
 
+function isPaddleBlockedVertically(newY) {
+  for (let c = 0; c < brickColumnCount; c++) {
+    for (let r = 0; r < brickRowCount; r++) {
+      const brick = bricks[c][r];
+      if (!brick || brick.status !== 1) continue;
+
+      const brickLeft = brick.x;
+      const brickRight = brick.x + brickWidth;
+      const brickTop = brick.y;
+      const brickBottom = brick.y + brickHeight;
+
+      const paddleLeft = paddleX;
+      const paddleRight = paddleX + paddleWidth;
+      const paddleTop = newY;
+      const paddleBottom = newY + paddleHeight;
+
+      if (
+        paddleRight > brickLeft &&
+        paddleLeft < brickRight &&
+        paddleBottom > brickTop &&
+        paddleTop < brickBottom
+      ) {
+        return true; // botsing
+      }
+    }
+  }
+  return false;
+}
+
+
 function isPaddleBlockedHorizontally(newX) {
   for (let c = 0; c < brickColumnCount; c++) {
     for (let r = 0; r < brickRowCount; r++) {
       const brick = bricks[c][r];
       if (!brick || brick.status !== 1) continue;
 
+      const brickLeft = brick.x;
       const brickRight = brick.x + brickWidth;
-      const brickBottom = brick.y + brickHeight;
       const brickTop = brick.y;
-      const brickBottom = brick.y + brick.height;
+      const brickBottom = brick.y + brickHeight;
 
       const paddleLeft = newX;
       const paddleRight = newX + paddleWidth;
@@ -1103,35 +1133,6 @@ function isPaddleBlockedHorizontally(newX) {
         paddleTop < brickBottom
       ) {
         return true; // botsing
-      }
-    }
-  }
-  return false; // geen botsing
-}
-
-function isPaddleBlockedVertically(newY) {
-  for (let c = 0; c < brickColumnCount; c++) {
-    for (let r = 0; r < brickRowCount; r++) {
-      const brick = bricks[c][r];
-      if (!brick || brick.status !== 1) continue;
-
-       const brickRight = brick.x + brick.width;
-      const brickBottom = brick.y + brick.height;
-      const brickTop = brick.y;
-      const brickBottom = brick.y + brick.height;
-
-      const paddleLeft = paddleX;
-      const paddleRight = paddleX + paddleWidth;
-      const paddleTop = newY;
-      const paddleBottom = newY + paddleHeight;
-
-      if (
-        paddleRight > brickLeft &&
-        paddleLeft < brickRight &&
-        paddleBottom > brickTop &&
-        paddleTop < brickBottom
-      ) {
-        return true;
       }
     }
   }
