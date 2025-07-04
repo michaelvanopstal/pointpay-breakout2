@@ -1607,6 +1607,10 @@ function triggerPaddleExplosion() {
     paddleExploding = true;
     paddleExplosionParticles = [];
 
+    // ❌ Machinegun direct stoppen bij levenverlies
+    machineGunActive = false;
+    machineGunCooldownActive = false;
+
     for (let i = 0; i < 50; i++) {
       paddleExplosionParticles.push({
         x: paddleX + paddleWidth / 2,
@@ -1645,6 +1649,10 @@ function triggerPaddleExplosion() {
   } else {
     // ✅ Laatste leven: eerst paddle laten ontploffen
     paddleExploding = true;
+
+    machineGunActive = false;
+    machineGunCooldownActive = false;
+
 
     gameOverSound.currentTime = 0;
     gameOverSound.play(); // 🔊 Speel "GAME OVER" geluid
