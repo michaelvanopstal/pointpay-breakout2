@@ -1,5 +1,8 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
+const paddleCanvas = document.createElement("canvas");
+const paddleCtx = paddleCanvas.getContext("2d");
+
 
 let elapsedTime = 0;
 let timerInterval = null;
@@ -441,28 +444,12 @@ function resetBricks() {
 }
 
 
-
 function drawPaddle() {
   if (paddleExploding) return;
 
-  if (machineGunActive || machineGunCooldownActive) {
-    // Paddle tekenen in 10 stukken, met gaten
-    const segmentWidth = paddleWidth / 10;
-    for (let i = 0; i < 10; i++) {
-      const segX = paddleX + i * segmentWidth;
-      const isDamaged = paddleDamageZones.some(hitX =>
-        hitX >= segX && hitX <= segX + segmentWidth
-      );
-      if (!isDamaged) {
-        ctx.drawImage(pointpayPaddleImg, segX, canvas.height - paddleHeight, segmentWidth, paddleHeight);
-      }
-    }
-  } else {
-    // Normale paddle
-    ctx.drawImage(pointpayPaddleImg, paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
-  }
+  // Teken de paddle vanuit het canvas met schade (in plaats van direct de afbeelding)
+  ctx.drawImage(paddleCanvas, paddleX, canvas.height - paddleHeight);
 }
-
 
 
 
@@ -488,8 +475,14 @@ function resetBall() {
 function resetPaddle() {
   paddleX = (canvas.width - paddleWidth) / 2;
   resetBall();  // maakt de eerste bal aan
- 
+
+  // 🔁 Reset paddle-tekening inclusief schadeherstel
+  paddleCanvas.width = paddleWidth;
+  paddleCanvas.height = paddleHeight;
+  paddleCtx.clearRect(0, 0, paddleWidth, paddleHeight);
+  paddleCtx.drawImage(pointpayPaddleImg, 0, 0, paddleWidth, paddleHeight);
 }
+
 
 function drawLivesOnCanvas() {
   for (let i = 0; i < lives; i++) {
@@ -1317,31 +1310,39 @@ if (ball.trail.length >= 2) {
   }
 
   // 🎯 Machinegun kogels verwerken
-  machineGunBullets.forEach((bullet, i) => {
-    bullet.y += bullet.dy;
-    ctx.beginPath();
-    ctx.arc(bullet.x, bullet.y, 4, 0, Math.PI * 2);
-    ctx.fillStyle = "red";
-    ctx.fill();
+ machineGunBullets.forEach((bullet, i) => {
+  bullet.y += bullet.dy;
+  ctx.beginPath();
+  ctx.arc(bullet.x, bullet.y, 4, 0, Math.PI * 2);
+  ctx.fillStyle = "red";
+  ctx.fill();
 
-    // 💥 Check raak met paddle
-    if (
-      bullet.y >= canvas.height - paddleHeight &&
-      bullet.x >= paddleX &&
-      bullet.x <= paddleX + paddleWidth
-    ) {
-      const hitX = bullet.x;
+  // 💥 Check raak met paddle
+  if (
+    bullet.y >= canvas.height - paddleHeight &&
+    bullet.x >= paddleX &&
+    bullet.x <= paddleX + paddleWidth
+  ) {
+    const hitX = bullet.x - paddleX; // relatief binnen de paddle
+    const radius = 6;
 
-      // ❗ Alleen opslaan als deze X nog geen bestaand gat heeft (binnen segmentbreedte)
-      if (!paddleDamageZones.some(x => Math.abs(x - hitX) < paddleWidth / 10)) {
-        paddleDamageZones.push(hitX);
-      }
+    // Alleen gat maken als er nog geen gat daar zit
+    if (!paddleDamageZones.some(x => Math.abs(x - bullet.x) < paddleWidth / 10)) {
+      paddleDamageZones.push(bullet.x);
 
-      machineGunBullets.splice(i, 1); // verwijder de kogel
-    } else if (bullet.y > canvas.height) {
-      machineGunBullets.splice(i, 1); // uit beeld
+      // ❗ GAT MAKEN IN PADDLE
+      paddleCtx.globalCompositeOperation = 'destination-out';
+      paddleCtx.beginPath();
+      paddleCtx.arc(hitX, paddleHeight / 2, radius, 0, Math.PI * 2);
+      paddleCtx.fill();
+      paddleCtx.globalCompositeOperation = 'source-over';
     }
-  });
+
+    machineGunBullets.splice(i, 1); // verwijder kogel
+  } else if (bullet.y > canvas.height) {
+    machineGunBullets.splice(i, 1); // uit beeld
+  }
+});
 
   // ⏳ Stop na 30 kogels → cooldownfase start
   if (machineGunShotsFired >= 30 && machineGunBullets.length === 0 && !machineGunCooldownActive) {
@@ -1350,8 +1351,7 @@ if (ball.trail.length >= 2) {
   }
 } // ✅ EINDE van machineGunActive blok
 
-// ✅ Cooldownfase buiten het actieve blok
-if (machineGunCooldownActive && Date.now() - machineGunStartTime > machineGunCooldownTime) {
+  if (machineGunCooldownActive && Date.now() - machineGunStartTime > machineGunCooldownTime) {
   machineGunCooldownActive = false;
   machineGunActive = false;
   paddleDamageZones = [];
@@ -1362,7 +1362,10 @@ if (machineGunCooldownActive && Date.now() - machineGunStartTime > machineGunCoo
     value: "+500 PXP",
     alpha: 1
   });
+
+  resetPaddle(); // 🔁 herstel paddle na overleven aanval
 }
+
 
 // ✅ Game over als paddle volledig is gesloopt
 if ((machineGunActive || machineGunCooldownActive) && paddleDamageZones.length >= 10) {
@@ -1469,6 +1472,7 @@ function onImageLoad() {
   if (imagesLoaded === 19) {
     resetBricks();
     updateLivesDisplay(); // ✅ laat bij start meteen levens zien
+    resetPaddle(); // 🔥 paddletekening klaarzetten
     draw();
   }
 }
@@ -1601,6 +1605,8 @@ function triggerPaddleExplosion() {
       ballMoving = false;
 
       resetTriggered = false; // ✅ reset na normale explosie
+
+      resetPaddle(); // visuele schade weg
     }, 1000);
 
   } else {
