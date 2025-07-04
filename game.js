@@ -892,16 +892,23 @@ function checkCoinCollision() {
   coins.forEach(coin => {
     if (!coin.active) return;
 
-    const coinBottom = coin.y + coin.radius;
-    const paddleTop = canvas.height - paddleHeight;
+    const coinLeft = coin.x;
+    const coinRight = coin.x + coin.radius * 2;
+    const coinTop = coin.y;
+    const coinBottom = coin.y + coin.radius * 2;
 
-    // Paddle vangt muntje
-    if (
+    const paddleLeft = paddleX;
+    const paddleRight = paddleX + paddleWidth;
+    const paddleTop = paddleY;
+    const paddleBottom = paddleY + paddleHeight;
+
+    const isOverlap =
+      coinRight >= paddleLeft &&
+      coinLeft <= paddleRight &&
       coinBottom >= paddleTop &&
-      coinBottom <= canvas.height &&
-      coin.x + coin.radius > paddleX &&
-      coin.x < paddleX + paddleWidth
-    ) {
+      coinTop <= paddleBottom;
+
+    if (isOverlap) {
       coin.active = false;
 
       const earned = doublePointsActive ? 20 : 10;
@@ -917,10 +924,7 @@ function checkCoinCollision() {
         value: "+" + earned + " pxp",
         alpha: 1
       });
-    }
-
-    // Coin valt uit beeld zonder vangst
-    else if (coinBottom > canvas.height) {
+    } else if (coinBottom > canvas.height) {
       coin.active = false;
     }
   });
