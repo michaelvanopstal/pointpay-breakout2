@@ -953,31 +953,31 @@ function checkCoinCollision() {
    const paddleBottom = paddleY + paddleHeight;
 
 
+
     // Paddle vangt muntje
-    if (
-      coinBottom >= paddleTop &&
-     coinBottom <= paddleBottom &&
-     coin.x + coin.radius > paddleX &&
-     coin.x < paddleX + paddleWidth
-     )
+if (
+  coinBottom >= paddleTop &&
+  coinBottom <= paddleBottom &&
+  coin.x + coin.radius > paddleX &&
+  coin.x < paddleX + paddleWidth
+) {
+  coin.active = false;
 
-    ) {
-      coin.active = false;
+  const earned = doublePointsActive ? 20 : 10;
+  score += earned;
+  document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
 
-      const earned = doublePointsActive ? 20 : 10;
-      score += earned;
-      document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+  coinSound.currentTime = 0;
+  coinSound.play();
 
-      coinSound.currentTime = 0;
-      coinSound.play();
+  pointPopups.push({
+    x: coin.x,
+    y: coin.y,
+    value: "+" + earned + " pxp",
+    alpha: 1
+  });
+}
 
-      pointPopups.push({
-        x: coin.x,
-        y: coin.y,
-        value: "+" + earned + " pxp",
-        alpha: 1
-      });
-    }
 
     // Coin valt uit beeld zonder vangst
     else if (coinBottom > canvas.height) {
