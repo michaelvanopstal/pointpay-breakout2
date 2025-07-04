@@ -53,6 +53,19 @@ let resetOverlayActive = false;
 let ballTrail = []; // Array om eerdere balposities te bewaren
 const maxTrailLength = 10;
 
+let machineGunActive = false;
+let machineGunGunX = 0;
+let machineGunGunY = 0;
+let machineGunBullets = [];
+let machineGunShotsFired = 0;
+let machineGunDifficulty = 2; // 1 = makkelijk, 2 = normaal, 3 = moeilijk
+let machineGunCooldownActive = false;
+let machineGunStartTime = 0;
+let machineGunCooldownTime = 30000; // 30 sec cooldown
+let machineGunBulletInterval = 500; // aanpasbaar per difficulty
+let machineGunLastShot = 0;
+let paddleDamageZones = []; // array van kapotgemaakte stukken
+
 
 
 
@@ -77,7 +90,7 @@ balls.push({
 
 
 const bonusBricks = [
-  { col: 5, row: 3, type: "rocket" },
+  { col: 5, row: 3, type: "rocket" },  { col: 3, row: 5, type: "machinegun" }
   { col: 8, row: 4, type: "power" },
   { col: 2, row: 7, type: "doubleball" },
   { col: 4, row: 7, type: "2x" },
@@ -352,6 +365,9 @@ const offsetX = Math.floor((canvas.width - totalBricksWidth) / 2 - 3);
           case "doubleball":
             ctx.drawImage(doubleBallImg, brickX, brickY, brickWidth, brickHeight);
             break;
+            case "machinegun":
+            ctx.drawImage(machinegunBlockImg, brickX, brickY, brickWidth, brickHeight);
+            break;
           case "speed":
             ctx.drawImage(speedImg, brickX, brickY, brickWidth, brickHeight);
             break;
@@ -426,11 +442,27 @@ function resetBricks() {
 
 
 
-
 function drawPaddle() {
-  if (paddleExploding) return; // Verberg paddle tijdens explosie
-  ctx.drawImage(pointpayPaddleImg, paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
+  if (paddleExploding) return;
+
+  if (machineGunActive || machineGunCooldownActive) {
+    // Paddle tekenen in 10 stukken, met gaten
+    const segmentWidth = paddleWidth / 10;
+    for (let i = 0; i < 10; i++) {
+      const segX = paddleX + i * segmentWidth;
+      const isDamaged = paddleDamageZones.some(hitX =>
+        hitX >= segX && hitX <= segX + segmentWidth
+      );
+      if (!isDamaged) {
+        ctx.drawImage(pointpayPaddleImg, segX, canvas.height - paddleHeight, segmentWidth, paddleHeight);
+      }
+    }
+  } else {
+    // Normale paddle
+    ctx.drawImage(pointpayPaddleImg, paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
+  }
 }
+
 
 
 
@@ -956,6 +988,18 @@ function collisionDetection() {
               flagTimer = Date.now();
               flagsActivatedSound.play();
               break;
+              case "machinegun":
+              machineGunActive = true;
+              machineGunGunX = b.x + brickWidth / 2 - 30;
+              machineGunGunY = b.y + brickHeight; // net onder het blok
+              machineGunStartTime = Date.now();
+              machineGunShotsFired = 0;
+              machineGunBullets = [];
+              paddleDamageZones = [];
+              machineGunLastShot = Date.now();
+              b.status = 0;
+              b.type = "normal";
+              break;
             case "rocket":
               rocketActive = true;
               rocketAmmo = 3;
@@ -1243,11 +1287,126 @@ if (ball.trail.length >= 2) {
         alpha: 1
       });
 
-      pxpBags.splice(i, 1);
+       pxpBags.splice(i, 1);
     } else if (bag.y > canvas.height) {
       pxpBags.splice(i, 1);
     }
   }
+
+  if (machineGunActive && !machineGunCooldownActive) {
+  // Volg paddle
+  const targetX = paddleX + paddleWidth / 2 - 30;
+  const followSpeed = machineGunDifficulty === 1 ? 1 : machineGunDifficulty === 2 ? 2 : 3;
+  if (machineGunGunX < targetX) machineGunGunX += followSpeed;
+  else if (machineGunGunX > targetX) machineGunGunX -= followSpeed;
+
+  // Teken geweer
+  ctx.drawImage(machinegunGunImg, machineGunGunX, machineGunGunY, 60, 60);
+
+  // Schieten
+  if (Date.now() - machineGunLastShot > machineGunBulletInterval && machineGunShotsFired < 30) {
+    machineGunBullets.push({
+      x: machineGunGunX + 30,
+      y: machineGunGunY + 60,
+      dy: 6
+    });
+    machineGunShotsFired++;
+    machineGunLastShot = Date.now();
+    shootSound.currentTime = 0;
+    shootSound.play();
+  }
+
+// 🎯 Machinegun kogels verwerken
+machineGunBullets.forEach((bullet, i) => {
+  bullet.y += bullet.dy;
+  ctx.beginPath();
+  ctx.arc(bullet.x, bullet.y, 4, 0, Math.PI * 2);
+  ctx.fillStyle = "red";
+  ctx.fill();
+
+  // 💥 Check raak met paddle
+  if (
+    bullet.y >= canvas.height - paddleHeight &&
+    bullet.x >= paddleX &&
+    bullet.x <= paddleX + paddleWidth
+  ) {
+    const hitX = bullet.x;
+
+    // ❗ Alleen opslaan als deze X nog geen bestaand gat heeft (binnen segmentbreedte)
+    if (!paddleDamageZones.some(x => Math.abs(x - hitX) < paddleWidth / 10)) {
+      paddleDamageZones.push(hitX);
+    }
+
+    machineGunBullets.splice(i, 1); // verwijder de kogel
+  } else if (bullet.y > canvas.height) {
+    machineGunBullets.splice(i, 1); // uit beeld
+  }
+});
+
+// ⏳ Stop na 30 kogels → cooldownfase start
+if (machineGunShotsFired >= 30 && machineGunBullets.length === 0 && !machineGunCooldownActive) {
+  machineGunCooldownActive = true;
+  machineGunStartTime = Date.now();
+}
+if (machineGunCooldownActive && Date.now() - machineGunStartTime > machineGunCooldownTime) {
+  machineGunCooldownActive = false;
+  machineGunActive = false;
+  paddleDamageZones = [];
+  score += 500;
+  pointPopups.push({
+    x: paddleX + paddleWidth / 2,
+    y: canvas.height - 30,
+    value: "+500 PXP",
+    alpha: 1
+  });
+}
+
+if ((machineGunActive || machineGunCooldownActive) && paddleDamageZones.length >= 10) {
+  machineGunActive = false;
+  machineGunCooldownActive = false;
+  // Paddle is volledig vernietigd — normale paddle-explosie treedt in werking zodra bal verloren gaat
+}
+
+
+ // ✨ Leveltekst weergeven
+if (levelMessageVisible) {
+  ctx.save();
+  ctx.globalAlpha = levelMessageAlpha;
+  ctx.fillStyle = "#00ffff";
+  ctx.font = "bold 36px Arial";
+  ctx.textAlign = "center";
+  ctx.fillText(`PointPay Breakout Level ${level}`, canvas.width / 2, canvas.height / 2);
+  ctx.restore();
+}
+
+// 🎬 Overgangstimer & animatie
+if (levelTransitionActive) {
+  levelMessageAlpha = 1;
+
+  levelMessageTimer++;
+
+  if (levelMessageTimer >= 360) {
+    levelMessageVisible = false;
+    levelTransitionActive = false;
+  }
+
+  if (transitionOffsetY < 0) {
+    transitionOffsetY += 2;
+  } else {
+    transitionOffsetY = 0;
+  }
+}
+
+
+if (showGameOver) {
+  ctx.save();
+  ctx.globalAlpha = gameOverAlpha;
+  ctx.fillStyle = "#000000";
+  ctx.font = "bold 48px Arial";
+  ctx.textAlign = "center";
+  ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2);
+  ctx.restore();
+
 
  // ✨ Leveltekst weergeven
 if (levelMessageVisible) {
