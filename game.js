@@ -534,7 +534,7 @@ function shootFromFlags() {
   // Linkervlag
   flyingCoins.push({
     x: paddleX - 5 + 12,
-    y: canvas.height - paddleHeight - 40,
+    y: paddleY - 40,
     dy: -coinSpeed,
     active: true
   });
@@ -542,7 +542,7 @@ function shootFromFlags() {
   // Rechtervlag
   flyingCoins.push({
     x: paddleX + paddleWidth - 19 + 12,
-    y: canvas.height - paddleHeight - 40,
+   y: paddleY - 40,
     dy: -coinSpeed,
     active: true
   });
