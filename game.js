@@ -157,6 +157,9 @@ const brickRowCount = 15;
 const brickColumnCount = 9;
 const brickWidth = customBrickWidth;
 const brickHeight = customBrickHeight;
+const machineGunOffset = 100; // afstand boven paddle in pixels
+const minGunY = 20;           // minimale hoogte (bijna bovenaan canvas)
+const maxGunY = canvas.height - 150; // maximale hoogte (zodat hij niet uit beeld valt)
 
 
 const bricks = [];
@@ -1426,13 +1429,19 @@ for (let i = pxpBags.length - 1; i >= 0; i--) {
   }
 }
 
-
- if (machineGunActive && !machineGunCooldownActive) {
+if (machineGunActive && !machineGunCooldownActive) {
   // Volg paddle
   const targetX = paddleX + paddleWidth / 2 - 30;
+  const targetY = Math.min(Math.max(paddleY - machineGunOffset, minGunY), maxGunY);
   const followSpeed = machineGunDifficulty === 1 ? 1 : machineGunDifficulty === 2 ? 2 : 3;
+
+  // Horizontaal volgen
   if (machineGunGunX < targetX) machineGunGunX += followSpeed;
   else if (machineGunGunX > targetX) machineGunGunX -= followSpeed;
+
+  // Verticaal volgen
+  if (machineGunGunY < targetY) machineGunGunY += followSpeed;
+  else if (machineGunGunY > targetY) machineGunGunY -= followSpeed;
 
   // Teken geweer
   ctx.drawImage(machinegunGunImg, machineGunGunX, machineGunGunY, 60, 60);
@@ -1449,6 +1458,7 @@ for (let i = pxpBags.length - 1; i >= 0; i--) {
     shootSound.currentTime = 0;
     shootSound.play();
   }
+}
 
   // 🎯 Machinegun kogels verwerken
  machineGunBullets.forEach((bullet, i) => {
