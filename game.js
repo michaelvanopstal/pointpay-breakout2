@@ -497,8 +497,8 @@ function drawPaddle() {
 
 function resetBall() {
   balls = [{
-    x: paddleX + paddleWidth / 2 - ballRadius,
-    y: canvas.height - paddleHeight - ballRadius * 2,
+   x: paddleX + paddleWidth / 2 - ballRadius,
+   y: paddleY - ballRadius * 2,
     dx: 0,
     dy: -6,
     radius: ballRadius,
@@ -1153,16 +1153,18 @@ function draw() {
     doublePointsActive = false;
   }
 
-  balls.forEach((ball, index) => {
-    if (ballLaunched) {
-      let speedMultiplier = (speedBoostActive && Date.now() - speedBoostStart < speedBoostDuration)
-        ? speedBoostMultiplier : 1;
-      ball.x += ball.dx * speedMultiplier;
-      ball.y += ball.dy * speedMultiplier;
-    } else {
-      ball.x = paddleX + paddleWidth / 2 - ballRadius;
-      ball.y = canvas.height - paddleHeight - ballRadius * 2;
-    }
+ balls.forEach((ball, index) => {
+  if (ballLaunched) {
+    let speedMultiplier = (speedBoostActive && Date.now() - speedBoostStart < speedBoostDuration)
+      ? speedBoostMultiplier : 1;
+    ball.x += ball.dx * speedMultiplier;
+    ball.y += ball.dy * speedMultiplier;
+  } else {
+    ball.x = paddleX + paddleWidth / 2 - ballRadius;
+    ball.y = paddleY - ballRadius * 2;
+   }
+
+
     
     if (!ball.trail) ball.trail = [];
 
@@ -1736,13 +1738,14 @@ function triggerPaddleExplosion() {
       paddleExplosionParticles = [];
 
       balls = [{
-        x: paddleX + paddleWidth / 2 - ballRadius,
-        y: canvas.height - paddleHeight - ballRadius * 2,
-        dx: 0,
-        dy: -6,
-        radius: ballRadius,
-        isMain: true
-      }];
+  x: paddleX + paddleWidth / 2 - ballRadius,
+  y: paddleY - ballRadius * 2,
+  dx: 0,
+  dy: -6,
+  radius: ballRadius,
+  isMain: true
+}];
+
 
       ballLaunched = false;
       ballMoving = false;
@@ -1833,25 +1836,25 @@ function startLevelTransition() {
   levelUpSound.play();
 
   // Toon de overgangstekst
-  levelMessageAlpha = 0;
-  levelMessageTimer = 0;
-  levelMessageVisible = true;
-  levelTransitionActive = true;
+    levelMessageAlpha = 0;
+    levelMessageTimer = 0;
+    levelMessageVisible = true;
+    levelTransitionActive = true;
 
-  resetBricks();
-  transitionOffsetY = -300;
+    resetBricks();
+    transitionOffsetY = -300;
 
-  ballLaunched = false;
-  ballMoving = false;
+    ballLaunched = false;
+    ballMoving = false;
 
-  balls = [{
+    balls = [{
     x: paddleX + paddleWidth / 2 - ballRadius,
-    y: canvas.height - paddleHeight - ballRadius * 2,
+    y: paddleY - ballRadius * 2,
     dx: 0,
     dy: -6,
-    radius: ballRadius,
-    isMain: true
-  }];
+   radius: ballRadius,
+   isMain: true
+ }];
 }
 
 function updateLivesDisplay() {
@@ -1910,15 +1913,16 @@ function triggerBallReset() {
   }, 6500);
 
   // ⏱️ 10 sec: bal reset op paddle
-  setTimeout(() => {
+    setTimeout(() => {
     balls = [{
-      x: paddleX + paddleWidth / 2 - ballRadius,
-      y: canvas.height - paddleHeight - ballRadius * 2,
-      dx: 0,
-      dy: -6,
-      radius: ballRadius,
-      isMain: true
-    }];
+    x: paddleX + paddleWidth / 2 - ballRadius,
+    y: paddleY - ballRadius * 2,
+    dx: 0,
+    dy: -6,
+    radius: ballRadius,
+    isMain: true
+   }];
+
     ballLaunched = false;
     ballMoving = false;
     resetOverlayActive = false;
