@@ -473,8 +473,13 @@ function resetBall() {
 }
 
 function resetPaddle() {
+  // 🎯 Zet paddle terug in het midden
   paddleX = (canvas.width - paddleWidth) / 2;
-  resetBall();  // maakt de eerste bal aan
+
+  // 🟢 Reset ook de balpositie (alleen bij resetmomenten, niet tijdens machinegun herstel)
+  if (!machineGunCooldownActive && !machineGunActive) {
+    resetBall();  // maakt de eerste bal aan
+  }
 
   // 🔁 Reset paddle-tekening inclusief schadeherstel
   paddleCanvas.width = paddleWidth;
@@ -1118,22 +1123,47 @@ function draw() {
       wallSound.currentTime = 0;
       wallSound.play();
     }
+if (
+  ball.y + ball.dy > canvas.height - paddleHeight - ball.radius &&
+  ball.y + ball.dy < canvas.height + 2 &&
+  ball.x + ball.radius > paddleX &&
+  ball.x - ball.radius < paddleX + paddleWidth
+) {
+  let reflect = true;
 
-    if (
-      ball.y + ball.dy > canvas.height - paddleHeight - ball.radius &&
-      ball.y + ball.dy < canvas.height + 2 &&
-      ball.x + ball.radius > paddleX &&
-      ball.x - ball.radius < paddleX + paddleWidth
-    ) {
-      const hitPos = (ball.x - paddleX) / paddleWidth;
-      const angle = (hitPos - 0.5) * Math.PI / 2;
-      const speed = Math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy);
-      ball.dx = speed * Math.sin(angle);
-      ball.dy = -Math.abs(speed * Math.cos(angle));
+  if (machineGunActive || machineGunCooldownActive) {
+    // Paddle segment-check voor schade
+    const segmentWidth = paddleWidth / 10;
+    for (let i = 0; i < 10; i++) {
+      const segX = paddleX + i * segmentWidth;
+      const isDamaged = paddleDamageZones.some(hitX =>
+        hitX >= segX && hitX <= segX + segmentWidth
+      );
 
-      wallSound.currentTime = 0;
-      wallSound.play();
+      const ballCenterX = ball.x;
+      if (
+        ballCenterX >= segX &&
+        ballCenterX < segX + segmentWidth &&
+        isDamaged
+      ) {
+        reflect = false; // 🟥 Bal raakt beschadigd stuk → geen reflectie
+        break;
+      }
     }
+  }
+
+  if (reflect) {
+    const hitPos = (ball.x - paddleX) / paddleWidth;
+    const angle = (hitPos - 0.5) * Math.PI / 2;
+    const speed = Math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy);
+    ball.dx = speed * Math.sin(angle);
+    ball.dy = -Math.abs(speed * Math.cos(angle));
+
+    wallSound.currentTime = 0;
+    wallSound.play();
+  }
+}
+
 
     if (ball.y + ball.dy > canvas.height) {
       balls.splice(index, 1); // verwijder bal zonder actie
