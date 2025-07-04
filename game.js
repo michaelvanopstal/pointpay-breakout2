@@ -1291,7 +1291,6 @@ if (ball.trail.length >= 2) {
   }
 
 
-  // ✅ Na de loop: check of alle ballen weg zijn
   if (balls.length === 0 && !paddleExploding) {
     triggerPaddleExplosion(); // pas nu verlies van leven
   }
@@ -1359,9 +1358,8 @@ if (downPressed) {
       ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
       checkRocketCollision();
     }
-  } // ✅ DIT is de juiste afsluitende accolade voor rocketFired-block
+  }
 
-  // 🔁 Start level 2 zodra alle blokjes weg zijn
   if (bricks.every(col => col.every(b => b.status === 0)) && !levelTransitionActive) {
     startLevelTransition();
   }
@@ -1602,7 +1600,7 @@ if (showGameOver) {
   }
 }
 
-  // 🧱 Steenpuin tekenen
+
   stoneDebris.forEach(p => {
     ctx.beginPath();
     ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
@@ -1649,10 +1647,8 @@ machinegunGunImg.onload = onImageLoad;
 coinImg.onload = onImageLoad;
 
 document.addEventListener("mousedown", function (e) {
-  // 🛡️ Alleen reageren als er op het canvas geklikt wordt
   if (e.target.tagName !== "CANVAS") return;
 
-  // 🔫 Raket afvuren
   if (rocketActive && rocketAmmo > 0 && !rocketFired) {
     rocketFired = true;
     rocketAmmo--;
@@ -1660,7 +1656,6 @@ document.addEventListener("mousedown", function (e) {
     rocketLaunchSound.play();
   }
 
- // 🎯 Bal afschieten met muisklik (trackpad)
 if (!ballLaunched && !ballMoving) {
   ballLaunched = true;
   ballMoving = true;
@@ -1678,7 +1673,7 @@ if (!ballLaunched && !ballMoving) {
 
 
 function startTimer() {
-  if (timerRunning) return; // ✅ voorkomt dubbele timers
+  if (timerRunning) return; 
   timerRunning = true;
   timerInterval = setInterval(() => {
     elapsedTime++;
@@ -1765,7 +1760,7 @@ function triggerPaddleExplosion() {
     }, 1000);
 
   } else {
-    // ✅ Laatste leven: eerst paddle laten ontploffen
+    
     paddleExploding = true;
 
     machineGunActive = false;
@@ -1773,7 +1768,7 @@ function triggerPaddleExplosion() {
 
 
     gameOverSound.currentTime = 0;
-    gameOverSound.play(); // 🔊 Speel "GAME OVER" geluid
+    gameOverSound.play(); 
 
     paddleExplosionParticles = [];
 
@@ -1791,7 +1786,7 @@ function triggerPaddleExplosion() {
     paddleExplodeSound.currentTime = 0;
     paddleExplodeSound.play();
 
-    // ⏱️ Wacht 1 seconde, daarna reset
+ 
     setTimeout(() => {
       saveHighscore();
       stopTimer();
@@ -1806,7 +1801,7 @@ function triggerPaddleExplosion() {
       paddleExploding = false;
       paddleExplosionParticles = [];
 
-      // ✅ Essentiële resets
+     
       speedBoostActive = false;
       speedBoostStart = 0;
       doublePointsActive = false;
@@ -1852,11 +1847,10 @@ function startLevelTransition() {
   machineGunCooldownActive = false;
   paddleDamageZones = [];
 
-  // 🎧 Speel level-up geluid
+ 
   levelUpSound.currentTime = 0;
   levelUpSound.play();
 
-  // Toon de overgangstekst
   levelMessageAlpha = 0;
   levelMessageTimer = 0;
   levelMessageVisible = true;
@@ -1905,15 +1899,14 @@ function triggerBallReset() {
 
   resetOverlayActive = true;
 
-  // 🛡️ Als we maar 1 leven hebben, verhoog tijdelijk het leven naar 2 zodat paddleExplode geen Game Over triggert
   const originalLives = lives;
   if (lives === 1) {
     lives = 2; // tijdelijk "faken"
   }
 
-  resetTriggered = true; // 🟢 flag zodat paddleExplode weet: geen leven aftrekken
+  resetTriggered = true; 
 
-  // ⏱️ 6.5 sec: bal weg + explosie
+  
   setTimeout(() => {
     paddleExplodeSound.currentTime = 0;
     paddleExplodeSound.play();
@@ -1934,7 +1927,6 @@ function triggerBallReset() {
     balls = [];
   }, 6500);
 
-  // ⏱️ 10 sec: bal reset op paddle
     setTimeout(() => {
     balls = [{
     x: paddleX + paddleWidth / 2 - ballRadius,
@@ -1951,15 +1943,13 @@ function triggerBallReset() {
     btn.disabled = false;
     btn.textContent = "RESET\nBALL";
 
-    // 🧠 Zet leven weer terug als het tijdelijk op 2 stond
     if (originalLives === 1) {
       lives = 1;
     }
 
-    resetTriggered = false; // ❗ flag weer uitzetten
+    resetTriggered = false;
   }, 10000);
 }
 
-// 🟢 BELANGRIJK: knop koppelen aan functie
 document.getElementById("resetBallBtn").addEventListener("click", triggerBallReset);
 
