@@ -353,6 +353,34 @@ function mouseMoveHandler(e) {
   }
 }
 
+function isPaddleBlockedHorizontally(newX) {
+  const paddleTop = paddleY;
+  const paddleBottom = paddleY + paddleHeight;
+  const paddleLeft = newX;
+  const paddleRight = newX + paddleWidth;
+
+  for (let c = 0; c < brickColumnCount; c++) {
+    for (let r = 0; r < brickRowCount; r++) {
+      const b = bricks[c][r];
+      if (b.status === 1) {
+        const brickLeft = b.x;
+        const brickRight = b.x + brickWidth;
+        const brickTop = b.y;
+        const brickBottom = b.y + brickHeight;
+
+        const overlapY = paddleBottom > brickTop && paddleTop < brickBottom;
+        const overlapLeft = paddleRight > brickLeft && paddleLeft < brickLeft && paddleRight > brickLeft;
+        const overlapRight = paddleLeft < brickRight && paddleRight > brickRight && paddleLeft < brickRight;
+
+        if (overlapY && (overlapLeft || overlapRight)) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+
 
 function drawBricks() {
   const totalBricksWidth = brickColumnCount * brickWidth;
@@ -885,6 +913,34 @@ function checkRocketCollision() {
   }
 }
 
+function isPaddleBlockedVertically(newY) {
+  const paddleLeft = paddleX;
+  const paddleRight = paddleX + paddleWidth;
+  const paddleTop = newY;
+  const paddleBottom = newY + paddleHeight;
+
+  for (let c = 0; c < brickColumnCount; c++) {
+    for (let r = 0; r < brickRowCount; r++) {
+      const b = bricks[c][r];
+      if (b.status === 1) {
+        const brickLeft = b.x;
+        const brickRight = b.x + brickWidth;
+        const brickTop = b.y;
+        const brickBottom = b.y + brickHeight;
+
+        const overlapX = paddleRight > brickLeft && paddleLeft < brickRight;
+        const overlapTop = paddleBottom > brickTop && paddleTop < brickTop && paddleBottom > brickTop;
+        const overlapBottom = paddleTop < brickBottom && paddleBottom > brickBottom && paddleTop < brickBottom;
+
+        if (overlapX && (overlapTop || overlapBottom)) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+
 
 
 
@@ -1231,21 +1287,40 @@ if (ball.trail.length >= 2) {
   }
 
 
- // Horizontale beweging
-if (rightPressed && paddleX < canvas.width - paddleWidth) {
-  paddleX += paddleSpeed;
-}
-if (leftPressed && paddleX > 0) {
-  paddleX -= paddleSpeed;
+// Paddle-beweging met botsingsdetectie
+
+// ➤ Rechts
+if (rightPressed) {
+  const newX = paddleX + paddleSpeed;
+  if (newX < canvas.width - paddleWidth && !isPaddleBlockedHorizontally(newX)) {
+    paddleX = newX;
+  }
 }
 
-// Verticale beweging
-if (upPressed && paddleY > 0) {
-  paddleY -= paddleSpeed;
+// ➤ Links
+if (leftPressed) {
+  const newX = paddleX - paddleSpeed;
+  if (newX > 0 && !isPaddleBlockedHorizontally(newX)) {
+    paddleX = newX;
+  }
 }
-if (downPressed && paddleY < canvas.height - paddleHeight) {
-  paddleY += paddleSpeed;
+
+// ➤ Omhoog
+if (upPressed) {
+  const newY = paddleY - paddleSpeed;
+  if (newY > 0 && !isPaddleBlockedVertically(newY)) {
+    paddleY = newY;
+  }
 }
+
+// ➤ Omlaag
+if (downPressed) {
+  const newY = paddleY + paddleSpeed;
+  if (newY < canvas.height - paddleHeight && !isPaddleBlockedVertically(newY)) {
+    paddleY = newY;
+  }
+}
+
 
 
   if (rocketActive && !rocketFired && rocketAmmo > 0) {
