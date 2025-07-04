@@ -1453,14 +1453,11 @@ if (showGameOver) {
     p.y += p.dy;
     p.alpha -= 0.02;
   });
+
   stoneDebris = stoneDebris.filter(p => p.alpha > 0);
 
-
-animationFrameId = requestAnimationFrame(draw);
-}
-
-
-
+  animationFrameId = requestAnimationFrame(draw);
+} // ✅ Sluit function draw() correct af
 
 
 function onImageLoad() {
@@ -1471,9 +1468,6 @@ function onImageLoad() {
     draw();
   }
 }
-
-
-
 
 blockImg.onload = onImageLoad;
 ballImg.onload = onImageLoad;
