@@ -1367,8 +1367,8 @@ if ((machineGunActive || machineGunCooldownActive) && paddleDamageZones.length >
   // Paddle is volledig vernietigd — normale paddle-explosie treedt in werking zodra bal verloren gaat
 }
 
-
- // ✨ Leveltekst weergeven
+    
+    // ✨ Leveltekst weergeven
 if (levelMessageVisible) {
   ctx.save();
   ctx.globalAlpha = levelMessageAlpha;
@@ -1401,47 +1401,7 @@ if (levelTransitionActive) {
 if (showGameOver) {
   ctx.save();
   ctx.globalAlpha = gameOverAlpha;
-  ctx.fillStyle = "#000000";
-  ctx.font = "bold 48px Arial";
-  ctx.textAlign = "center";
-  ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2);
-  ctx.restore();
-
-
- // ✨ Leveltekst weergeven
-if (levelMessageVisible) {
-  ctx.save();
-  ctx.globalAlpha = levelMessageAlpha;
-  ctx.fillStyle = "#00ffff";
-  ctx.font = "bold 36px Arial";
-  ctx.textAlign = "center";
-  ctx.fillText(`PointPay Breakout Level ${level}`, canvas.width / 2, canvas.height / 2);
-  ctx.restore();
-}
-
-// 🎬 Overgangstimer & animatie
-if (levelTransitionActive) {
-  levelMessageAlpha = 1;
-
-  levelMessageTimer++;
-
-  if (levelMessageTimer >= 360) {
-    levelMessageVisible = false;
-    levelTransitionActive = false;
-  }
-
-  if (transitionOffsetY < 0) {
-    transitionOffsetY += 2;
-  } else {
-    transitionOffsetY = 0;
-  }
-}
-
-
-if (showGameOver) {
-  ctx.save();
-  ctx.globalAlpha = gameOverAlpha;
-  ctx.fillStyle = "#000000";
+  ctx.fillStyle = "#B0B0B0";
   ctx.font = "bold 48px Arial";
   ctx.textAlign = "center";
   ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2);
