@@ -44,6 +44,11 @@ let gameOverAlpha = 0;
 let gameOverTimer = 0;
 let resetTriggered = false;
 let previousBallPos = {};
+let paddleY = canvas.height - paddleHeight - 0; // beginpositie onderaan
+const paddleSpeed = 6;
+let downPressed = false;
+let upPressed = false;
+let downPressed = false;
 
 // 🌟 Level 2 overgang
 let levelTransitionActive = false;
@@ -274,9 +279,14 @@ function keyDownHandler(e) {
     rightPressed = true;
   } else if (e.key === "Left" || e.key === "ArrowLeft") {
     leftPressed = true;
+  } else if (e.key === "Up" || e.key === "ArrowUp") {
+    upPressed = true;
+  } else if (e.key === "Down" || e.key === "ArrowDown") {
+    downPressed = true;
   }
 
-  if ((e.key === "ArrowUp" || e.key === "Up" || e.code === "Space") && !ballLaunched) {
+  // 🎯 Actie: bal afschieten (alleen bij omhoogtoets of spatie) als bal nog niet gelanceerd is
+  if ((e.key === "ArrowUp" || e.code === "Space") && !ballLaunched) {
     ballLaunched = true;
     ballMoving = true;
 
@@ -292,8 +302,6 @@ function keyDownHandler(e) {
   if ((e.code === "ArrowUp" || e.code === "Space") && rocketActive && rocketAmmo > 0 && !rocketFired) {
     rocketFired = true;
     rocketAmmo--;
-
-    // 🔊 Speel afvuurgeluid
     rocketLaunchSound.currentTime = 0;
     rocketLaunchSound.play();
   }
@@ -326,9 +334,17 @@ function keyDownHandler(e) {
 
 
 function keyUpHandler(e) {
-  if (e.key === "Right" || e.key === "ArrowRight") rightPressed = false;
-  else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = false;
+  if (e.key === "Right" || e.key === "ArrowRight") {
+    rightPressed = false;
+  } else if (e.key === "Left" || e.key === "ArrowLeft") {
+    leftPressed = false;
+  } else if (e.key === "Up" || e.key === "ArrowUp") {
+    upPressed = false;
+  } else if (e.key === "Down" || e.key === "ArrowDown") {
+    downPressed = false;
+  }
 }
+
 
 
 function mouseMoveHandler(e) {
