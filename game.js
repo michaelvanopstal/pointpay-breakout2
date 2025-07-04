@@ -1293,7 +1293,7 @@ if (ball.trail.length >= 2) {
     }
   }
 
-  if (machineGunActive && !machineGunCooldownActive) {
+ if (machineGunActive && !machineGunCooldownActive) {
   // Volg paddle
   const targetX = paddleX + paddleWidth / 2 - 30;
   const followSpeed = machineGunDifficulty === 1 ? 1 : machineGunDifficulty === 2 ? 2 : 3;
@@ -1316,38 +1316,41 @@ if (ball.trail.length >= 2) {
     shootSound.play();
   }
 
-// 🎯 Machinegun kogels verwerken
-machineGunBullets.forEach((bullet, i) => {
-  bullet.y += bullet.dy;
-  ctx.beginPath();
-  ctx.arc(bullet.x, bullet.y, 4, 0, Math.PI * 2);
-  ctx.fillStyle = "red";
-  ctx.fill();
+  // 🎯 Machinegun kogels verwerken
+  machineGunBullets.forEach((bullet, i) => {
+    bullet.y += bullet.dy;
+    ctx.beginPath();
+    ctx.arc(bullet.x, bullet.y, 4, 0, Math.PI * 2);
+    ctx.fillStyle = "red";
+    ctx.fill();
 
-  // 💥 Check raak met paddle
-  if (
-    bullet.y >= canvas.height - paddleHeight &&
-    bullet.x >= paddleX &&
-    bullet.x <= paddleX + paddleWidth
-  ) {
-    const hitX = bullet.x;
+    // 💥 Check raak met paddle
+    if (
+      bullet.y >= canvas.height - paddleHeight &&
+      bullet.x >= paddleX &&
+      bullet.x <= paddleX + paddleWidth
+    ) {
+      const hitX = bullet.x;
 
-    // ❗ Alleen opslaan als deze X nog geen bestaand gat heeft (binnen segmentbreedte)
-    if (!paddleDamageZones.some(x => Math.abs(x - hitX) < paddleWidth / 10)) {
-      paddleDamageZones.push(hitX);
+      // ❗ Alleen opslaan als deze X nog geen bestaand gat heeft (binnen segmentbreedte)
+      if (!paddleDamageZones.some(x => Math.abs(x - hitX) < paddleWidth / 10)) {
+        paddleDamageZones.push(hitX);
+      }
+
+      machineGunBullets.splice(i, 1); // verwijder de kogel
+    } else if (bullet.y > canvas.height) {
+      machineGunBullets.splice(i, 1); // uit beeld
     }
+  });
 
-    machineGunBullets.splice(i, 1); // verwijder de kogel
-  } else if (bullet.y > canvas.height) {
-    machineGunBullets.splice(i, 1); // uit beeld
+  // ⏳ Stop na 30 kogels → cooldownfase start
+  if (machineGunShotsFired >= 30 && machineGunBullets.length === 0 && !machineGunCooldownActive) {
+    machineGunCooldownActive = true;
+    machineGunStartTime = Date.now();
   }
-});
+} // ✅ EINDE van machineGunActive blok
 
-// ⏳ Stop na 30 kogels → cooldownfase start
-if (machineGunShotsFired >= 30 && machineGunBullets.length === 0 && !machineGunCooldownActive) {
-  machineGunCooldownActive = true;
-  machineGunStartTime = Date.now();
-}
+// ✅ Cooldownfase buiten het actieve blok
 if (machineGunCooldownActive && Date.now() - machineGunStartTime > machineGunCooldownTime) {
   machineGunCooldownActive = false;
   machineGunActive = false;
@@ -1361,6 +1364,7 @@ if (machineGunCooldownActive && Date.now() - machineGunStartTime > machineGunCoo
   });
 }
 
+// ✅ Game over als paddle volledig is gesloopt
 if ((machineGunActive || machineGunCooldownActive) && paddleDamageZones.length >= 10) {
   machineGunActive = false;
   machineGunCooldownActive = false;
