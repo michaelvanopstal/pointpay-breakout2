@@ -521,7 +521,7 @@ function resetPaddle(skipBallReset = false, skipCentering = false) {
   // 🎯 Zet paddle terug in het midden (alleen als NIET geskiped en NIET machinegun)
    if (!skipCentering && !machineGunCooldownActive && !machineGunActive) {
     paddleX = (canvas.width - paddleWidth) / 2;
-    paddleY = canvas.height - paddleHeight - 0; // ← terug naar onder
+    paddleY = canvas.height - paddleHeight - 30; // ← terug naar onder
   }
 
   // 🔁 Reset paddle-tekening inclusief schadeherstel
