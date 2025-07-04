@@ -163,6 +163,12 @@ for (let c = 0; c < brickColumnCount; c++) {
 }
 
 
+const machinegunBlockImg = new Image();
+machinegunBlockImg.src = "machinegun_block.png";
+
+const machinegunGunImg = new Image();
+machinegunGunImg.src = "machinegun_gun.png";
+
 const lifeImg = new Image();
 lifeImg.src = "level.png";
 
