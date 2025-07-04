@@ -1466,7 +1466,7 @@ if (showGameOver) {
 
 function onImageLoad() {
   imagesLoaded++;
-  if (imagesLoaded === 18) {
+  if (imagesLoaded === 19) {
     resetBricks();
     updateLivesDisplay(); // ✅ laat bij start meteen levens zien
     draw();
@@ -1491,7 +1491,7 @@ pxpBagImg.onload = onImageLoad;
 dollarPxpImg.onload = onImageLoad;
 machinegunBlockImg.onload = onImageLoad;
 machinegunGunImg.onload = onImageLoad;
-
+coinImg.onload = onImageLoad;
 
 document.addEventListener("mousedown", function (e) {
   // 🛡️ Alleen reageren als er op het canvas geklikt wordt
