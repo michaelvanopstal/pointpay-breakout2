@@ -48,7 +48,6 @@ let paddleY = canvas.height - paddleHeight - 0; // beginpositie onderaan
 const paddleSpeed = 6;
 let downPressed = false;
 let upPressed = false;
-let downPressed = false;
 
 // 🌟 Level 2 overgang
 let levelTransitionActive = false;
