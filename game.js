@@ -1612,9 +1612,10 @@ if (showGameOver) {
   });
 
   stoneDebris = stoneDebris.filter(p => p.alpha > 0);
+  animationFrameId = requestAnimationFrame(draw); // ✅ herstart de loop
+} // ✅ DIT is de juiste afsluiter van draw()
 
-  animationFrameId = requestAnimationFrame(draw);
-} 
+
 
 function onImageLoad() {
   imagesLoaded++;
