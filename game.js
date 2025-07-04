@@ -1312,40 +1312,52 @@ if (downPressed && paddleY < canvas.height - paddleHeight) {
   }
 
   // Zakjes tekenen en vangen
-  for (let i = pxpBags.length - 1; i >= 0; i--) {
-    let bag = pxpBags[i];
-    bag.y += bag.dy;
+for (let i = pxpBags.length - 1; i >= 0; i--) {
+  let bag = pxpBags[i];
+  bag.y += bag.dy;
 
-    ctx.drawImage(pxpBagImg, bag.x - 20, bag.y, 40, 40);
+  ctx.drawImage(pxpBagImg, bag.x - 20, bag.y, 40, 40);
 
-    const bagBottom = bag.y + 40;
-    const paddleTop = canvas.height - paddleHeight;
+  // Bounding box van zakje
+  const bagLeft = bag.x - 20;
+  const bagRight = bag.x + 20;
+  const bagTop = bag.y;
+  const bagBottom = bag.y + 40;
 
-    if (
-      bagBottom >= paddleTop &&
-      bagBottom <= canvas.height &&
-      bag.x > paddleX &&
-      bag.x < paddleX + paddleWidth
-    ) {
-      pxpBagSound.currentTime = 0;
-      pxpBagSound.play();
+  // Bounding box van paddle (gebruik huidige Y!)
+  const paddleLeft = paddleX;
+  const paddleRight = paddleX + paddleWidth;
+  const paddleTop = paddleY;
+  const paddleBottom = paddleY + paddleHeight;
 
-      const earned = doublePointsActive ? 160 : 80;
-      score += earned;
-      document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+  // Controleer volledige overlapping
+  const isOverlap =
+    bagRight >= paddleLeft &&
+    bagLeft <= paddleRight &&
+    bagBottom >= paddleTop &&
+    bagTop <= paddleBottom;
 
-      pointPopups.push({
-        x: bag.x,
-        y: bag.y,
-        value: "+" + earned + " pxp",
-        alpha: 1
-      });
+  if (isOverlap) {
+    pxpBagSound.currentTime = 0;
+    pxpBagSound.play();
 
-       pxpBags.splice(i, 1);
-    } else if (bag.y > canvas.height) {
-      pxpBags.splice(i, 1);
-    }
+    const earned = doublePointsActive ? 160 : 80;
+    score += earned;
+    document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+
+    pointPopups.push({
+      x: bag.x,
+      y: bag.y,
+      value: "+" + earned + " pxp",
+      alpha: 1
+    });
+
+    pxpBags.splice(i, 1);
+  } else if (bag.y > canvas.height) {
+    pxpBags.splice(i, 1); // uit beeld
   }
+}
+
 
  if (machineGunActive && !machineGunCooldownActive) {
   // Volg paddle
