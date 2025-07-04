@@ -472,12 +472,12 @@ function resetBall() {
   }
 }
 
-function resetPaddle() {
+function resetPaddle(skipBallReset = false) {
   // 🎯 Zet paddle terug in het midden
   paddleX = (canvas.width - paddleWidth) / 2;
 
-  // 🟢 Reset ook de balpositie (alleen bij resetmomenten, niet tijdens machinegun herstel)
-  if (!machineGunCooldownActive && !machineGunActive) {
+  // 🟢 Reset ook de balpositie (alleen als het geen machinegun herstel is én niet geskiped wordt)
+  if (!skipBallReset && !machineGunCooldownActive && !machineGunActive) {
     resetBall();  // maakt de eerste bal aan
   }
 
@@ -487,6 +487,7 @@ function resetPaddle() {
   paddleCtx.clearRect(0, 0, paddleWidth, paddleHeight);
   paddleCtx.drawImage(pointpayPaddleImg, 0, 0, paddleWidth, paddleHeight);
 }
+
 
 
 function drawLivesOnCanvas() {
@@ -1393,7 +1394,8 @@ if (ball.trail.length >= 2) {
     alpha: 1
   });
 
-  resetPaddle(); // 🔁 herstel paddle na overleven aanval
+  resetPaddle(true); // 🔁 herstel paddle ZONDER bal te resetten
+
 }
 
 
