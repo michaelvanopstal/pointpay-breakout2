@@ -1505,7 +1505,7 @@ animationFrameId = requestAnimationFrame(draw);
 
 function onImageLoad() {
   imagesLoaded++;
-  if (imagesLoaded === 16) {
+  if (imagesLoaded === 18) {
     resetBricks();
     updateLivesDisplay(); // ✅ laat bij start meteen levens zien
     draw();
@@ -1531,6 +1531,8 @@ stone1Img.onload = onImageLoad;
 stone2Img.onload = onImageLoad;
 pxpBagImg.onload = onImageLoad;
 dollarPxpImg.onload = onImageLoad;
+machinegunBlockImg.onload = onImageLoad;
+machinegunGunImg.onload = onImageLoad;
 
 
 document.addEventListener("mousedown", function (e) {
