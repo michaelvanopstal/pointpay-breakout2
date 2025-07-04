@@ -1081,49 +1081,61 @@ function spawnPxpBag(x, y) {
 }
 
 function isPaddleBlockedHorizontally(newX) {
-  return bricks.some(brick => {
-    if (!brick.status) return false;
+  for (let c = 0; c < brickColumnCount; c++) {
+    for (let r = 0; r < brickRowCount; r++) {
+      const brick = bricks[c][r];
+      if (!brick || brick.status !== 1) continue;
 
-    const brickLeft = brick.x;
-    const brickRight = brick.x + brick.width;
-    const brickTop = brick.y;
-    const brickBottom = brick.y + brick.height;
+      const brickLeft = brick.x;
+      const brickRight = brick.x + brick.width;
+      const brickTop = brick.y;
+      const brickBottom = brick.y + brick.height;
 
-    const paddleLeft = newX;
-    const paddleRight = newX + paddleWidth;
-    const paddleTop = paddleY;
-    const paddleBottom = paddleY + paddleHeight;
+      const paddleLeft = newX;
+      const paddleRight = newX + paddleWidth;
+      const paddleTop = paddleY;
+      const paddleBottom = paddleY + paddleHeight;
 
-    return (
-      paddleRight > brickLeft &&
-      paddleLeft < brickRight &&
-      paddleBottom > brickTop &&
-      paddleTop < brickBottom
-    );
-  });
+      if (
+        paddleRight > brickLeft &&
+        paddleLeft < brickRight &&
+        paddleBottom > brickTop &&
+        paddleTop < brickBottom
+      ) {
+        return true; // botsing
+      }
+    }
+  }
+  return false; // geen botsing
 }
 
 function isPaddleBlockedVertically(newY) {
-  return bricks.some(brick => {
-    if (!brick.status) return false;
+  for (let c = 0; c < brickColumnCount; c++) {
+    for (let r = 0; r < brickRowCount; r++) {
+      const brick = bricks[c][r];
+      if (!brick || brick.status !== 1) continue;
 
-    const brickLeft = brick.x;
-    const brickRight = brick.x + brick.width;
-    const brickTop = brick.y;
-    const brickBottom = brick.y + brick.height;
+      const brickLeft = brick.x;
+      const brickRight = brick.x + brick.width;
+      const brickTop = brick.y;
+      const brickBottom = brick.y + brick.height;
 
-    const paddleLeft = paddleX;
-    const paddleRight = paddleX + paddleWidth;
-    const paddleTop = newY;
-    const paddleBottom = newY + paddleHeight;
+      const paddleLeft = paddleX;
+      const paddleRight = paddleX + paddleWidth;
+      const paddleTop = newY;
+      const paddleBottom = newY + paddleHeight;
 
-    return (
-      paddleRight > brickLeft &&
-      paddleLeft < brickRight &&
-      paddleBottom > brickTop &&
-      paddleTop < brickBottom
-    );
-  });
+      if (
+        paddleRight > brickLeft &&
+        paddleLeft < brickRight &&
+        paddleBottom > brickTop &&
+        paddleTop < brickBottom
+      ) {
+        return true;
+      }
+    }
+  }
+  return false;
 }
 
 
