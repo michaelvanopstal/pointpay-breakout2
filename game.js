@@ -472,13 +472,10 @@ function resetBall() {
   }
 }
 
-function resetPaddle(skipBallReset = false) {
-  // 🎯 Zet paddle terug in het midden
-  paddleX = (canvas.width - paddleWidth) / 2;
-
-  // 🟢 Reset ook de balpositie (alleen als het geen machinegun herstel is én niet geskiped wordt)
-  if (!skipBallReset && !machineGunCooldownActive && !machineGunActive) {
-    resetBall();  // maakt de eerste bal aan
+function resetPaddle(skipBallReset = false, skipCentering = false) {
+  // 🎯 Zet paddle terug in het midden (alleen als NIET geskiped en NIET machinegun)
+  if (!skipCentering && !machineGunCooldownActive && !machineGunActive) {
+    paddleX = (canvas.width - paddleWidth) / 2;
   }
 
   // 🔁 Reset paddle-tekening inclusief schadeherstel
@@ -486,6 +483,11 @@ function resetPaddle(skipBallReset = false) {
   paddleCanvas.height = paddleHeight;
   paddleCtx.clearRect(0, 0, paddleWidth, paddleHeight);
   paddleCtx.drawImage(pointpayPaddleImg, 0, 0, paddleWidth, paddleHeight);
+
+  // 🟢 Bal resetten als dat moet
+  if (!skipBallReset && !machineGunCooldownActive && !machineGunActive) {
+    resetBall();  // maakt de eerste bal aan
+  }
 }
 
 
@@ -1382,7 +1384,7 @@ if (ball.trail.length >= 2) {
   }
 } // ✅ EINDE van machineGunActive blok
 
-  if (machineGunCooldownActive && Date.now() - machineGunStartTime > machineGunCooldownTime) {
+ if (machineGunCooldownActive && Date.now() - machineGunStartTime > machineGunCooldownTime) {
   machineGunCooldownActive = false;
   machineGunActive = false;
   paddleDamageZones = [];
@@ -1394,8 +1396,7 @@ if (ball.trail.length >= 2) {
     alpha: 1
   });
 
-  resetPaddle(true); // 🔁 herstel paddle ZONDER bal te resetten
-
+  resetPaddle(true, true); // ✅ geen ball reset, geen centrering
 }
 
 
