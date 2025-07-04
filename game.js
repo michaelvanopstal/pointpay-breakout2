@@ -1141,15 +1141,14 @@ function draw() {
       wallSound.play();
     }
 if (
-  ball.y + ball.dy > canvas.height - paddleHeight - ball.radius &&
-  ball.y + ball.dy < canvas.height + 2 &&
+  ball.y + ball.radius > paddleY &&
+  ball.y - ball.radius < paddleY + paddleHeight &&
   ball.x + ball.radius > paddleX &&
   ball.x - ball.radius < paddleX + paddleWidth
 ) {
   let reflect = true;
 
   if (machineGunActive || machineGunCooldownActive) {
-    // Paddle segment-check voor schade
     const segmentWidth = paddleWidth / 10;
     for (let i = 0; i < 10; i++) {
       const segX = paddleX + i * segmentWidth;
@@ -1163,7 +1162,7 @@ if (
         ballCenterX < segX + segmentWidth &&
         isDamaged
       ) {
-        reflect = false; // 🟥 Bal raakt beschadigd stuk → geen reflectie
+        reflect = false;
         break;
       }
     }
@@ -1180,6 +1179,7 @@ if (
     wallSound.play();
   }
 }
+
 
 
     if (ball.y + ball.dy > canvas.height) {
