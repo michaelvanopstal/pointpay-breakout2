@@ -30,13 +30,14 @@ body {
 }
 
 .score-board {
-  position: absolute;   /* of 'relative', afhankelijk van context */
-  top: 10px;            /* pas aan naar wens */
-  right: 60px;           /* pas aan naar wens */
-  width: 150px;           /* of geef vaste breedte: eg. width: 300px; */
+  position: absolute;
+  top: 10px;
+  left: 740px;         /* schuif dit naar wens totdat hij tegen de tv-rand zit */
+  width: 150px;
   height: 60px;
   z-index: 18;
 }
+
 
 
 
