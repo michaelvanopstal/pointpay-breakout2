@@ -72,6 +72,8 @@ let machineGunCooldownTime = 30000; // 30 sec cooldown
 let machineGunBulletInterval = 500; // aanpasbaar per difficulty
 let machineGunLastShot = 0;
 let paddleDamageZones = []; // array van kapotgemaakte stukken
+let machineGunYOffset = 80; // minimale afstand tussen paddle en machinegun
+let minMachineGunY = 0;     // bovenste limiet (canvasrand)
 
 
 
@@ -1474,6 +1476,14 @@ for (let i = pxpBags.length - 1; i >= 0; i--) {
  if (machineGunActive && !machineGunCooldownActive) {
   // Volg paddle
   const targetX = paddleX + paddleWidth / 2 - 30;
+  const targetY = Math.max(paddleY - machineGunYOffset, minMachineGunY);
+if (machineGunGunX < targetX) machineGunGunX += followSpeed;
+  else if (machineGunGunX > targetX) machineGunGunX -= followSpeed;
+
+if (machineGunGunY < targetY) machineGunGunY += followSpeed;
+else if (machineGunGunY > targetY) machineGunGunY -= followSpeed;
+
+
   const followSpeed = machineGunDifficulty === 1 ? 1 : machineGunDifficulty === 2 ? 2 : 3;
   if (machineGunGunX < targetX) machineGunGunX += followSpeed;
   else if (machineGunGunX > targetX) machineGunGunX -= followSpeed;
