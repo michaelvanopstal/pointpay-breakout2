@@ -72,7 +72,7 @@ let machineGunCooldownTime = 30000; // 30 sec cooldown
 let machineGunBulletInterval = 500; // aanpasbaar per difficulty
 let machineGunLastShot = 0;
 let paddleDamageZones = []; // array van kapotgemaakte stukken
-let machineGunYOffset = 160; // minimale afstand tussen paddle en machinegun
+let machineGunYOffset = 320; // minimale afstand tussen paddle en machinegun
 let minMachineGunY = 0;     // bovenste limiet (canvasrand)
 
 
