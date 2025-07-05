@@ -127,7 +127,7 @@ body {
  
 #playerName {
   position: absolute;
-  top: 100px;
+  top: 10px;
   right: 100px; 
   color:#008CFF;
   font-size: 20px;
