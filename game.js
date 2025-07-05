@@ -334,7 +334,7 @@ function keyDownHandler(e) {
       startTime = new Date();
       gameOver = false;
       
-      document.getElementById("scoreDisplay").textContent = "score " + score;
+      document.getElementById("scoreDisplay").textContent = score;
       document.getElementById("timeDisplay").textContent = "time 00:00";
 
       flagsOnPaddle = false;
@@ -750,7 +750,8 @@ function checkFlyingCoinHits() {
 
           const earned = doublePointsActive ? 20 : 10;
           score += earned;
-          document.getElementById("scoreDisplay").textContent = "score " + score;
+           document.getElementById("scoreDisplay").textContent = score;
+
  
 
 
@@ -1031,7 +1032,8 @@ function checkRocketCollision() {
           rocketExplosionSound.currentTime = 0;
           rocketExplosionSound.play();
 
-          document.getElementById("scoreDisplay").textContent = "score " + score;
+         document.getElementById("scoreDisplay").textContent = score;
+
 
 
           rocketFired = false;
@@ -1084,7 +1086,8 @@ function checkCoinCollision() {
 
       const earned = doublePointsActive ? 20 : 10;
       score += earned;
-      document.getElementById("scoreDisplay").textContent = "score " + score;
+      document.getElementById("scoreDisplay").textContent = score;
+
 
 
       coinSound.currentTime = 0;
@@ -1171,7 +1174,8 @@ function collisionDetection() {
 
               const earned = doublePointsActive ? 120 : 60;
               score += earned;
-              document.getElementById("scoreDisplay").textContent = "score " + score;
+              document.getElementById("scoreDisplay").textContent = score;
+
 
 
 
@@ -1236,7 +1240,8 @@ function collisionDetection() {
 
           const earned = doublePointsActive ? 20 : 10;
           score += earned;
-          document.getElementById("scoreDisplay").textContent = "score " + score;
+          document.getElementById("scoreDisplay").textContent = score;
+
 
 
 
@@ -1610,7 +1615,8 @@ for (let i = pxpBags.length - 1; i >= 0; i--) {
 
     const earned = doublePointsActive ? 160 : 80;
     score += earned;
-    document.getElementById("scoreDisplay").textContent = "score " + score;
+    document.getElementById("scoreDisplay").textContent = score;
+ 
 
     
 
@@ -2036,7 +2042,7 @@ function triggerPaddleExplosion() {
       resetBall();
       resetPaddle();
 
-      document.getElementById("scoreDisplay").textContent = "score " + score;
+      document.getElementById("scoreDisplay").textContent = score;
       document.getElementById("timeDisplay").textContent = "time 00:00";
 
       resetTriggered = false; // ✅ reset ook hier voor zekerheid
