@@ -1472,26 +1472,32 @@ for (let i = pxpBags.length - 1; i >= 0; i--) {
   }
 }
 
+if (machineGunActive && !machineGunCooldownActive) {
+  // 📍 Instelbare offset tussen paddle en gun
+  const verticalOffset = 80;
+  const minY = 0;                  // bovenste limiet
+  const maxY = paddleY - 40;       // optioneel: niet te dicht bij paddle
 
- if (machineGunActive && !machineGunCooldownActive) {
-  // Volg paddle
+  // Targetposities voor X en Y
   const targetX = paddleX + paddleWidth / 2 - 30;
-  const targetY = Math.max(paddleY - machineGunYOffset, minMachineGunY);
-if (machineGunGunX < targetX) machineGunGunX += followSpeed;
-  else if (machineGunGunX > targetX) machineGunGunX -= followSpeed;
-
-if (machineGunGunY < targetY) machineGunGunY += followSpeed;
-else if (machineGunGunY > targetY) machineGunGunY -= followSpeed;
-
+  let targetY = paddleY - verticalOffset;
+  targetY = Math.max(minY, targetY);
+  targetY = Math.min(targetY, maxY);
 
   const followSpeed = machineGunDifficulty === 1 ? 1 : machineGunDifficulty === 2 ? 2 : 3;
+
+  // 🟢 Volg paddle horizontaal
   if (machineGunGunX < targetX) machineGunGunX += followSpeed;
   else if (machineGunGunX > targetX) machineGunGunX -= followSpeed;
 
-  // Teken geweer
+  // 🟢 Volg paddle verticaal
+  if (machineGunGunY < targetY) machineGunGunY += followSpeed;
+  else if (machineGunGunY > targetY) machineGunGunY -= followSpeed;
+
+  // 🔫 Teken geweer
   ctx.drawImage(machinegunGunImg, machineGunGunX, machineGunGunY, 60, 60);
 
-  // Schieten
+  // 🔥 Vuur kogels
   if (Date.now() - machineGunLastShot > machineGunBulletInterval && machineGunShotsFired < 30) {
     machineGunBullets.push({
       x: machineGunGunX + 30,
@@ -1504,49 +1510,48 @@ else if (machineGunGunY > targetY) machineGunGunY -= followSpeed;
     shootSound.play();
   }
 
-  // 🎯 Machinegun kogels verwerken
- machineGunBullets.forEach((bullet, i) => {
-  bullet.y += bullet.dy;
-  ctx.beginPath();
-  ctx.arc(bullet.x, bullet.y, 4, 0, Math.PI * 2);
-  ctx.fillStyle = "red";
-  ctx.fill();
+  // 💥 Verwerk kogels
+  machineGunBullets.forEach((bullet, i) => {
+    bullet.y += bullet.dy;
+    ctx.beginPath();
+    ctx.arc(bullet.x, bullet.y, 4, 0, Math.PI * 2);
+    ctx.fillStyle = "red";
+    ctx.fill();
 
-  // 💥 Check raak met paddle
-  if (
-    bullet.y >= canvas.height - paddleHeight &&
-    bullet.x >= paddleX &&
-    bullet.x <= paddleX + paddleWidth
-  ) {
-    const hitX = bullet.x - paddleX; // relatief binnen de paddle
-    const radius = 6;
+    // 🎯 Check botsing met paddle
+    if (
+      bullet.y >= paddleY &&
+      bullet.x >= paddleX &&
+      bullet.x <= paddleX + paddleWidth
+    ) {
+      const hitX = bullet.x - paddleX;
+      const radius = 6;
 
-    // Alleen gat maken als er nog geen gat daar zit
-    if (!paddleDamageZones.some(x => Math.abs(x - bullet.x) < paddleWidth / 10)) {
-      paddleDamageZones.push(bullet.x);
+      if (!paddleDamageZones.some(x => Math.abs(x - bullet.x) < paddleWidth / 10)) {
+        paddleDamageZones.push(bullet.x);
 
-      // ❗ GAT MAKEN IN PADDLE
-      paddleCtx.globalCompositeOperation = 'destination-out';
-      paddleCtx.beginPath();
-      paddleCtx.arc(hitX, paddleHeight / 2, radius, 0, Math.PI * 2);
-      paddleCtx.fill();
-      paddleCtx.globalCompositeOperation = 'source-over';
+        // ❗ GAT MAKEN
+        paddleCtx.globalCompositeOperation = 'destination-out';
+        paddleCtx.beginPath();
+        paddleCtx.arc(hitX, paddleHeight / 2, radius, 0, Math.PI * 2);
+        paddleCtx.fill();
+        paddleCtx.globalCompositeOperation = 'source-over';
+      }
+
+      machineGunBullets.splice(i, 1);
+    } else if (bullet.y > canvas.height) {
+      machineGunBullets.splice(i, 1);
     }
+  });
 
-    machineGunBullets.splice(i, 1); // verwijder kogel
-  } else if (bullet.y > canvas.height) {
-    machineGunBullets.splice(i, 1); // uit beeld
-  }
-});
-
-  // ⏳ Stop na 30 kogels → cooldownfase start
+  // ⏳ Start cooldown als alle 30 kogels zijn afgevuurd
   if (machineGunShotsFired >= 30 && machineGunBullets.length === 0 && !machineGunCooldownActive) {
     machineGunCooldownActive = true;
     machineGunStartTime = Date.now();
   }
-} // ✅ EINDE van machineGunActive blok
+}
 
- if (machineGunCooldownActive && Date.now() - machineGunStartTime > machineGunCooldownTime) {
+if (machineGunCooldownActive && Date.now() - machineGunStartTime > machineGunCooldownTime) {
   machineGunCooldownActive = false;
   machineGunActive = false;
   paddleDamageZones = [];
@@ -1561,13 +1566,13 @@ else if (machineGunGunY > targetY) machineGunGunY -= followSpeed;
   resetPaddle(true, true); // ✅ geen ball reset, geen centrering
 }
 
-
-// ✅ Game over als paddle volledig is gesloopt
+// 💀 Paddle vernietigd?
 if ((machineGunActive || machineGunCooldownActive) && paddleDamageZones.length >= 10) {
   machineGunActive = false;
   machineGunCooldownActive = false;
-  // Paddle is volledig vernietigd — normale paddle-explosie treedt in werking zodra bal verloren gaat
+  // Paddle-explosie volgt automatisch bij ball loss
 }
+
 
     
     // ✨ Leveltekst weergeven
