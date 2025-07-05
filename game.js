@@ -75,10 +75,12 @@ let paddleDamageZones = []; // array van kapotgemaakte stukken
 let machineGunYOffset = 140; // minimale afstand tussen paddle en machinegun
 let minMachineGunY = 0;     // bovenste limiet (canvasrand)
 
-let heartsCollected = 0;
-let heartBlocks = []; // bevat alle hartjes-blokken
-let heartPopups = []; // voor “Wow! 10 hearts – extra life!”
-
+// ❤️ Hartjes-systeem
+let heartsCollected = 0;               // aantal verzamelde hartjes (reset bij 10)
+let heartBlocks = [];                  // blokken met verborgen hartjes
+let fallingHearts = [];                // actieve vallende hartjes
+let collectedHeartIcons = [];          // hartjes linksboven (visueel overzicht)
+let heartPopupTimer = 0;               // timer voor popup “Wow! 10 hearts – extra life!”
 
 
 let speedBoostActive = false;
@@ -435,7 +437,6 @@ function drawPointPopups() {
   ctx.globalAlpha = 1; // Transparantie resetten
 }
 
-
 function resetBricks() {
   for (let c = 0; c < brickColumnCount; c++) {
     for (let r = 0; r < brickRowCount; r++) {
@@ -446,11 +447,11 @@ function resetBricks() {
       const bonus = bonusBricks.find(b => b.col === c && b.row === r);
       let pxp = pxpMap.find(p => p.col === c && p.row === r);
 
-        if (level === 2 && pxp) {
+      if (level === 2 && pxp) {
         brickType = pxp.type || "stone"; // 👈 gebruik type indien aanwezig, anders "stone"
-        } else if (bonus) {
-         brickType = bonus.type;
-        }
+      } else if (bonus) {
+        brickType = bonus.type;
+      }
 
       bricks[c][r].type = brickType;
 
@@ -462,7 +463,63 @@ function resetBricks() {
         delete bricks[c][r].hits;
         delete bricks[c][r].hasDroppedBag;
       }
+
+      // 🔄 Reset hartje voor elk blokje (veilig)
+      bricks[c][r].hasHeart = false;
+      bricks[c][r].heartDropped = false;
     }
+  }
+
+  // ✅ Plaats 4 willekeurige hartjes onder normale blokjes
+  assignHeartBlocks();
+}
+
+// 🔧 Hulp-functie om 4 hartjes te verdelen
+function assignHeartBlocks() {
+  heartBlocks = [];
+
+  let normalBricks = [];
+  for (let c = 0; c < brickColumnCount; c++) {
+    for (let r = 0; r < brickRowCount; r++) {
+      const brick = bricks[c][r];
+      if (brick.status === 1 && brick.type === "normal") {
+        normalBricks.push(brick);
+      }
+    }
+  }
+
+  for (let i = 0; i < 4 && normalBricks.length > 0; i++) {
+    const index = Math.floor(Math.random() * normalBricks.length);
+    const brick = normalBricks.splice(index, 1)[0];
+    brick.hasHeart = true;
+    brick.heartDropped = false;
+    heartBlocks.push(brick); // eventueel handig voor later
+  }
+}
+
+function drawCollectedHearts() {
+  collectedHeartIcons.forEach((icon, i) => {
+    const size = 20 + Math.sin(icon.pulse) * 2;
+    icon.pulse += 0.1;
+
+    ctx.save();
+    ctx.globalAlpha = 0.9;
+    ctx.drawImage(heartImg, 20 + i * 24, 50 + Math.sin(icon.pulse) * 2, size, size);
+    ctx.restore();
+  });
+}
+
+function drawHeartPopup() {
+  if (heartPopupTimer > 0) {
+    ctx.save();
+    ctx.globalAlpha = heartPopupTimer / 100;
+    ctx.fillStyle = "#ff66aa";
+    ctx.font = "bold 24px Arial";
+    ctx.textAlign = "center";
+    ctx.fillText("Wow! 10 hearts – extra life!", canvas.width / 2, 60);
+    ctx.restore();
+
+    heartPopupTimer--;
   }
 }
 
@@ -789,6 +846,60 @@ function drawCoins() {
   });
 }
 
+function drawFallingHearts() {
+  fallingHearts.forEach((heart, i) => {
+    heart.y += heart.dy;
+
+    const size = 24 + Math.sin(heart.pulse) * 2; // pulserende animatie
+    heart.pulse += 0.2;
+
+    ctx.globalAlpha = heart.alpha;
+    ctx.drawImage(heartImg, heart.x, heart.y, size, size);
+    ctx.globalAlpha = 1;
+
+    // Paddle-bounding box
+    const paddleLeft = paddleX;
+    const paddleRight = paddleX + paddleWidth;
+    const paddleTop = paddleY;
+    const paddleBottom = paddleY + paddleHeight;
+
+    const heartLeft = heart.x;
+    const heartRight = heart.x + size;
+    const heartTop = heart.y;
+    const heartBottom = heart.y + size;
+
+    const isOverlap =
+      heartRight >= paddleLeft &&
+      heartLeft <= paddleRight &&
+      heartBottom >= paddleTop &&
+      heartTop <= paddleBottom;
+
+    if (isOverlap && !heart.collected) {
+      heart.collected = true;
+      heartsCollected++;
+
+      coinSound.currentTime = 0;
+      coinSound.play();
+
+      // Voeg pulserende icoon toe linksboven
+      collectedHeartIcons.push({ pulse: 0 });
+
+      // 🎉 Als 10 hartjes verzameld
+      if (heartsCollected >= 10) {
+        heartsCollected = 0;
+        collectedHeartIcons = [];
+        lives++;
+        updateLivesDisplay(); // visuele levens bijwerken
+        heartPopupTimer = 100; // toon popup tijdelijk
+      }
+    }
+
+    if (heart.y > canvas.height || heart.collected) {
+      fallingHearts.splice(i, 1);
+    }
+  });
+}
+
 function drawFlyingCoins() {
   flyingCoins.forEach((coin) => {
     if (coin.active) {
@@ -1003,6 +1114,19 @@ function collisionDetection() {
             ball.y = b.y + brickHeight + ball.radius + 1;
           }
 
+          // 💖 Hartje laten vallen als dit blokje er eentje heeft
+          if (b.hasHeart && !b.heartDropped) {
+            fallingHearts.push({
+              x: b.x + brickWidth / 2 - 12,
+              y: b.y + brickHeight,
+              dy: 2,
+              collected: false,
+              alpha: 1,
+              pulse: 0
+            });
+            b.heartDropped = true;
+          }
+
           // 🪨 Gedrag voor stenen blokken
           if (b.type === "stone") {
             bricksSound.currentTime = 0;
@@ -1057,7 +1181,7 @@ function collisionDetection() {
               flagTimer = Date.now();
               flagsActivatedSound.play();
               break;
-              case "machinegun":
+            case "machinegun":
               machineGunActive = true;
               machineGunShotsFired = 0;
               machineGunBullets = [];
@@ -1065,11 +1189,10 @@ function collisionDetection() {
               machineGunLastShot = Date.now();
               machineGunStartTime = Date.now();
 
-             // Zet gun direct boven paddle met juiste offset
-             machineGunGunX = paddleX + paddleWidth / 2 - 30;
-
-             const gunStartY = Math.max(paddleY - machineGunYOffset, minMachineGunY);
-             machineGunGunY = gunStartY; // ✅ Nu werkt je offset wél
+              // Zet gun direct boven paddle met juiste offset
+              machineGunGunX = paddleX + paddleWidth / 2 - 30;
+              const gunStartY = Math.max(paddleY - machineGunYOffset, minMachineGunY);
+              machineGunGunY = gunStartY;
 
               b.status = 0;
               b.type = "normal";
@@ -1108,7 +1231,6 @@ function collisionDetection() {
     }
   });
 }
-
 
 function spawnExtraBall(originBall) {
   // Huidige bal krijgt een lichte afwijking
@@ -1199,6 +1321,9 @@ function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   collisionDetection();
   drawCoins();
+  drawFallingHearts();
+  drawCollectedHearts();
+  drawHeartPopup();
   checkCoinCollision();
   drawPaddleFlags();
   drawFlyingCoins();
