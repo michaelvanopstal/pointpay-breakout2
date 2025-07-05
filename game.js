@@ -873,21 +873,27 @@ function drawFallingHearts() {
       heartBottom >= paddleTop &&
       heartTop <= paddleBottom;
 
-    if (isOverlap && !heart.collected) {
+      if (isOverlap && !heart.collected) {
       heart.collected = true;
       heartsCollected++;
 
-      coinSound.currentTime = 0;
-      coinSound.play();
+      // ⬇️ HTML teller updaten
+     document.getElementById("heartCount").textContent = heartsCollected;
 
-      // ✅ Beloning bij 10 hartjes
-      if (heartsCollected >= 10) {
-        heartsCollected = 0;
-        lives++;
-        updateLivesDisplay();
-        heartPopupTimer = 100;
-      }
-    }
+     coinSound.currentTime = 0;
+     coinSound.play();
+
+     // ✅ Beloning bij 10 hartjes
+    if (heartsCollected >= 10) {
+      heartsCollected = 0;
+      lives++;
+      updateLivesDisplay();
+      heartPopupTimer = 100;
+
+    // Reset HTML teller ook!
+    document.getElementById("heartCount").textContent = heartsCollected;
+  }
+}
 
     // 💨 Verwijder uit array als buiten beeld of al gepakt
     if (heart.y > canvas.height || heart.collected) {
