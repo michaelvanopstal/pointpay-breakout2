@@ -18,15 +18,16 @@ body {
   z-index: 18;
 }
 
-
 #scoreDisplay {
   position: absolute;
   top: 10px;
-  left: 740px;   /* of 700px, 680px — wat goed uitkomt */
+  left: 740px;
   color: white;
   font-size: 20px;
   font-family: Arial, sans-serif;
+  z-index: 40;  /* Voeg dit toe */
 }
+
 
 
 .score-board {
