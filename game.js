@@ -464,6 +464,44 @@ function drawPaddle() {
   ctx.drawImage(paddleCanvas, paddleX, paddleY);
 }
 
+function resetAllBonuses() {
+  // 🔁 Ballen en bonussen resetten
+  balls = [{
+    x: paddleX + paddleWidth / 2 - ballRadius,
+    y: paddleY - ballRadius * 2,
+    dx: 0,
+    dy: -6,
+    radius: ballRadius,
+    isMain: true
+  }];
+  ballLaunched = false;
+  ballMoving = false;
+
+  flagsOnPaddle = false;
+  flagTimer = 0;
+
+  rocketActive = false;
+  rocketAmmo = 0;
+  rocketFired = false;
+
+  machineGunActive = false;
+  machineGunCooldownActive = false;
+  machineGunBullets = [];
+  machineGunShotsFired = 0;
+  paddleDamageZones = [];
+
+  doublePointsActive = false;
+  doublePointsStartTime = 0;
+
+  speedBoostActive = false;
+  speedBoostStart = 0;
+
+  flyingCoins = [];
+  smokeParticles = [];
+  explosions = [];
+  coins = [];
+  pxpBags = [];
+}
 
 
 
@@ -1842,6 +1880,34 @@ function startLevelTransition() {
   levelUpSound.play();
 
   // Toon de overgangstekst
+  levelMessageAlpha = 0;
+  levelMessageTimer = 0;
+  levelMessageVisible = true;
+  levelTransitionActive = true;
+
+  resetBricks();
+  transitionOffsetY = -300;
+
+  ballLaunched = false;
+  ballMoving = false;
+
+  balls = [{
+    x: paddleX + paddleWidth / 2 - ballRadius,
+    y: paddleY - ballRadius * 2,
+    dx: 0,
+    dy: -6,
+    radius: ballRadius,
+    isMain: true
+  }];
+}
+function startLevelTransition() {
+  level++;
+
+  resetAllBonuses(); // ⬅️ Voeg deze regel toe
+
+  levelUpSound.currentTime = 0;
+  levelUpSound.play();
+
   levelMessageAlpha = 0;
   levelMessageTimer = 0;
   levelMessageVisible = true;
