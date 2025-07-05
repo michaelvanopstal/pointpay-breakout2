@@ -188,6 +188,9 @@ for (let c = 0; c < brickColumnCount; c++) {
   }
 }
 
+const heartBoardImg = new Image();
+heartBoardImg.src = "heart_board.png";
+
 const heartImg = new Image();
 heartImg.src = "heart.png"; // zorg dat je dit bestand hebt!
 
