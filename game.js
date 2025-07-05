@@ -1908,6 +1908,7 @@ function stopTimer() {
   elapsedTime = 0;
   document.getElementById("timeDisplay").textContent = "time 00:00";
 }
+
 function pauseTimer() {
   clearInterval(timerInterval);
   timerRunning = false;
@@ -2042,9 +2043,14 @@ function triggerPaddleExplosion() {
       document.getElementById("timeDisplay").textContent = "time 00:00";
 
       resetTriggered = false;
+
+      // ✅ Herstart draw-loop zodat paddle, timer en alles zichtbaar wordt
+      cancelAnimationFrame(animationFrameId);
+      animationFrameId = requestAnimationFrame(draw);
     }, 1000);
   }
 }
+
 
 
 function startLevelTransition() {
