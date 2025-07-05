@@ -30,7 +30,7 @@ body {
 
 #score-wrapper {
   position: absolute;
-  top: 72px;
+  top: 30px;
   right: 110px;
   width: 160px;   /* Pas deze breedte aan voor jouw image */
   height: 70px;   /* Hoogte van jouw score.png */
