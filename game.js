@@ -72,7 +72,7 @@ let machineGunCooldownTime = 30000; // 30 sec cooldown
 let machineGunBulletInterval = 500; // aanpasbaar per difficulty
 let machineGunLastShot = 0;
 let paddleDamageZones = []; // array van kapotgemaakte stukken
-let machineGunYOffset = 320; // minimale afstand tussen paddle en machinegun
+let machineGunYOffset = 80; // minimale afstand tussen paddle en machinegun
 let minMachineGunY = 0;     // bovenste limiet (canvasrand)
 
 
@@ -1059,11 +1059,11 @@ function collisionDetection() {
               machineGunLastShot = Date.now();
               machineGunStartTime = Date.now();
 
-               // Zet gun direct boven paddle met juiste offset
-              machineGunGunX = paddleX + paddleWidth / 2 - 30;
+             // Zet gun direct boven paddle met juiste offset
+             machineGunGunX = paddleX + paddleWidth / 2 - 30;
 
-              const gunStartY = Math.max(paddleY - machineGunYOffset, minMachineGunY);
-              machineGunGunY = Math.min(gunStartY, paddleY - 40); // nooit te dicht op paddle
+             const gunStartY = Math.max(paddleY - machineGunYOffset, minMachineGunY);
+             machineGunGunY = gunStartY; // ✅ Nu werkt je offset wél
 
               b.status = 0;
               b.type = "normal";
