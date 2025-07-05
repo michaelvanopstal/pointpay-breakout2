@@ -134,7 +134,7 @@
     highscores.forEach((entry, index) => {
       const levelText = entry.level ? `— Level ${entry.level}` : "";
       const li = document.createElement("li");
-      li.textContent = `${index + 1}. ${entry.name} — ${entry.score} PXP — ${entry.time} ${levelText}`;
+      li.textContent = `${index + 1}. ${entry.name} — ${entry.score} — ${entry.time} ${levelText}`;
       highscoreList.appendChild(li);
     });
   }
