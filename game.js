@@ -190,8 +190,6 @@ for (let c = 0; c < brickColumnCount; c++) {
   }
 }
 
-const scoreBoardImg = new Image();
-scoreBoardImg.src = "score.png";
 
 
 const heartBoardImg = new Image();
@@ -1844,7 +1842,6 @@ machinegunGunImg.onload = onImageLoad;
 coinImg.onload = onImageLoad;
 heartImg.onload = onImageLoad; 
 heartBoardImg.onload = onImageLoad;
-scoreImg.onload = onImageLoad;
 
 document.addEventListener("mousedown", function (e) {
   // 🛡️ Alleen reageren als er op het canvas geklikt wordt
