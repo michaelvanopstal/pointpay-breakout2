@@ -32,7 +32,7 @@ body {
 .score-board {
   position: absolute;
   top: 10px;
-  left: 800px;         /* schuif dit naar wens totdat hij tegen de tv-rand zit */
+  left: 900px;         /* schuif dit naar wens totdat hij tegen de tv-rand zit */
   width: 150px;
   height: 60px;
   z-index: 18;
