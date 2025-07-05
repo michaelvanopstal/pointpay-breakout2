@@ -323,26 +323,25 @@ function keyDownHandler(e) {
     shootFromFlags();
   }
 
-  if (!ballMoving && (e.code === "ArrowUp" || e.code === "Space")) {
-    if (lives <= 0) {
-      lives = 3;
-      score = 0;
-      level = 1;
-      resetBricks();
-      resetBall();
-      resetPaddle();
-      startTime = new Date();
-      gameOver = false;
+ if (!ballMoving && (e.code === "ArrowUp" || e.code === "Space")) {
+  if (lives <= 0) {
+    lives = 3;
+    score = 0;
+    level = 1;
+    resetBricks();
+    resetBall();
+    resetPaddle();
+    startTime = new Date();
+    gameOver = false;
 
-      document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
-      document.getElementById("timeDisplay").textContent = "time 00:00";
+    updateScoreDisplay(); // 👈 aangepaste regel
+    document.getElementById("timeDisplay").textContent = "time 00:00";
 
-      flagsOnPaddle = false;
-      flyingCoins = [];
-    }
-
-    ballMoving = true;
+    flagsOnPaddle = false;
+    flyingCoins = [];
   }
+
+  ballMoving = true;
 }
 
 
@@ -358,6 +357,9 @@ function keyUpHandler(e) {
   }
 }
 
+function updateScoreDisplay() {
+  document.getElementById("scoreDisplay").textContent = score;
+}
 
 
 function mouseMoveHandler(e) {
@@ -700,7 +702,7 @@ function checkFlyingCoinHits() {
 
               const earned = doublePointsActive ? 120 : 60;
               score += earned;
-              document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+              updateScoreDisplay(); // 👈 aangepaste regel
 
               pointPopups.push({
                 x: b.x + brickWidth / 2,
@@ -748,7 +750,7 @@ function checkFlyingCoinHits() {
 
           const earned = doublePointsActive ? 20 : 10;
           score += earned;
-          document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+          updateScoreDisplay(); // 👈 aangepaste regel
 
           coinSound.currentTime = 0;
           coinSound.play();
@@ -1027,7 +1029,7 @@ function checkRocketCollision() {
           rocketExplosionSound.currentTime = 0;
           rocketExplosionSound.play();
 
-          document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+          updateScoreDisplay(); // 👈 aangepaste regel
           rocketFired = false;
 
           explosions.push({
@@ -1078,7 +1080,7 @@ function checkCoinCollision() {
 
       const earned = doublePointsActive ? 20 : 10;
       score += earned;
-      document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+      updateScoreDisplay(); // 👈 aangepaste regel
 
       coinSound.currentTime = 0;
       coinSound.play();
@@ -1164,7 +1166,7 @@ function collisionDetection() {
 
               const earned = doublePointsActive ? 120 : 60;
               score += earned;
-              document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+              updateScoreDisplay(); // 👈 aangepaste regel
 
               pointPopups.push({
                 x: b.x + brickWidth / 2,
@@ -1227,7 +1229,7 @@ function collisionDetection() {
 
           const earned = doublePointsActive ? 20 : 10;
           score += earned;
-          document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+          updateScoreDisplay(); // 👈 aangepaste regel
 
           spawnCoin(b.x, b.y);
         }
@@ -1599,7 +1601,7 @@ for (let i = pxpBags.length - 1; i >= 0; i--) {
 
     const earned = doublePointsActive ? 160 : 80;
     score += earned;
-    document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+    updateScoreDisplay(); // 👈 aangepaste regel
 
     pointPopups.push({
       x: bag.x,
@@ -2023,7 +2025,7 @@ function triggerPaddleExplosion() {
       resetBall();
       resetPaddle();
 
-      document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
+      updateScoreDisplay(); // 👈 aangepaste regel
       document.getElementById("timeDisplay").textContent = "time 00:00";
 
       resetTriggered = false; // ✅ reset ook hier voor zekerheid
