@@ -19,16 +19,37 @@ body {
 }
 
 
-#scoreDisplay {
+#score-wrapper {
   position: absolute;
   top: 72px;
   right: 110px;
-  margin-right: 15px;
-  color:white;
-  font-size: 20px;
-  font-family: Arial, sans-serif;
+  width: 160px;   /* Pas deze breedte aan voor jouw image */
+  height: 70px;   /* Hoogte van jouw score.png */
+  z-index: 999;
 }
 
+#score-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+#scoreDisplay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-weight: bold;
+  font-size: 22px;
+  font-family: Arial, sans-serif;
+  color: white;
+  z-index: 2;
+  text-shadow: 1px 1px 2px black;
+  pointer-events: none;
+}
 
 
 body {
