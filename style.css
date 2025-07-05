@@ -29,7 +29,7 @@ body {
 
 #scoreDisplay {
   position: absolute;
-  top: 10px;         /* pas aan voor waar jij ’m wilt */
+  top: 15px;         /* pas aan voor waar jij ’m wilt */
   left: 1150px;       /* pas aan op je layout */
   color: white;
   font-weight: bold;
