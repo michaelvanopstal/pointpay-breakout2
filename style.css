@@ -216,21 +216,6 @@ body {
   }
 }
 
-#score-board {
-  position: absolute;
-  top: 30px;      /* 🔁 Verschuif naar beneden */
-  right: 50px;    /* 🔁 Verschuif naar links of rechts */
-  width: 280px;   /* 🔁 Maak breder of smaller */
-  z-index: 999;
-}
-
-#score-board img {
-  width: 100%;    /* 📏 Zorgt dat het schaalt met de div */
-  height: auto;
-  display: block;
-}
-
-
 
 
 
