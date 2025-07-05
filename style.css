@@ -59,6 +59,15 @@ body {
   z-index: 60;
 }
 
+#timeImage {
+  position: absolute;
+  top: 20px;      /* Pas aan voor verticale positie */
+  left: 1250px;      /* Pas aan voor horizontale positie */
+  width: 40px;     /* Grootte van je afbeelding */
+  height: auto;    /* Houdt verhouding vast */
+  z-index: 1000;   /* Zichtbaar boven alles */
+}
+
 body {
   background-attachment: fixed;
   background-size: cover;
