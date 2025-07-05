@@ -33,7 +33,7 @@ body {
   position: absolute;   /* of 'relative', afhankelijk van context */
   top: 10px;            /* pas aan naar wens */
   right: 60px;           /* pas aan naar wens */
-  width: 100px;           /* of geef vaste breedte: eg. width: 300px; */
+  width: 150px;           /* of geef vaste breedte: eg. width: 300px; */
   height: 60px;
   z-index: 18;
 }
