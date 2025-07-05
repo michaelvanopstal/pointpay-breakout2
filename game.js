@@ -1332,7 +1332,6 @@ function draw() {
   drawFlyingCoins();
   checkFlyingCoinHits();
   drawPointPopups();
-  drawHeartBoard();
 
   if (doublePointsActive && Date.now() - doublePointsStartTime > doublePointsDuration) {
     doublePointsActive = false;
@@ -1506,29 +1505,7 @@ if (downPressed) {
   }
 }
 
-
   drawPaddle();
-
-  function drawHeartBoard() {
-  const boardX = -40;
-  const boardY = 70;
-  const boardWidth = 80;
-  const boardHeight = 80;
-
-  // 💠 Bordje zelf
-  ctx.drawImage(heartBoardImg, boardX, boardY, boardWidth, boardHeight);
-
-  // 💖 Hartje erbovenop
-  const pulse = 0.95 + Math.sin(Date.now() / 300) * 0.05;
-  const heartSize = 30 * pulse;
-  ctx.drawImage(heartImg, boardX + boardWidth / 2 - heartSize / 2, boardY - heartSize - 4, heartSize, heartSize);
-
-  // 🔢 Cijfer (hoeveel hartjes)
-  ctx.font = "bold 20px Arial";
-  ctx.fillStyle = "#fff";
-  ctx.textAlign = "center";
-  ctx.fillText(heartsCollected, boardX + boardWidth / 2, boardY + boardHeight / 2 + 8);
-}
 
 
   if (rocketActive && !rocketFired && rocketAmmo > 0) {
