@@ -117,12 +117,13 @@ body {
 #playerName {
   position: absolute;
   top: 130px;
-  right: 100px; 
-  color:#008CFF;
+  left: 740px; /* schuif dit getal naar links/rechts totdat hij goed staat */
+  color: #008CFF;
   font-size: 20px;
   font-family: Arial, sans-serif;
   z-index: 999;
 }
+
 
 #timerDisplay {
   position: absolute;
