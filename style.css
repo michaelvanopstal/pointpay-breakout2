@@ -33,7 +33,7 @@ body {
   left: 1150px;       /* pas aan op je layout */
   color: white;
   font-weight: bold;
-  font-size: 12px;
+  font-size: 18px;
   z-index: 555;
   pointer-events: none;
   user-select: none;
