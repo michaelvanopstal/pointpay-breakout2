@@ -9,6 +9,7 @@
  <link rel="preload" href="signalblock2.png" as="image">
 
 
+  <head>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -18,42 +19,60 @@
     <span id="timeDisplay">time 00:00</span>
   </div>
 
-
+  <!-- ❤️ Hartjesboard buiten het canvas -->
+  <img id="heartBoardDisplay" src="heart_board.png" style="
+    position: absolute;
+    top: 110px;
+    left: 20px;
+    width: 80px;
+    height: 80px;
+    z-index: 999;
+  ">
+  <span id="heartCount" style="
+    position: absolute;
+    top: 150px;
+    left: 60px;
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+    z-index: 1000;
+  ">0</span>
 
   <!-- Tooltip -->
-<div id="resetTooltip" style="
-  display: none;
-  position: absolute;
-  bottom: 140px;
-  right: 40px;
-  background-color: rgba(0, 0, 0, 0.85);
-  color: white;
-  padding: 6px 10px;
-  border-radius: 6px;
-  font-size: 13px;
-  font-family: Arial, sans-serif;
-  z-index: 10000;
-  white-space: nowrap;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-">Use when the ball is stuck — no lives will be lost.</div>
+  <div id="resetTooltip" style="
+    display: none;
+    position: absolute;
+    bottom: 140px;
+    right: 40px;
+    background-color: rgba(0, 0, 0, 0.85);
+    color: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: Arial, sans-serif;
+    z-index: 10000;
+    white-space: nowrap;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  ">Use when the ball is stuck — no lives will be lost.</div>
 
-<img id="resetBallBtn" 
-     src="resetball.png" 
-     alt="Reset Ball" 
-     style="
-       position: absolute;
-       bottom: 30px;
-       right: 30px;
-       width: 100px;
-       height: 100px;
-       cursor: pointer;
-       z-index: 9999;
-       transition: transform 0.2s ease;
-     "
-     onmouseover="this.style.transform='scale(1.1)'"
-     onmouseout="this.style.transform='scale(1)'"
->
-
+  <!-- Reset-knop -->
+  <img id="resetBallBtn" 
+       src="resetball.png" 
+       alt="Reset Ball" 
+       style="
+         position: absolute;
+         bottom: 30px;
+         right: 30px;
+         width: 100px;
+         height: 100px;
+         cursor: pointer;
+         z-index: 9999;
+         transition: transform 0.2s ease;
+       "
+       onmouseover="this.style.transform='scale(1.1)'"
+       onmouseout="this.style.transform='scale(1)'"
+  >
+</body>
 
 
 
