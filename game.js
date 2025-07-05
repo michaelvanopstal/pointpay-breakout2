@@ -499,43 +499,6 @@ function assignHeartBlocks() {
   }
 }
 
-function drawCollectedHearts() {
-  const boxX = 20;
-  const boxY = 45;
-  const boxWidth = 250;
-  const boxHeight = 60;
-
-  // 🟫 Donker goud bordje
-  ctx.fillStyle = "#4d3b1f"; // donker goud-bruin
-  ctx.strokeStyle = "#bfa76f"; // rand goud
-  ctx.lineWidth = 3;
-  ctx.fillRect(boxX, boxY, boxWidth, boxHeight);
-  ctx.strokeRect(boxX, boxY, boxWidth, boxHeight);
-
-  // 💖 Hartje bovenin (licht pulserend)
-  const pulse = 0.95 + Math.sin(Date.now() / 300) * 0.05;
-  const heartSize = 30 * pulse;
-  ctx.drawImage(heartImg, boxX + boxWidth / 2 - heartSize / 2, boxY - heartSize - 5, heartSize, heartSize);
-
-  // 🔢 Cijfers 1 t/m 10
-  ctx.fillStyle = "#ffe599"; // licht goud
-  ctx.font = "16px Arial";
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-
-  for (let i = 0; i < 10; i++) {
-    const cx = boxX + 20 + i * 22;
-    const cy = boxY + boxHeight / 2;
-
-    if (i < heartsCollected) {
-      ctx.fillStyle = "#ffffff";
-    } else {
-      ctx.fillStyle = "#666";
-    }
-
-    ctx.fillText(i + 1, cx, cy);
-  }
-}
 
 
 function drawHeartPopup() {
@@ -1354,7 +1317,6 @@ function draw() {
   collisionDetection();
   drawCoins();
   drawFallingHearts();
-  drawCollectedHearts();
   drawHeartPopup();
   checkCoinCollision();
   drawPaddleFlags();
