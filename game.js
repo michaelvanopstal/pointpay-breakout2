@@ -333,8 +333,8 @@ function keyDownHandler(e) {
       resetPaddle();
       startTime = new Date();
       gameOver = false;
-      
-      document.getElementById("scoreDisplay").textContent = score;
+
+      document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
       document.getElementById("timeDisplay").textContent = "time 00:00";
 
       flagsOnPaddle = false;
@@ -700,9 +700,7 @@ function checkFlyingCoinHits() {
 
               const earned = doublePointsActive ? 120 : 60;
               score += earned;
-              document.getElementById("scoreDisplay").textContent = "score " + score;
-
-
+              document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
 
               pointPopups.push({
                 x: b.x + brickWidth / 2,
@@ -750,10 +748,7 @@ function checkFlyingCoinHits() {
 
           const earned = doublePointsActive ? 20 : 10;
           score += earned;
-           document.getElementById("scoreDisplay").textContent = score;
-
- 
-
+          document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
 
           coinSound.currentTime = 0;
           coinSound.play();
@@ -822,7 +817,7 @@ function saveHighscore() {
     highscores.forEach((entry, index) => {
       const lvl = entry.level || 1;
       const li = document.createElement("li");
-      li.textContent = `${index + 1}. ${entry.name} — ${entry.score} — ${entry.time} — Level ${lvl}`;
+      li.textContent = `${index + 1}. ${entry.name} — ${entry.score} pxp — ${entry.time} — Level ${lvl}`;
       list.appendChild(li);
     });
   }
@@ -1032,10 +1027,7 @@ function checkRocketCollision() {
           rocketExplosionSound.currentTime = 0;
           rocketExplosionSound.play();
 
-         document.getElementById("scoreDisplay").textContent = score;
-
-
-
+          document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
           rocketFired = false;
 
           explosions.push({
@@ -1086,9 +1078,7 @@ function checkCoinCollision() {
 
       const earned = doublePointsActive ? 20 : 10;
       score += earned;
-      document.getElementById("scoreDisplay").textContent = score;
-
-
+      document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
 
       coinSound.currentTime = 0;
       coinSound.play();
@@ -1174,10 +1164,7 @@ function collisionDetection() {
 
               const earned = doublePointsActive ? 120 : 60;
               score += earned;
-              document.getElementById("scoreDisplay").textContent = score;
-
-
-
+              document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
 
               pointPopups.push({
                 x: b.x + brickWidth / 2,
@@ -1240,10 +1227,7 @@ function collisionDetection() {
 
           const earned = doublePointsActive ? 20 : 10;
           score += earned;
-          document.getElementById("scoreDisplay").textContent = score;
-
-
-
+          document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
 
           spawnCoin(b.x, b.y);
         }
@@ -1615,10 +1599,7 @@ for (let i = pxpBags.length - 1; i >= 0; i--) {
 
     const earned = doublePointsActive ? 160 : 80;
     score += earned;
-    document.getElementById("scoreDisplay").textContent = score;
- 
-
-    
+    document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
 
     pointPopups.push({
       x: bag.x,
@@ -1908,7 +1889,6 @@ function stopTimer() {
   elapsedTime = 0;
   document.getElementById("timeDisplay").textContent = "time 00:00";
 }
-
 function pauseTimer() {
   clearInterval(timerInterval);
   timerRunning = false;
@@ -1927,19 +1907,19 @@ function spawnStoneDebris(x, y) {
   }
 }
 
-
 function triggerPaddleExplosion() {
   if (lives > 1) {
-    if (!resetTriggered) {
+    if (!resetTriggered) { // ✅ Alleen aftrekken als het GEEN reset is
       lives--;
       updateLivesDisplay();
     }
 
-    pauseTimer();
-
+    pauseTimer(); 
+  
     paddleExploding = true;
     paddleExplosionParticles = [];
 
+    // ❌ Machinegun direct stoppen bij levenverlies
     machineGunActive = false;
     machineGunCooldownActive = false;
 
@@ -1964,6 +1944,7 @@ function triggerPaddleExplosion() {
       balls = [{
         x: paddleX + paddleWidth / 2 - ballRadius,
         y: paddleY - ballRadius * 2,
+
         dx: 0,
         dy: -6,
         radius: ballRadius,
@@ -1973,19 +1954,21 @@ function triggerPaddleExplosion() {
       ballLaunched = false;
       ballMoving = false;
 
-      resetTriggered = false;
-      resetPaddle();
+      resetTriggered = false; // ✅ reset na normale explosie
+
+      resetPaddle(); // visuele schade weg
     }, 1000);
 
   } else {
-    // Laatste leven – volledige reset
+    // ✅ Laatste leven: eerst paddle laten ontploffen
     paddleExploding = true;
 
     machineGunActive = false;
     machineGunCooldownActive = false;
 
+
     gameOverSound.currentTime = 0;
-    gameOverSound.play();
+    gameOverSound.play(); // 🔊 Speel "GAME OVER" geluid
 
     paddleExplosionParticles = [];
 
@@ -2003,6 +1986,7 @@ function triggerPaddleExplosion() {
     paddleExplodeSound.currentTime = 0;
     paddleExplodeSound.play();
 
+    // ⏱️ Wacht 1 seconde, daarna reset
     setTimeout(() => {
       saveHighscore();
       stopTimer();
@@ -2017,7 +2001,7 @@ function triggerPaddleExplosion() {
       paddleExploding = false;
       paddleExplosionParticles = [];
 
-      // Reset alle game states
+      // ✅ Essentiële resets
       speedBoostActive = false;
       speedBoostStart = 0;
       doublePointsActive = false;
@@ -2039,19 +2023,13 @@ function triggerPaddleExplosion() {
       resetBall();
       resetPaddle();
 
-      document.getElementById("scoreDisplay").textContent = score;
+      document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
       document.getElementById("timeDisplay").textContent = "time 00:00";
 
-      resetTriggered = false;
-
-      // ✅ Herstart draw-loop zodat paddle, timer en alles zichtbaar wordt
-      cancelAnimationFrame(animationFrameId);
-      animationFrameId = requestAnimationFrame(draw);
+      resetTriggered = false; // ✅ reset ook hier voor zekerheid
     }, 1000);
   }
 }
-
-
 
 function startLevelTransition() {
   level++;
