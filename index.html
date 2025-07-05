@@ -19,24 +19,29 @@
     <span id="timeDisplay">time 00:00</span>
   </div>
 
-  <!-- ❤️ Hartjesboard buiten het canvas -->
-  <img id="heartBoardDisplay" src="heart_board.png" style="
-    position: absolute;
-    top: 110px;
-    left: 80px;
-    width: 80px;
-    height: 80px;
-    z-index: 999;
-  ">
-  <span id="heartCount" style="
-    position: absolute;
-    top: 150px;
-    left: 60px;
-    color: white;
-    font-weight: bold;
-    font-size: 20px;
-    z-index: 1000;
-  ">0</span>
+ <!-- ❤️ Hartjesboard -->
+<img id="heartBoardDisplay" src="heart_board.png" style="
+  position: absolute;
+  top: 22px;
+  left: 20px;
+  width: 80px;
+  height: 80px;
+  z-index: 999;
+">
+
+<!-- 💖 Cijfer erop -->
+<span id="heartCount" style="
+  position: absolute;
+  top: 58px;
+  left: 60px;
+  color: white;
+  font-weight: bold;
+  font-size: 20px;
+  z-index: 1000;
+  pointer-events: none;
+  user-select: none;
+">0</span>
+
 
   <!-- Tooltip -->
   <div id="resetTooltip" style="
