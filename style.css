@@ -29,6 +29,15 @@ body {
   font-family: Arial, sans-serif;
 }
 
+.score-board {
+  position: absolute;   /* of 'relative', afhankelijk van context */
+  top: 100px;            /* pas aan naar wens */
+  left: 100px;           /* pas aan naar wens */
+  width: auto;           /* of geef vaste breedte: eg. width: 300px; */
+  height: auto;
+  z-index: 10;
+}
+
 
 
 body {
