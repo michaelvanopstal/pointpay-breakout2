@@ -1519,7 +1519,7 @@ if (downPressed) {
   drawPaddle();
 
   function drawHeartBoard() {
-  const boardX = 20;
+  const boardX = -40;
   const boardY = 70;
   const boardWidth = 80;
   const boardHeight = 80;
