@@ -79,7 +79,6 @@ let minMachineGunY = 0;     // bovenste limiet (canvasrand)
 let heartsCollected = 0;               // aantal verzamelde hartjes (reset bij 10)
 let heartBlocks = [];                  // blokken met verborgen hartjes
 let fallingHearts = [];                // actieve vallende hartjes
-let collectedHeartIcons = [];          // hartjes linksboven (visueel overzicht)
 let heartPopupTimer = 0;               // timer voor popup “Wow! 10 hearts – extra life!”
 
 
@@ -498,16 +497,43 @@ function assignHeartBlocks() {
 }
 
 function drawCollectedHearts() {
-  collectedHeartIcons.forEach((icon, i) => {
-    const size = 20 + Math.sin(icon.pulse) * 2;
-    icon.pulse += 0.1;
+  const boxX = 20;
+  const boxY = 45;
+  const boxWidth = 250;
+  const boxHeight = 60;
 
-    ctx.save();
-    ctx.globalAlpha = 0.9;
-    ctx.drawImage(heartImg, 20 + i * 24, 50 + Math.sin(icon.pulse) * 2, size, size);
-    ctx.restore();
-  });
+  // 🟫 Donker goud bordje
+  ctx.fillStyle = "#4d3b1f"; // donker goud-bruin
+  ctx.strokeStyle = "#bfa76f"; // rand goud
+  ctx.lineWidth = 3;
+  ctx.fillRect(boxX, boxY, boxWidth, boxHeight);
+  ctx.strokeRect(boxX, boxY, boxWidth, boxHeight);
+
+  // 💖 Hartje bovenin (licht pulserend)
+  const pulse = 0.95 + Math.sin(Date.now() / 300) * 0.05;
+  const heartSize = 30 * pulse;
+  ctx.drawImage(heartImg, boxX + boxWidth / 2 - heartSize / 2, boxY - heartSize - 5, heartSize, heartSize);
+
+  // 🔢 Cijfers 1 t/m 10
+  ctx.fillStyle = "#ffe599"; // licht goud
+  ctx.font = "16px Arial";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+
+  for (let i = 0; i < 10; i++) {
+    const cx = boxX + 20 + i * 22;
+    const cy = boxY + boxHeight / 2;
+
+    if (i < heartsCollected) {
+      ctx.fillStyle = "#ffffff";
+    } else {
+      ctx.fillStyle = "#666";
+    }
+
+    ctx.fillText(i + 1, cx, cy);
+  }
 }
+
 
 function drawHeartPopup() {
   if (heartPopupTimer > 0) {
@@ -848,26 +874,31 @@ function drawCoins() {
 
 function drawFallingHearts() {
   fallingHearts.forEach((heart, i) => {
+    // 🚀 Beweging
     heart.y += heart.dy;
 
-    const size = 24 + Math.sin(heart.pulse) * 2; // pulserende animatie
+    // 💖 Pulserend formaat
+    const size = 24 + Math.sin(heart.pulse) * 2;
     heart.pulse += 0.2;
 
+    // ✨ Teken hartje
     ctx.globalAlpha = heart.alpha;
     ctx.drawImage(heartImg, heart.x, heart.y, size, size);
     ctx.globalAlpha = 1;
 
-    // Paddle-bounding box
+    // 🔲 Paddle-bounding box
     const paddleLeft = paddleX;
     const paddleRight = paddleX + paddleWidth;
     const paddleTop = paddleY;
     const paddleBottom = paddleY + paddleHeight;
 
+    // 🟥 Heart-bounding box
     const heartLeft = heart.x;
     const heartRight = heart.x + size;
     const heartTop = heart.y;
     const heartBottom = heart.y + size;
 
+    // 🎯 Check of paddle het hartje vangt
     const isOverlap =
       heartRight >= paddleLeft &&
       heartLeft <= paddleRight &&
@@ -881,24 +912,22 @@ function drawFallingHearts() {
       coinSound.currentTime = 0;
       coinSound.play();
 
-      // Voeg pulserende icoon toe linksboven
-      collectedHeartIcons.push({ pulse: 0 });
-
-      // 🎉 Als 10 hartjes verzameld
+      // ✅ Beloning bij 10 hartjes
       if (heartsCollected >= 10) {
         heartsCollected = 0;
-        collectedHeartIcons = [];
         lives++;
-        updateLivesDisplay(); // visuele levens bijwerken
-        heartPopupTimer = 100; // toon popup tijdelijk
+        updateLivesDisplay();
+        heartPopupTimer = 100;
       }
     }
 
+    // 💨 Verwijder uit array als buiten beeld of al gepakt
     if (heart.y > canvas.height || heart.collected) {
       fallingHearts.splice(i, 1);
     }
   });
 }
+
 
 function drawFlyingCoins() {
   flyingCoins.forEach((coin) => {
