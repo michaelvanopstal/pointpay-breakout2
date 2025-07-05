@@ -15,7 +15,7 @@
 <body>
   <div id="top-info">
     <span id="player-display">Player</span>
-    <span id="scoreDisplay">score 0 pxp.</span>
+   <span id="scoreDisplay">score 0</span>
     <span id="timeDisplay">time 00:00</span>
   </div>
 
@@ -132,7 +132,7 @@
     highscores.forEach((entry, index) => {
       const levelText = entry.level ? `— Level ${entry.level}` : "";
       const li = document.createElement("li");
-      li.textContent = `${index + 1}. ${entry.name} — ${entry.score} PXP — ${entry.time} ${levelText}`;
+      li.textContent = `${index + 1}. ${entry.name} — ${entry.score} — ${entry.time} ${levelText}`;
       highscoreList.appendChild(li);
     });
   }
