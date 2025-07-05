@@ -1485,7 +1485,7 @@ if (machineGunActive && !machineGunCooldownActive) {
   // 📍 Instelbare offset tussen paddle en gun
   const verticalOffset = machineGunYOffset;
   const minY = 0;                  // bovenste limiet
-  const maxY = paddleY - 40;       // optioneel: niet te dicht bij paddle
+  const maxY = paddleY - 10;       // optioneel: niet te dicht bij paddle
 
   // Targetposities voor X en Y
   const targetX = paddleX + paddleWidth / 2 - 30;
