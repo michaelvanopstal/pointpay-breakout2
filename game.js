@@ -80,6 +80,8 @@ let heartsCollected = 0;               // aantal verzamelde hartjes (reset bij 1
 let heartBlocks = [];                  // blokken met verborgen hartjes
 let fallingHearts = [];                // actieve vallende hartjes
 let heartPopupTimer = 0;               // timer voor popup “Wow! 10 hearts – extra life!”
+let heartBoardX = 20;
+let heartBoardY = 20;
 
 
 let speedBoostActive = false;
@@ -892,6 +894,22 @@ function drawFallingHearts() {
       fallingHearts.splice(i, 1);
     }
   });
+}
+
+function drawHeartBoardCounter() {
+  const boardWidth = 80;
+  const boardHeight = 80;
+
+  ctx.drawImage(heartBoardImg, heartBoardX, heartBoardY, boardWidth, boardHeight);
+
+  const pulse = 0.95 + Math.sin(Date.now() / 300) * 0.05;
+  const heartSize = 28 * pulse;
+  ctx.drawImage(heartImg, heartBoardX + boardWidth / 2 - heartSize / 2, heartBoardY - heartSize, heartSize, heartSize);
+
+  ctx.fillStyle = "#fff";
+  ctx.font = "bold 22px Arial";
+  ctx.textAlign = "center";
+  ctx.fillText(heartsCollected, heartBoardX + boardWidth / 2, heartBoardY + boardHeight / 2 + 6);
 }
 
 
