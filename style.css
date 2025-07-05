@@ -123,18 +123,6 @@ body {
 }
   
 
-
- 
-#playerName {
-  position: absolute;
-  top: 10px;
-  right: 100px; 
-  color:#008CFF;
-  font-size: 20px;
-  font-family: Arial, sans-serif;
-  z-index: 999;
-}
-
 #timerDisplay {
   position: absolute;
   top: 72px;
