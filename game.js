@@ -334,7 +334,7 @@ function keyDownHandler(e) {
     startTime = new Date();
     gameOver = false;
 
-    updateScoreDisplay(); // 👈 aangepaste regel
+    updateScoreDisplay(); // 👈 juiste regel
     document.getElementById("timeDisplay").textContent = "time 00:00";
 
     flagsOnPaddle = false;
