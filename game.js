@@ -75,6 +75,9 @@ let paddleDamageZones = []; // array van kapotgemaakte stukken
 let machineGunYOffset = 140; // minimale afstand tussen paddle en machinegun
 let minMachineGunY = 0;     // bovenste limiet (canvasrand)
 
+let heartsCollected = 0;
+let heartBlocks = []; // bevat alle hartjes-blokken
+let heartPopups = []; // voor “Wow! 10 hearts – extra life!”
 
 
 
@@ -183,6 +186,9 @@ for (let c = 0; c < brickColumnCount; c++) {
     };
   }
 }
+
+const heartImg = new Image();
+heartImg.src = "heart.png"; // zorg dat je dit bestand hebt!
 
 
 const machinegunBlockImg = new Image();
