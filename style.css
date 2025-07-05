@@ -47,10 +47,10 @@ body {
 
 .score-board {
   position: absolute;
-  top: 0px;
+  top: 5px;
   left: 1055px;
   width: 150px;
-  height: 60px;
+  height: 60p
   z-index: 60;
 }
 
