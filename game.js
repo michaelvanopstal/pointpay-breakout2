@@ -1809,7 +1809,7 @@ if (showGameOver) {
 
 function onImageLoad() {
   imagesLoaded++;
-  if (imagesLoaded === 19) {
+  if (imagesLoaded === 20) {
     resetBricks();
     updateLivesDisplay(); // ✅ laat bij start meteen levens zien
     resetPaddle(); // 🔥 paddletekening klaarzetten
@@ -1836,6 +1836,8 @@ dollarPxpImg.onload = onImageLoad;
 machinegunBlockImg.onload = onImageLoad;
 machinegunGunImg.onload = onImageLoad;
 coinImg.onload = onImageLoad;
+heartImg.onload = onImageLoad; 
+
 
 document.addEventListener("mousedown", function (e) {
   // 🛡️ Alleen reageren als er op het canvas geklikt wordt
