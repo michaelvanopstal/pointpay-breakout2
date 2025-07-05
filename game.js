@@ -1483,7 +1483,7 @@ for (let i = pxpBags.length - 1; i >= 0; i--) {
 
 if (machineGunActive && !machineGunCooldownActive) {
   // 📍 Instelbare offset tussen paddle en gun
-  const verticalOffset = 80;
+  const verticalOffset = machineGunYOffset;
   const minY = 0;                  // bovenste limiet
   const maxY = paddleY - 40;       // optioneel: niet te dicht bij paddle
 
