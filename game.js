@@ -821,7 +821,7 @@ function saveHighscore() {
     highscores.forEach((entry, index) => {
       const lvl = entry.level || 1;
       const li = document.createElement("li");
-      li.textContent = `${index + 1}. ${entry.name} — ${entry.score} pxp — ${entry.time} — Level ${lvl}`;
+      li.textContent = `${index + 1}. ${entry.name} — ${entry.score} — ${entry.time} — Level ${lvl}`;
       list.appendChild(li);
     });
   }
