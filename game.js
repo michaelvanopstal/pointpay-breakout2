@@ -502,8 +502,12 @@ function resetAllBonuses() {
   smokeParticles = [];
   explosions = [];
   coins = [];
-  pxpBags = [];
+  pxpBags = []; 
+
+  machineGunGunX = 0;
+  machineGunGunY = 0;
 }
+
 
 
 
@@ -1049,13 +1053,18 @@ function collisionDetection() {
               break;
               case "machinegun":
               machineGunActive = true;
-              machineGunGunX = b.x + brickWidth / 2 - 30;
-              machineGunGunY = b.y + brickHeight; // net onder het blok
-              machineGunStartTime = Date.now();
               machineGunShotsFired = 0;
               machineGunBullets = [];
               paddleDamageZones = [];
               machineGunLastShot = Date.now();
+              machineGunStartTime = Date.now();
+
+               // Zet gun direct boven paddle met juiste offset
+              machineGunGunX = paddleX + paddleWidth / 2 - 30;
+
+              const gunStartY = Math.max(paddleY - machineGunYOffset, minMachineGunY);
+              machineGunGunY = Math.min(gunStartY, paddleY - 40); // nooit te dicht op paddle
+
               b.status = 0;
               b.type = "normal";
               break;
@@ -1886,35 +1895,6 @@ function triggerPaddleExplosion() {
   }
 }
 
-
-function startLevelTransition() {
-  level++;
-
-  // 🎧 Speel level-up geluid
-  levelUpSound.currentTime = 0;
-  levelUpSound.play();
-
-  // Toon de overgangstekst
-  levelMessageAlpha = 0;
-  levelMessageTimer = 0;
-  levelMessageVisible = true;
-  levelTransitionActive = true;
-
-  resetBricks();
-  transitionOffsetY = -300;
-
-  ballLaunched = false;
-  ballMoving = false;
-
-  balls = [{
-    x: paddleX + paddleWidth / 2 - ballRadius,
-    y: paddleY - ballRadius * 2,
-    dx: 0,
-    dy: -6,
-    radius: ballRadius,
-    isMain: true
-  }];
-}
 function startLevelTransition() {
   level++;
 
