@@ -18,6 +18,15 @@ body {
   z-index: 18;
 }
 
+#playerName {
+  position: absolute;
+  top: 20px;
+  right: 100px; 
+  color:#008CFF;
+  font-size: 20px;
+  font-family: Arial, sans-serif;
+  z-index: 999;
+}
 
 #score-wrapper {
   position: absolute;
