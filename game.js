@@ -335,7 +335,8 @@ function keyDownHandler(e) {
     gameOver = false;
 
     updateScoreDisplay(); // 👈 juiste regel
-    document.getElementById("timeDisplay").textContent = "time 00:00";
+    document.getElementById("timeDisplay").textContent = "00:00";
+
 
     flagsOnPaddle = false;
     flyingCoins = [];
@@ -1889,7 +1890,8 @@ function stopTimer() {
   clearInterval(timerInterval);
   timerRunning = false;
   elapsedTime = 0;
-  document.getElementById("timeDisplay").textContent = "time 00:00";
+  document.getElementById("timeDisplay").textContent = "00:00";
+
 }
 function pauseTimer() {
   clearInterval(timerInterval);
@@ -2026,7 +2028,8 @@ function triggerPaddleExplosion() {
       resetPaddle();
 
       updateScoreDisplay(); // 👈 aangepaste regel
-      document.getElementById("timeDisplay").textContent = "time 00:00";
+      document.getElementById("timeDisplay").textContent = "00:00";
+
 
       resetTriggered = false; // ✅ reset ook hier voor zekerheid
     }, 1000);
