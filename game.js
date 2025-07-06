@@ -1912,15 +1912,13 @@ function spawnStoneDebris(x, y) {
   }
 }
 
+
 function triggerPaddleExplosion() {
   if (lives > 1) {
     if (!resetTriggered) {
       lives--;
       updateLivesDisplay();
-
-      // 💖 Reset hartjes bij levenverlies
-      heartsCollected = 0;
-      document.getElementById("heartCount").textContent = heartsCollected;
+      // 💖 Hartjes blijven behouden – reset alleen bij game over
     }
 
     pauseTimer(); 
@@ -1998,7 +1996,7 @@ function triggerPaddleExplosion() {
       lives = 3;
       updateLivesDisplay();
 
-      // 💖 Reset hartjes bij game over
+      // 💖 Alleen hier hartjes resetten bij Game Over
       heartsCollected = 0;
       document.getElementById("heartCount").textContent = heartsCollected;
 
@@ -2037,6 +2035,7 @@ function triggerPaddleExplosion() {
     }, 1000);
   }
 }
+
 
 function startLevelTransition() {
   level++;
