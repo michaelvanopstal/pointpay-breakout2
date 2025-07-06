@@ -39,13 +39,10 @@ body {
   user-select: none;
 }
 
-
-
-
   #score-board {
   position: absolute;
   top: 5px;
-  left: 1055px;
+  left: 1155px;
   width: 150px;
   height: 60px;
   z-index: 60;
