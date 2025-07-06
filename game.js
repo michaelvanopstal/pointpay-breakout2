@@ -1914,9 +1914,13 @@ function spawnStoneDebris(x, y) {
 
 function triggerPaddleExplosion() {
   if (lives > 1) {
-    if (!resetTriggered) { // ✅ Alleen aftrekken als het GEEN reset is
+    if (!resetTriggered) {
       lives--;
       updateLivesDisplay();
+
+      // 💖 Reset hartjes bij levenverlies
+      heartsCollected = 0;
+      document.getElementById("heartCount").textContent = heartsCollected;
     }
 
     pauseTimer(); 
@@ -1924,7 +1928,6 @@ function triggerPaddleExplosion() {
     paddleExploding = true;
     paddleExplosionParticles = [];
 
-    // ❌ Machinegun direct stoppen bij levenverlies
     machineGunActive = false;
     machineGunCooldownActive = false;
 
@@ -1949,7 +1952,6 @@ function triggerPaddleExplosion() {
       balls = [{
         x: paddleX + paddleWidth / 2 - ballRadius,
         y: paddleY - ballRadius * 2,
-
         dx: 0,
         dy: -6,
         radius: ballRadius,
@@ -1959,21 +1961,19 @@ function triggerPaddleExplosion() {
       ballLaunched = false;
       ballMoving = false;
 
-      resetTriggered = false; // ✅ reset na normale explosie
-
-      resetPaddle(); // visuele schade weg
+      resetTriggered = false;
+      resetPaddle();
     }, 1000);
 
   } else {
-    // ✅ Laatste leven: eerst paddle laten ontploffen
+    // Laatste leven → GAME OVER
     paddleExploding = true;
 
     machineGunActive = false;
     machineGunCooldownActive = false;
 
-
     gameOverSound.currentTime = 0;
-    gameOverSound.play(); // 🔊 Speel "GAME OVER" geluid
+    gameOverSound.play();
 
     paddleExplosionParticles = [];
 
@@ -1991,13 +1991,16 @@ function triggerPaddleExplosion() {
     paddleExplodeSound.currentTime = 0;
     paddleExplodeSound.play();
 
-    // ⏱️ Wacht 1 seconde, daarna reset
     setTimeout(() => {
       saveHighscore();
       stopTimer();
 
       lives = 3;
       updateLivesDisplay();
+
+      // 💖 Reset hartjes bij game over
+      heartsCollected = 0;
+      document.getElementById("heartCount").textContent = heartsCollected;
 
       score = 0;
       level = 1;
@@ -2006,7 +2009,6 @@ function triggerPaddleExplosion() {
       paddleExploding = false;
       paddleExplosionParticles = [];
 
-      // ✅ Essentiële resets
       speedBoostActive = false;
       speedBoostStart = 0;
       doublePointsActive = false;
@@ -2028,11 +2030,10 @@ function triggerPaddleExplosion() {
       resetBall();
       resetPaddle();
 
-      updateScoreDisplay(); // 👈 aangepaste regel
+      updateScoreDisplay();
       document.getElementById("timeDisplay").textContent = "00:00";
 
-
-      resetTriggered = false; // ✅ reset ook hier voor zekerheid
+      resetTriggered = false;
     }, 1000);
   }
 }
