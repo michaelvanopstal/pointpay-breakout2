@@ -1089,7 +1089,7 @@ function checkCoinCollision() {
       pointPopups.push({
         x: coin.x,
         y: coin.y,
-        value: "+" + earned
+        value: "+" + earned,
         alpha: 1
       });
     } else if (coinBottom > canvas.height) {
