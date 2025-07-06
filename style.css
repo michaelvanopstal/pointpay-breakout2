@@ -132,7 +132,7 @@ body {
   color: white;
   font-size: 20px;
   font-family: Arial, sans-serif;
-  z-index: 999;
+  z-index: 2222;
 }
 
 #highscore-overlay ol li {
