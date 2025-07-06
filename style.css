@@ -49,7 +49,7 @@ body {
 
 #highscore-overlay {
   position: absolute;
-  top: 260px;
+  top: 270px;
   left: 40px;
   width: 200px;
   border-radius: 10px;
@@ -71,7 +71,7 @@ body {
 #trophy {
   position: absolute;
   top: 80px;       /* verplaats verticaal */
-  left: 120px;    /* verplaats horizontaal */
+  left: 140px;    /* verplaats horizontaal */
   width: 100px;    /* grootte aanpassen */
   z-index: 1000;   /* altijd zichtbaar bovenop */
 }
@@ -112,7 +112,7 @@ body {
 
 #time-box {
   position: absolute;
-  top: 42px;          /* verticaal afstellen */
+  top: 36px;          /* verticaal afstellen */
   left: 1250px;       /* horizontaal afstellen zodat hij in het TIME-vakje past */
   width: 100px;
   height: 30px;
@@ -123,7 +123,7 @@ body {
 
 #timeDisplay {
   color: white;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: bold;
   font-family: Arial, sans-serif;
 }
