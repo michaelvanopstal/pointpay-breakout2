@@ -42,7 +42,7 @@ body {
 
 #timeDisplay {
   position: absolute;
-  top: 25px;
+  top: 250px;
   left: 1250px;
   font-size: 18px;
   color: white;
