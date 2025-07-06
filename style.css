@@ -106,15 +106,7 @@ body {
   z-index: 800;
 }
 
-#timerDisplay {
-  position: absolute;
-  top: 40px;
-  right: 1250px; 
-  color: white;
-  font-size: 20px;
-  font-family: Arial, sans-serif;
-  z-index: 500;
-}
+
 
 #timerDisplay {
   position: absolute;
