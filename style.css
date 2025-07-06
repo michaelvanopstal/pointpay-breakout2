@@ -40,14 +40,6 @@ body {
 }
 
 
-#timeDisplay {
-  position: absolute;
-  top: 250px;
-  left: 1250px;
-  font-size: 18px;
-  color: white;
-  z-index: 4444;
-}
 
 
 .score-board {
@@ -135,7 +127,7 @@ body {
 
 #timerDisplay {
   position: absolute;
-  top: 140px;
+  top: 240px;
   right: 20px; 
   color: white;
   font-size: 20px;
