@@ -49,7 +49,7 @@ body {
 
 #highscore-overlay {
   position: absolute;
-  top: 240px;
+  top: 280px;
   left: 40px;
   width: 200px;
   border-radius: 10px;
@@ -70,8 +70,8 @@ body {
 
 #trophy {
   position: absolute;
-  top: 120px;       /* verplaats verticaal */
-  left: 40px;    /* verplaats horizontaal */
+  top: 80px;       /* verplaats verticaal */
+  left: 80px;    /* verplaats horizontaal */
   width: 100px;    /* grootte aanpassen */
   z-index: 1000;   /* altijd zichtbaar bovenop */
 }
