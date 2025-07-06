@@ -2041,7 +2041,7 @@ function triggerPaddleExplosion() {
 function startLevelTransition() {
   level++;
 
-  resetAllBonuses(); // ⬅️ Voeg deze regel toe
+  resetAllBonuses();
 
   levelUpSound.currentTime = 0;
   levelUpSound.play();
@@ -2065,6 +2065,10 @@ function startLevelTransition() {
     radius: ballRadius,
     isMain: true
   }];
+
+  // ✅ Cruciaal bij 4+ levens
+  resetPaddle();
+  updateLivesDisplay();
 }
 
 function updateLivesDisplay() {
