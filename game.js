@@ -283,51 +283,50 @@ resetBtn.addEventListener("mouseleave", () => {
   tooltip.style.display = "none";
 });
 
+
 function keyDownHandler(e) {
   console.log("Toets ingedrukt:", e.key);
 
   // 🛡️ Voorkom acties als gebruiker in een inputveld of knop zit
-
   if (["INPUT", "TEXTAREA", "BUTTON"].includes(document.activeElement.tagName)) return;
-if (
-  e.key === "Right" || e.key === "ArrowRight" || e.key === ">" || e.key === "."
-) {
-  rightPressed = true;
 
-} else if (
-  e.key === "Left" || e.key === "ArrowLeft" || e.key === "<" || e.key === ","
-) {
-  leftPressed = true;
+  if (
+    e.key === "Right" || e.key === "ArrowRight" || e.key === ">" || e.key === "."
+  ) {
+    rightPressed = true;
 
-} else if (
-  e.key === "Up" || e.key === "ArrowUp"
-) {
-  upPressed = true;
+  } else if (
+    e.key === "Left" || e.key === "ArrowLeft" || e.key === "<" || e.key === ","
+  ) {
+    leftPressed = true;
 
-} else if (
-  e.key === "Down" || e.key === "ArrowDown"
-) {
-  downPressed = true;
-}
+  } else if (
+    e.key === "Up" || e.key === "ArrowUp"
+  ) {
+    upPressed = true;
 
+  } else if (
+    e.key === "Down" || e.key === "ArrowDown"
+  ) {
+    downPressed = true;
+  }
 
- // 🎯 Actie: bal afschieten (alleen bij omhoogtoets of spatie) als bal nog niet gelanceerd is
-if ((e.key === "ArrowUp" || e.code === "Space") && !ballLaunched) {
-  ballLaunched = true;
-  ballMoving = true;
+  // 🎯 Actie: bal afschieten (alleen bij omhoogtoets of spatie) als bal nog niet gelanceerd is
+  if ((e.key === "ArrowUp" || e.code === "Space") && !ballLaunched) {
+    ballLaunched = true;
+    ballMoving = true;
+    paddleFreeMove = true; // ✅ Cruciaal: laat paddle vrij bewegen na eerste schot
 
-  shootSound.currentTime = 0;
-  shootSound.play();
+    shootSound.currentTime = 0;
+    shootSound.play();
 
-  balls[0].dx = 0;
-  balls[0].dy = -6;
+    balls[0].dx = 0;
+    balls[0].dy = -6;
 
-  if (!timerRunning) startTimer(); // ✅ Start timer bij eerste afschot
+    if (!timerRunning) startTimer();
+  }
 
-  // ✅ Na afschieten: paddle mag omhoog bewegen
-  paddleFreeMove = true;
-}
-
+  // 🔫 Raket afvuren
   if ((e.code === "ArrowUp" || e.code === "Space") && rocketActive && rocketAmmo > 0 && !rocketFired) {
     rocketFired = true;
     rocketAmmo--;
@@ -335,32 +334,35 @@ if ((e.key === "ArrowUp" || e.code === "Space") && !ballLaunched) {
     rocketLaunchSound.play();
   }
 
+  // 🎯 Schieten met vlaggetjes
   if (flagsOnPaddle && (e.code === "Space" || e.code === "ArrowUp")) {
     shootFromFlags();
   }
 
- if (!ballMoving && (e.code === "ArrowUp" || e.code === "Space")) {
-  if (lives <= 0) {
-    lives = 3;
-    score = 0;
-    level = 1;
-    resetBricks();
-    resetBall();
-    resetPaddle();
-    startTime = new Date();
-    gameOver = false;
+  // 🧪 Extra beveiliging bij opnieuw starten na Game Over
+  if (!ballMoving && (e.code === "ArrowUp" || e.code === "Space")) {
+    if (lives <= 0) {
+      lives = 3;
+      score = 0;
+      level = 1;
+      resetBricks();
+      resetBall();
+      resetPaddle();
+      startTime = new Date();
+      gameOver = false;
 
-    updateScoreDisplay(); // 👈 juiste regel
-    document.getElementById("timeDisplay").textContent = "00:00";
+      updateScoreDisplay();
+      document.getElementById("timeDisplay").textContent = "00:00";
 
+      flagsOnPaddle = false;
+      flyingCoins = [];
+    }
 
-    flagsOnPaddle = false;
-    flyingCoins = [];
+    ballMoving = true;
   }
-
-  ballMoving = true;
- }
 }
+
+
 
 function keyUpHandler(e) {
   if (
@@ -1924,22 +1926,21 @@ document.addEventListener("mousedown", function (e) {
     rocketLaunchSound.play();
   }
 
- // 🎯 Bal afschieten met muisklik (trackpad)
-if (!ballLaunched && !ballMoving) {
-  ballLaunched = true;
-  ballMoving = true;
+  // 🎯 Bal afschieten met muisklik (trackpad)
+  if (!ballLaunched && !ballMoving) {
+    ballLaunched = true;
+    ballMoving = true;
+    paddleFreeMove = true; // ✅ Na eerste schot mag paddle omhoog bewegen
 
-  shootSound.currentTime = 0;
-  shootSound.play();
+    shootSound.currentTime = 0;
+    shootSound.play();
 
-  balls[0].dx = 0;
-  balls[0].dy = -6;
+    balls[0].dx = 0;
+    balls[0].dy = -6;
 
-  if (!timerRunning) startTimer(); // ✅ Alleen timer starten
-
-}
+    if (!timerRunning) startTimer(); // ✅ Start timer bij eerste schot
+  }
 });
-
 
 
 function startTimer() {
