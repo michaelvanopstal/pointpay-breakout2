@@ -67,11 +67,15 @@ body {
   padding-left: 20px;
   margin: 0;
 }
+
 #trophy {
-  width: 120px;
-  display: block;
-  margin: 0 auto 10px auto;
+  position: absolute;
+  top: 120px;       /* verplaats verticaal */
+  left: 40px;    /* verplaats horizontaal */
+  width: 100px;    /* grootte aanpassen */
+  z-index: 1000;   /* altijd zichtbaar bovenop */
 }
+
 
 #game-container {
   position: relative;
