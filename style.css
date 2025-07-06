@@ -42,7 +42,7 @@ body {
 
 
 
-.score-board {
+  #score-board {
   position: absolute;
   top: 5px;
   left: 1055px;
@@ -56,7 +56,7 @@ body {
   top: 5px;      /* Pas aan voor verticale positie */
   left: 1250px;      /* Pas aan voor horizontale positie */
   width: 175px;     /* Grootte van je afbeelding */
-  height: 175px;    /* Houdt verhouding vast */
+  height: 100px;    /* Houdt verhouding vast */
   z-index: 3333;   /* Zichtbaar boven alles */
 }
 
