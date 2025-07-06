@@ -400,15 +400,24 @@ function mouseMoveHandler(e) {
     }
   }
 
-  // 🔁 Paddle Y
+  // 🔁 Paddle Y met beperking vóór lancering
   if (mouseY > 0 && mouseY < canvas.height) {
     const newY = mouseY - paddleHeight / 2;
-    if (!isPaddleBlockedVertically(newY)) {
-      paddleY = Math.max(0, Math.min(canvas.height - paddleHeight, newY));
+
+    if (!ballLaunched) {
+      // ⛔ Paddle mag vóór lancering niet boven 2/3 van het canvas
+      const maxY = canvas.height - canvas.height / 3;
+      if (newY >= maxY && !isPaddleBlockedVertically(newY)) {
+        paddleY = Math.min(canvas.height - paddleHeight, newY);
+      }
+    } else {
+      // ✅ Volledige vrijheid ná lancering
+      if (!isPaddleBlockedVertically(newY)) {
+        paddleY = Math.max(0, Math.min(canvas.height - paddleHeight, newY));
+      }
     }
   }
 }
-
 
 
 
