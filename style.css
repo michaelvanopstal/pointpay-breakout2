@@ -29,7 +29,7 @@ body {
 
 #scoreDisplay {
   position: absolute;
-  top: 35px;         /* pas aan voor waar jij ’m wilt */
+  top: 33px;         /* pas aan voor waar jij ’m wilt */
   left: 1125px;       /* pas aan op je layout */
   color: white;
   font-weight: bold;
@@ -49,7 +49,7 @@ body {
 
 #highscore-overlay {
   position: absolute;
-  top: 180px;
+  top: 195px;
   left: 20px;
   width: 200px;
   border-radius: 10px;
@@ -68,7 +68,7 @@ body {
   margin: 0;
 }
 #trophy {
-  width: 60px;
+  width: 120px;
   display: block;
   margin: 0 auto 10px auto;
 }
