@@ -1882,7 +1882,7 @@ function startTimer() {
     elapsedTime++;
     const minutes = String(Math.floor(elapsedTime / 60)).padStart(2, '0');
     const seconds = String(elapsedTime % 60).padStart(2, '0');
-    document.getElementById("timeDisplay").textContent = "time " + minutes + ":" + seconds;
+    document.getElementById("timeDisplay").textContent = "00:00";
   }, 1000);
 }
 
