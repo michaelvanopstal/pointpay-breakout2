@@ -113,7 +113,7 @@ body {
 #time-box {
   position: absolute;
   top: 36px;          /* verticaal afstellen */
-  left: 1250px;       /* horizontaal afstellen zodat hij in het TIME-vakje past */
+  left: 1275px;       /* horizontaal afstellen zodat hij in het TIME-vakje past */
   width: 100px;
   height: 30px;
   text-align: center;
