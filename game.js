@@ -1607,7 +1607,7 @@ for (let i = pxpBags.length - 1; i >= 0; i--) {
     pointPopups.push({
       x: bag.x,
       y: bag.y,
-      value: "+" + earned
+      value: "+" + earned,
       alpha: 1
     });
 
