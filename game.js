@@ -286,17 +286,29 @@ function keyDownHandler(e) {
   console.log("Toets ingedrukt:", e.key);
 
   // 🛡️ Voorkom acties als gebruiker in een inputveld of knop zit
-  if (["INPUT", "TEXTAREA", "BUTTON"].includes(document.activeElement.tagName)) return;
 
-  if (e.key === "Right" || e.key === "ArrowRight") {
-    rightPressed = true;
-  } else if (e.key === "Left" || e.key === "ArrowLeft") {
-    leftPressed = true;
-  } else if (e.key === "Up" || e.key === "ArrowUp") {
-    upPressed = true;
-  } else if (e.key === "Down" || e.key === "ArrowDown") {
-    downPressed = true;
-  }
+  if (["INPUT", "TEXTAREA", "BUTTON"].includes(document.activeElement.tagName)) return;
+if (
+  e.key === "Right" || e.key === "ArrowRight" || e.key === ">" || e.key === "."
+) {
+  rightPressed = true;
+
+} else if (
+  e.key === "Left" || e.key === "ArrowLeft" || e.key === "<" || e.key === ","
+) {
+  leftPressed = true;
+
+} else if (
+  e.key === "Up" || e.key === "ArrowUp"
+) {
+  upPressed = true;
+
+} else if (
+  e.key === "Down" || e.key === "ArrowDown"
+) {
+  downPressed = true;
+}
+
 
   // 🎯 Actie: bal afschieten (alleen bij omhoogtoets of spatie) als bal nog niet gelanceerd is
   if ((e.key === "ArrowUp" || e.code === "Space") && !ballLaunched) {
@@ -347,16 +359,28 @@ function keyDownHandler(e) {
 }
 
 function keyUpHandler(e) {
-  if (e.key === "Right" || e.key === "ArrowRight") {
+  if (
+    e.key === "Right" || e.key === "ArrowRight" || e.key === ">" || e.key === "."
+  ) {
     rightPressed = false;
-  } else if (e.key === "Left" || e.key === "ArrowLeft") {
+
+  } else if (
+    e.key === "Left" || e.key === "ArrowLeft" || e.key === "<" || e.key === ","
+  ) {
     leftPressed = false;
-  } else if (e.key === "Up" || e.key === "ArrowUp") {
+
+  } else if (
+    e.key === "Up" || e.key === "ArrowUp"
+  ) {
     upPressed = false;
-  } else if (e.key === "Down" || e.key === "ArrowDown") {
+
+  } else if (
+    e.key === "Down" || e.key === "ArrowDown"
+  ) {
     downPressed = false;
   }
 }
+
 
 function updateScoreDisplay() {
   document.getElementById("scoreDisplay").textContent = score;
