@@ -53,7 +53,7 @@ body {
 
 #timeImage {
   position: absolute;
-  top: 20px;      /* Pas aan voor verticale positie */
+  top: 10px;      /* Pas aan voor verticale positie */
   left: 1250px;      /* Pas aan voor horizontale positie */
   width: 175px;     /* Grootte van je afbeelding */
   height: 175px;    /* Houdt verhouding vast */
