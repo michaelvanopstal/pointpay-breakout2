@@ -1105,6 +1105,7 @@ function checkCoinCollision() {
   });
 }
 
+
 function collisionDetection() {
   balls.forEach(ball => {
     for (let c = 0; c < brickColumnCount; c++) {
@@ -1174,7 +1175,7 @@ function collisionDetection() {
 
               const earned = doublePointsActive ? 120 : 60;
               score += earned;
-              updateScoreDisplay(); // 👈 aangepaste regel
+              updateScoreDisplay();
 
               pointPopups.push({
                 x: b.x + brickWidth / 2,
@@ -1203,7 +1204,6 @@ function collisionDetection() {
               machineGunLastShot = Date.now();
               machineGunStartTime = Date.now();
 
-              // Zet gun direct boven paddle met juiste offset
               machineGunGunX = paddleX + paddleWidth / 2 - 30;
               const gunStartY = Math.max(paddleY - machineGunYOffset, minMachineGunY);
               machineGunGunY = gunStartY;
@@ -1233,11 +1233,18 @@ function collisionDetection() {
           }
 
           b.status = 0;
-          b.type = "normal";
+          
+          // ✅ Tel 5 punten bij voor normale blokjes
+          if (b.type === "normal") {
+            score += 5;
+            updateScoreDisplay();
+          }
+
+          b.type = "normal"; // dit blijft gewoon staan
 
           const earned = doublePointsActive ? 20 : 10;
           score += earned;
-          updateScoreDisplay(); // 👈 aangepaste regel
+          updateScoreDisplay();
 
           spawnCoin(b.x, b.y);
         }
