@@ -366,15 +366,25 @@ function updateScoreDisplay() {
 function mouseMoveHandler(e) {
   const rect = canvas.getBoundingClientRect();
   const mouseX = e.clientX - rect.left;
+  const mouseY = e.clientY - rect.top;
 
-  if (mouseX > 0 && mouseX < rect.width) {
-    paddleX = mouseX - paddleWidth / 2;
+  // 🔁 Paddle X
+  if (mouseX > 0 && mouseX < canvas.width) {
+    const newX = mouseX - paddleWidth / 2;
+    if (!isPaddleBlockedHorizontally(newX)) {
+      paddleX = Math.max(0, Math.min(canvas.width - paddleWidth, newX));
+    }
+  }
 
-    // Zorg dat paddle binnen canvas blijft
-    if (paddleX < 0) paddleX = 0;
-    if (paddleX + paddleWidth > canvas.width) paddleX = canvas.width - paddleWidth;
+  // 🔁 Paddle Y
+  if (mouseY > 0 && mouseY < canvas.height) {
+    const newY = mouseY - paddleHeight / 2;
+    if (!isPaddleBlockedVertically(newY)) {
+      paddleY = Math.max(0, Math.min(canvas.height - paddleHeight, newY));
+    }
   }
 }
+
 
 
 
