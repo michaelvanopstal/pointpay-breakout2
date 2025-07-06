@@ -116,6 +116,17 @@ body {
   z-index: 500;
 }
 
+#timerDisplay {
+  position: absolute;
+  top: 40px;
+  left: 1180px;
+  color: white;
+  font-size: 20px;
+  font-family: Arial, sans-serif;
+  z-index: 999;
+  pointer-events: none;
+}
+
 #highscore-overlay ol li {
   margin-bottom: 10px;
   white-space: nowrap;
