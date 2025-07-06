@@ -364,11 +364,18 @@ function updateScoreDisplay() {
 
 
 function mouseMoveHandler(e) {
-  const relativeX = e.clientX - canvas.offsetLeft;
-  if (relativeX > 0 && relativeX < canvas.width) {
-    paddleX = relativeX - paddleWidth / 2;
+  const rect = canvas.getBoundingClientRect();
+  const mouseX = e.clientX - rect.left;
+
+  if (mouseX > 0 && mouseX < rect.width) {
+    paddleX = mouseX - paddleWidth / 2;
+
+    // Zorg dat paddle binnen canvas blijft
+    if (paddleX < 0) paddleX = 0;
+    if (paddleX + paddleWidth > canvas.width) paddleX = canvas.width - paddleWidth;
   }
 }
+
 
 
 function drawBricks() {
