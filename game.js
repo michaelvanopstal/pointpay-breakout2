@@ -48,6 +48,7 @@ let paddleY = canvas.height - paddleHeight - 0; // beginpositie onderaan
 const paddleSpeed = 6;
 let downPressed = false;
 let upPressed = false;
+let paddleFreeMove = false; // ⛔ paddle zit eerst vast in verticale beweging
 
 // 🌟 Level 2 overgang
 let levelTransitionActive = false;
@@ -310,19 +311,22 @@ if (
 }
 
 
-  // 🎯 Actie: bal afschieten (alleen bij omhoogtoets of spatie) als bal nog niet gelanceerd is
-  if ((e.key === "ArrowUp" || e.code === "Space") && !ballLaunched) {
-    ballLaunched = true;
-    ballMoving = true;
+ // 🎯 Actie: bal afschieten (alleen bij omhoogtoets of spatie) als bal nog niet gelanceerd is
+if ((e.key === "ArrowUp" || e.code === "Space") && !ballLaunched) {
+  ballLaunched = true;
+  ballMoving = true;
 
-    shootSound.currentTime = 0;
-    shootSound.play();
+  shootSound.currentTime = 0;
+  shootSound.play();
 
-    balls[0].dx = 0;
-    balls[0].dy = -6;
+  balls[0].dx = 0;
+  balls[0].dy = -6;
 
-    if (!timerRunning) startTimer(); // ✅ Start timer bij eerste afschot
-  }
+  if (!timerRunning) startTimer(); // ✅ Start timer bij eerste afschot
+
+  // ✅ Na afschieten: paddle mag omhoog bewegen
+  paddleFreeMove = true;
+}
 
   if ((e.code === "ArrowUp" || e.code === "Space") && rocketActive && rocketAmmo > 0 && !rocketFired) {
     rocketFired = true;
@@ -400,24 +404,20 @@ function mouseMoveHandler(e) {
     }
   }
 
-  // 🔁 Paddle Y met beperking vóór lancering
+  // 🔁 Paddle Y met beperking vóór paddleFreeMove
   if (mouseY > 0 && mouseY < canvas.height) {
     const newY = mouseY - paddleHeight / 2;
 
-    if (!ballLaunched) {
-      // ⛔ Paddle mag vóór lancering niet boven 2/3 van het canvas
-      const maxY = canvas.height - canvas.height / 3;
-      if (newY >= maxY && !isPaddleBlockedVertically(newY)) {
-        paddleY = Math.min(canvas.height - paddleHeight, newY);
-      }
-    } else {
-      // ✅ Volledige vrijheid ná lancering
+    if (paddleFreeMove) {
+      // ✅ Volledige vrijheid zodra paddle is vrijgegeven
       if (!isPaddleBlockedVertically(newY)) {
         paddleY = Math.max(0, Math.min(canvas.height - paddleHeight, newY));
       }
     }
+    // ⛔ Anders geen Y-beweging toegestaan
   }
 }
+
 
 
 
@@ -620,7 +620,6 @@ function resetAllBonuses() {
 
 
 
-
 function resetBall() {
   balls = [{
     x: paddleX + paddleWidth / 2 - ballRadius,
@@ -633,12 +632,16 @@ function resetBall() {
   ballLaunched = false;
   ballMoving = false;
 
+  // 🔒 Paddle weer vergrendeld tot hernieuwde afschot
+  paddleFreeMove = false;
+
   // 🧱 Zorg dat bij level 1 blokken direct zichtbaar zijn
   if (level === 1) {
     levelTransitionActive = false;
     transitionOffsetY = 0;
   }
 }
+
 
 function resetPaddle(skipBallReset = false, skipCentering = false) {
   // 🎯 Zet paddle terug in het midden (alleen als NIET geskiped en NIET machinegun)
@@ -1538,7 +1541,8 @@ if (ball.trail.length >= 2) {
 
  drawBricks();
 
-  if (leftPressed) {
+  
+if (leftPressed) {
   const newX = paddleX - paddleSpeed;
   if (newX > 0 && !isPaddleBlockedHorizontally(newX)) {
     paddleX = newX;
@@ -1552,10 +1556,14 @@ if (rightPressed) {
   }
 }
 
+// 🔁 Alleen omhoogbeweging beperken tot na afschieten
 if (upPressed) {
   const newY = paddleY - paddleSpeed;
-  if (newY > 0 && !isPaddleBlockedVertically(newY)) {
-    paddleY = newY;
+
+  if (paddleFreeMove) {
+    if (newY > 0 && !isPaddleBlockedVertically(newY)) {
+      paddleY = newY;
+    }
   }
 }
 
@@ -1565,6 +1573,7 @@ if (downPressed) {
     paddleY = newY;
   }
 }
+
 
   drawPaddle();
 
@@ -2016,6 +2025,7 @@ function triggerPaddleExplosion() {
 
       ballLaunched = false;
       ballMoving = false;
+      paddleFreeMove = false; // ⛓️ paddle weer vergrendeld
 
       resetTriggered = false;
       resetPaddle();
@@ -2081,6 +2091,8 @@ function triggerPaddleExplosion() {
       showGameOver = true;
       gameOverAlpha = 0;
       gameOverTimer = 0;
+
+      paddleFreeMove = false; // ⛓️ paddle opnieuw vergrendeld
 
       resetBricks();
       resetBall();
