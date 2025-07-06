@@ -820,7 +820,7 @@ function saveHighscore() {
     highscores.forEach((entry, index) => {
       const lvl = entry.level || 1;
       const li = document.createElement("li");
-      li.textContent = `${index + 1}. ${entry.name} — ${entry.score} pxp — ${entry.time} — Level ${lvl}`;
+      li.textContent = `${index + 1}. ${entry.name} — ${entry.score} — ${entry.time} — Level ${lvl}`;
       list.appendChild(li);
     });
   }
@@ -1089,7 +1089,7 @@ function checkCoinCollision() {
       pointPopups.push({
         x: coin.x,
         y: coin.y,
-        value: "+" + earned + " pxp",
+        value: "+" + earned
         alpha: 1
       });
     } else if (coinBottom > canvas.height) {
@@ -1607,7 +1607,7 @@ for (let i = pxpBags.length - 1; i >= 0; i--) {
     pointPopups.push({
       x: bag.x,
       y: bag.y,
-      value: "+" + earned + " pxp",
+      value: "+" + earned
       alpha: 1
     });
 
@@ -1704,7 +1704,7 @@ if (machineGunCooldownActive && Date.now() - machineGunStartTime > machineGunCoo
   pointPopups.push({
     x: paddleX + paddleWidth / 2,
     y: canvas.height - 30,
-    value: "+500 PXP",
+    value: "+500",
     alpha: 1
   });
 
