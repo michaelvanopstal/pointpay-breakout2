@@ -1233,20 +1233,21 @@ function collisionDetection() {
           }
 
           b.status = 0;
-          
-          // ✅ Tel 5 punten bij voor normale blokjes
+
+          let earned = 0;
+
           if (b.type === "normal") {
-            score += 5;
-            updateScoreDisplay();
-          }
+          earned = 5; // Alleen 5 punten voor normaal blokje
+          } else {
+          earned = doublePointsActive ? 20 : 10; // Andere blokjes
+         }
 
-          b.type = "normal"; // dit blijft gewoon staan
+           score += earned;
+           updateScoreDisplay();
 
-          const earned = doublePointsActive ? 20 : 10;
-          score += earned;
-          updateScoreDisplay();
+           b.type = "normal"; // reset bloktype
 
-          spawnCoin(b.x, b.y);
+           spawnCoin(b.x, b.y);
         }
       }
     }
