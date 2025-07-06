@@ -63,8 +63,8 @@ body {
   position: absolute;
   top: 20px;      /* Pas aan voor verticale positie */
   left: 1250px;      /* Pas aan voor horizontale positie */
-  width: 200px;     /* Grootte van je afbeelding */
-  height: 200;    /* Houdt verhouding vast */
+  width: 160px;     /* Grootte van je afbeelding */
+  height: 160;    /* Houdt verhouding vast */
   z-index: 3333;   /* Zichtbaar boven alles */
 }
 
