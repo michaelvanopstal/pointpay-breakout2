@@ -92,6 +92,15 @@ let speedBoostStart = 0;
 const speedBoostDuration = 30000;
 const speedBoostMultiplier = 1.5;
 
+
+let thunder1 = new Audio("thunder1.mp3");
+let thunder2 = new Audio("thunder2.mp3");
+let thunder3 = new Audio("thunder3.mp3");
+let thunderSounds = [thunder1, thunder2, thunder3];
+
+
+
+
 balls.push({
   x: canvas.width / 2,
   y: canvas.height - paddleHeight - 10,
@@ -2254,6 +2263,7 @@ function getRandomElectricColor() {
   return colors[Math.floor(Math.random() * colors.length)];
 }
 
+
 function triggerSilverExplosion(x, y) {
   // Zilveren steensplinters vanuit middelpunt
   for (let i = 0; i < 20; i++) {
@@ -2270,6 +2280,13 @@ function triggerSilverExplosion(x, y) {
       type: "silver"
     });
   }
+
+  // 🎧 Dondergeluid direct bij start van de explosie
+ const sound = thunderSounds[Math.floor(Math.random() * thunderSounds.length)];
+ sound.currentTime = 0;
+ sound.volume = 0.8;
+ sound.play();
+
 
   // Witte flitsen + elektriciteit over canvas
   for (let i = 0; i < 15; i++) {
