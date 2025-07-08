@@ -513,26 +513,25 @@ function drawPointPopups() {
   ctx.globalAlpha = 1; // Transparantie resetten
 }
 
-
 function resetBricks() {
   for (let c = 0; c < brickColumnCount; c++) {
     for (let r = 0; r < brickRowCount; r++) {
       bricks[c][r].status = 1;
 
-      let brickType = "normal"; // ✅ standaardwaarde
+      let brickType = "normal";
 
       const bonus = bonusBricks.find(b => b.col === c && b.row === r);
       const pxp = pxpMap.find(p => p.col === c && p.row === r);
 
       if (level === 2 && pxp) {
-        brickType = pxp.type || "stone"; // 👈 gebruik type van pxp, anders 'stone'
+        brickType = pxp.type || "stone";
       } else if (bonus) {
         brickType = bonus.type;
       }
 
       bricks[c][r].type = brickType;
 
-      // 🔨 Extra eigenschappen voor 'stone' blokken
+      // eigenschappen
       if (brickType === "stone") {
         bricks[c][r].hits = 0;
         bricks[c][r].hasDroppedBag = false;
@@ -541,22 +540,19 @@ function resetBricks() {
         delete bricks[c][r].hasDroppedBag;
       }
 
-      // ⚡️ Voor 'electric' blokken: 3 hit-structuur
       if (brickType === "electric") {
-        bricks[c][r].hits = 0; // vereist voor 3 fasen: silver1 → silver2 → elektrisch effect
+        bricks[c][r].hits = 0;
       }
 
-      // ❤️ Hartjes resetten
       bricks[c][r].hasHeart = false;
       bricks[c][r].heartDropped = false;
     }
   }
-}
-
 
   // ✅ Plaats 4 willekeurige hartjes onder normale blokjes
   assignHeartBlocks();
 }
+
 
 // 🔧 Hulp-functie om 4 hartjes te verdelen
 function assignHeartBlocks() {
