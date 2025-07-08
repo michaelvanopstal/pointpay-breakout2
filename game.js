@@ -1441,6 +1441,27 @@ function draw() {
   checkFlyingCoinHits();
   drawPointPopups();
 
+
+  // ⚡️ Elektrische bliksemstralen tekenen
+electricBursts.forEach((e, i) => {
+  const endX = e.x + Math.cos(e.angle) * e.length;
+  const endY = e.y + Math.sin(e.angle) * e.length;
+
+  ctx.beginPath();
+  ctx.moveTo(e.x, e.y);
+  ctx.lineTo(endX, endY);
+  ctx.strokeStyle = `rgba(0, 255, 255, ${e.alpha * electricIntensity})`;
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Verouder de straal
+  e.alpha -= 0.1;
+  e.life--;
+});
+
+// Verwijder dode stralen
+electricBursts = electricBursts.filter(e => e.life > 0 && e.alpha > 0);
+
   if (doublePointsActive && Date.now() - doublePointsStartTime > doublePointsDuration) {
     doublePointsActive = false;
   }
@@ -2213,6 +2234,18 @@ function triggerElectricEffect(x, y) {
   }
 }
 
+function triggerElectricEffect(x, y) {
+  for (let i = 0; i < electricBurstCount; i++) {
+    electricBursts.push({
+      x: x + brickWidth / 2,
+      y: y + brickHeight / 2,
+      angle: Math.random() * Math.PI * 2,
+      length: 25 + Math.random() * 35,
+      alpha: 1.0,
+      life: 10 + Math.floor(Math.random() * 10)
+    });
+  }
+}
 
 function triggerBallReset() {
   const btn = document.getElementById("resetBallBtn");
