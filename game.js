@@ -429,6 +429,7 @@ function mouseMoveHandler(e) {
     // ⛔ Anders geen Y-beweging toegestaan
   }
 }
+
 function drawBricks() {
   const totalBricksWidth = brickColumnCount * brickWidth;
   const offsetX = Math.floor((canvas.width - totalBricksWidth) / 2 - 3);
@@ -440,6 +441,7 @@ function drawBricks() {
         const brickX = offsetX + c * brickWidth;
         const brickY = r * brickHeight + (levelTransitionActive ? transitionOffsetY : 0);
 
+        // Opslaan voor botsing
         b.x = brickX;
         b.y = brickY;
 
@@ -447,28 +449,34 @@ function drawBricks() {
           case "2x":
             ctx.drawImage(doublePointsImg, brickX, brickY, brickWidth, brickHeight);
             break;
+
           case "rocket":
             ctx.drawImage(powerBlock2Img, brickX, brickY, brickWidth, brickHeight);
             break;
+
           case "power":
             ctx.drawImage(powerBlockImg, brickX, brickY, brickWidth, brickHeight);
             break;
+
           case "doubleball":
             ctx.drawImage(doubleBallImg, brickX, brickY, brickWidth, brickHeight);
             break;
+
           case "machinegun":
             ctx.drawImage(machinegunBlockImg, brickX, brickY, brickWidth, brickHeight);
             break;
+
           case "speed":
             ctx.drawImage(speedImg, brickX, brickY, brickWidth, brickHeight);
             break;
 
           case "electric":
-            if (!b.hits || b.hits === 0) {
-              ctx.drawImage(silver1Img, brickX, brickY, brickWidth, brickHeight);
+            if (b.hits === 0) {
+              ctx.drawImage(silver1Img, brickX, brickY, brickWidth, brickHeight); // eerste fase
             } else if (b.hits === 1) {
-              ctx.drawImage(silver2Img, brickX, brickY, brickWidth, brickHeight);
+              ctx.drawImage(silver2Img, brickX, brickY, brickWidth, brickHeight); // gescheurd
             }
+            // bij hits >= 2 wordt hij verwijderd — dus niks tekenen
             break;
 
           case "stone":
@@ -511,6 +519,7 @@ function drawPointPopups() {
   ctx.globalAlpha = 1; // Transparantie resetten
 }
 
+
 function resetBricks() {
   for (let c = 0; c < brickColumnCount; c++) {
     for (let r = 0; r < brickRowCount; r++) {
@@ -529,7 +538,7 @@ function resetBricks() {
 
       bricks[c][r].type = brickType;
 
-      // eigenschappen
+      // 🪨 Extra voor 'stone'
       if (brickType === "stone") {
         bricks[c][r].hits = 0;
         bricks[c][r].hasDroppedBag = false;
@@ -538,16 +547,18 @@ function resetBricks() {
         delete bricks[c][r].hasDroppedBag;
       }
 
+      // ⚡ Init hits voor 'electric'
       if (brickType === "electric") {
         bricks[c][r].hits = 0;
       }
 
+      // ❤️ Reset hartje
       bricks[c][r].hasHeart = false;
       bricks[c][r].heartDropped = false;
     }
   }
 
-  // ✅ Plaats 4 willekeurige hartjes onder normale blokjes
+  // ✅ Hartjes verdelen
   assignHeartBlocks();
 }
 
@@ -1129,49 +1140,6 @@ function checkRocketCollision() {
 
 
 
-
-function checkCoinCollision() {
-  coins.forEach(coin => {
-    if (!coin.active) return;
-
-    const coinLeft = coin.x;
-    const coinRight = coin.x + coin.radius * 2;
-    const coinTop = coin.y;
-    const coinBottom = coin.y + coin.radius * 2;
-
-    const paddleLeft = paddleX;
-    const paddleRight = paddleX + paddleWidth;
-    const paddleTop = paddleY;
-    const paddleBottom = paddleY + paddleHeight;
-
-    const isOverlap =
-      coinRight >= paddleLeft &&
-      coinLeft <= paddleRight &&
-      coinBottom >= paddleTop &&
-      coinTop <= paddleBottom;
-
-    if (isOverlap) {
-      coin.active = false;
-
-      const earned = doublePointsActive ? 20 : 10;
-      score += earned;
-      updateScoreDisplay(); // 👈 aangepaste regel
-
-      coinSound.currentTime = 0;
-      coinSound.play();
-
-      pointPopups.push({
-        x: coin.x,
-        y: coin.y,
-        value: "+" + earned,
-        alpha: 1
-      });
-    } else if (coinBottom > canvas.height) {
-      coin.active = false;
-    }
-  });
-}
-
 function collisionDetection() {
   balls.forEach(ball => {
     for (let c = 0; c < brickColumnCount; c++) {
@@ -1208,19 +1176,19 @@ function collisionDetection() {
             b.heartDropped = true;
           }
 
-          // ⚡ Gedrag voor 'electric' blok
+          // ⚡ ELEKTRISCH BLOK — 2 HITS
           if (b.type === "electric") {
             b.hits = (b.hits || 0) + 1;
 
             if (b.hits === 1) {
-              // Eerste hit: toon gescheurd zilver
+              // ➤ Eerste hit → gescheurd zilver tonen (silver2)
               electricHitSound.currentTime = 0;
               electricHitSound.play();
               return;
             }
 
             if (b.hits === 2) {
-              // Tweede hit: verwijder blok + elektrische explosie
+              // ➤ Tweede hit → trigger bliksem + punten + verwijderen
               b.status = 0;
 
               for (let i = 0; i < electricBurstCount; i++) {
@@ -1251,7 +1219,7 @@ function collisionDetection() {
               return;
             }
 
-            return; // verder niks
+            return;
           }
 
           // 🪨 Stenen blok
@@ -1316,8 +1284,7 @@ function collisionDetection() {
               machineGunStartTime = Date.now();
 
               machineGunGunX = paddleX + paddleWidth / 2 - 30;
-              const gunStartY = Math.max(paddleY - machineGunYOffset, minMachineGunY);
-              machineGunGunY = gunStartY;
+              machineGunGunY = Math.max(paddleY - machineGunYOffset, minMachineGunY);
 
               b.status = 0;
               b.type = "normal";
@@ -1343,6 +1310,7 @@ function collisionDetection() {
               break;
           }
 
+          // ✅ Standaard gedrag
           b.status = 0;
 
           let earned = b.type === "normal" ? 5 : (doublePointsActive ? 20 : 10);
@@ -1356,6 +1324,7 @@ function collisionDetection() {
     }
   });
 }
+
 
 
 
