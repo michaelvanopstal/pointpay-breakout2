@@ -108,7 +108,8 @@ balls.push({
 const bonusBricks = [
   { col: 5, row: 3, type: "rocket" },  { col: 2, row: 12, type: "machinegun" },
   { col: 8, row: 4, type: "power" },
-  { col: 2, row: 7, type: "doubleball" },
+  { col: 2, row: 7, type: "doubleball" }, { col: 7, row: 14, type: "silver" },
+
   { col: 4, row: 7, type: "2x" },
   { col: 2, row: 3, type: "speed" },
   { col: 3, row: 14, type: "stone" },
@@ -190,6 +191,12 @@ for (let c = 0; c < brickColumnCount; c++) {
     };
   }
 }
+
+const silver1Img = new Image();
+silver1Img.src = "silver1.png";
+
+const silver2Img = new Image();
+silver2Img.src = "silver2.png";
 
 const heartBoardImg = new Image();
 heartBoardImg.src = "heart_board.png";
@@ -458,6 +465,13 @@ const offsetX = Math.floor((canvas.width - totalBricksWidth) / 2 - 3);
           case "speed":
             ctx.drawImage(speedImg, brickX, brickY, brickWidth, brickHeight);
             break;
+            case "silver":
+          if (!b.hits || b.hits === 0) {
+             ctx.drawImage(silver1Img, brickX, brickY, brickWidth, brickHeight);
+           } else if (b.hits === 1) {
+             ctx.drawImage(silver2Img, brickX, brickY, brickWidth, brickHeight);
+           }
+           break;
           case "stone":
             if (b.hits === 0) {
               ctx.drawImage(stone1Img, brickX, brickY, brickWidth, brickHeight);
@@ -1153,7 +1167,6 @@ function checkCoinCollision() {
   });
 }
 
-
 function collisionDetection() {
   balls.forEach(ball => {
     for (let c = 0; c < brickColumnCount; c++) {
@@ -1177,7 +1190,7 @@ function collisionDetection() {
             ball.y = b.y + brickHeight + ball.radius + 1;
           }
 
-          // 💖 Hartje laten vallen als dit blokje er eentje heeft
+          // 💖 Hartje laten vallen
           if (b.hasHeart && !b.heartDropped) {
             fallingHearts.push({
               x: b.x + brickWidth / 2 - 12,
@@ -1190,14 +1203,12 @@ function collisionDetection() {
             b.heartDropped = true;
           }
 
-          // 🪨 Gedrag voor stenen blokken
+          // 🪨 Steen-blok gedrag
           if (b.type === "stone") {
             bricksSound.currentTime = 0;
             bricksSound.play();
-
             b.hits++;
 
-            // 🧱 Puin genereren
             for (let i = 0; i < 5; i++) {
               stoneDebris.push({
                 x: b.x + brickWidth / 2,
@@ -1236,7 +1247,33 @@ function collisionDetection() {
             return;
           }
 
-          // 🎁 Bonusacties met geluid
+          // 🪙 Gedrag voor silver blokken
+          if (b.type === "silver") {
+            b.hits = (b.hits || 0) + 1;
+
+            if (b.hits === 1) {
+              // toon silver2.png – gebeurt in drawBricks()
+            } else if (b.hits >= 2) {
+              b.status = 0;
+
+              triggerSilverExplosion(b.x + brickWidth / 2, b.y + brickHeight / 2);
+
+              const earned = doublePointsActive ? 150 : 75;
+              score += earned;
+              updateScoreDisplay();
+
+              pointPopups.push({
+                x: b.x + brickWidth / 2,
+                y: b.y,
+                value: "+" + earned,
+                alpha: 1
+              });
+            }
+
+            return;
+          }
+
+          // 🎁 Bonusacties
           switch (b.type) {
             case "power":
             case "flags":
@@ -1251,11 +1288,8 @@ function collisionDetection() {
               paddleDamageZones = [];
               machineGunLastShot = Date.now();
               machineGunStartTime = Date.now();
-
               machineGunGunX = paddleX + paddleWidth / 2 - 30;
-              const gunStartY = Math.max(paddleY - machineGunYOffset, minMachineGunY);
-              machineGunGunY = gunStartY;
-
+              machineGunGunY = Math.max(paddleY - machineGunYOffset, minMachineGunY);
               b.status = 0;
               b.type = "normal";
               break;
@@ -1282,25 +1316,18 @@ function collisionDetection() {
 
           b.status = 0;
 
-          let earned = 0;
+          let earned = (b.type === "normal") ? 5 : (doublePointsActive ? 20 : 10);
+          score += earned;
+          updateScoreDisplay();
 
-          if (b.type === "normal") {
-          earned = 5; // Alleen 5 punten voor normaal blokje
-          } else {
-          earned = doublePointsActive ? 20 : 10; // Andere blokjes
-         }
-
-           score += earned;
-           updateScoreDisplay();
-
-           b.type = "normal"; // reset bloktype
-
-           spawnCoin(b.x, b.y);
+          b.type = "normal";
+          spawnCoin(b.x, b.y);
         }
       }
     }
   });
 }
+
 
 function spawnExtraBall(originBall) {
   // Huidige bal krijgt een lichte afwijking
@@ -1612,16 +1639,18 @@ if (downPressed) {
     startLevelTransition();
   }
 
-  // Explosies tekenen
-  explosions.forEach(e => {
-    ctx.beginPath();
-    ctx.arc(e.x, e.y, e.radius, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(255, 165, 0, ${e.alpha})`;
-    ctx.fill();
-    e.radius += 2;
-    e.alpha -= 0.05;
-  });
-  explosions = explosions.filter(e => e.alpha > 0);
+ // Explosies tekenen
+explosions.forEach(e => {
+  ctx.beginPath();
+  ctx.arc(e.x, e.y, e.radius, 0, Math.PI * 2);
+  ctx.fillStyle = e.color === "white"
+    ? `rgba(255, 255, 255, ${e.alpha})`
+    : `rgba(255, 165, 0, ${e.alpha})`;
+  ctx.fill();
+  e.radius += 2;
+  e.alpha -= 0.05;
+});
+explosions = explosions.filter(e => e.alpha > 0);
 
   // Rook tekenen
   smokeParticles.forEach(p => {
@@ -1883,7 +1912,7 @@ if (showGameOver) {
 
 function onImageLoad() {
   imagesLoaded++;
-  if (imagesLoaded === 21) {
+  if (imagesLoaded === 23) {
     resetBricks();
     updateLivesDisplay(); // ✅ laat bij start meteen levens zien
     resetPaddle(); // 🔥 paddletekening klaarzetten
@@ -1912,6 +1941,8 @@ machinegunGunImg.onload = onImageLoad;
 coinImg.onload = onImageLoad;
 heartImg.onload = onImageLoad; 
 heartBoardImg.onload = onImageLoad;
+silver1Img.onload = onImageLoad;
+silver2Img.onload = onImageLoad;
 
 
 document.addEventListener("mousedown", function (e) {
@@ -2141,6 +2172,7 @@ function startLevelTransition() {
   updateLivesDisplay();
 }
 
+
 function updateLivesDisplay() {
   const display = document.getElementById("livesDisplay");
   if (!display) return;
@@ -2153,6 +2185,35 @@ function updateLivesDisplay() {
     img.style.width = "28px";
     img.style.height = "28px";
     display.appendChild(img);
+  }
+}
+
+
+function triggerSilverExplosion(x, y) {
+  for (let i = 0; i < 20; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = Math.random() * 5 + 2;
+
+    stoneDebris.push({
+      x: x,
+      y: y,
+      dx: Math.cos(angle) * speed,
+      dy: Math.sin(angle) * speed,
+      radius: Math.random() * 3 + 2,
+      alpha: 1,
+      type: "silver" // optioneel voor styling
+    });
+  }
+
+  // Hele canvas met witte electriciteitflits
+  for (let i = 0; i < 15; i++) {
+    explosions.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      radius: Math.random() * 30 + 10,
+      alpha: 1,
+      color: "white"
+    });
   }
 }
 
