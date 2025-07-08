@@ -1415,9 +1415,10 @@ function isPaddleBlockedHorizontally(newX) {
   return false;
 }
 
-console.log("DRAW CALLED");
+
 
 function draw() {
+  console.log("DRAW CALLED");
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   collisionDetection();
   drawCoins();
