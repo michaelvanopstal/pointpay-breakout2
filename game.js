@@ -1138,6 +1138,48 @@ function checkRocketCollision() {
   }
 }
 
+function checkCoinCollision() {
+  coins.forEach(coin => {
+    if (!coin.active) return;
+
+    const coinLeft = coin.x;
+    const coinRight = coin.x + coin.radius * 2;
+    const coinTop = coin.y;
+    const coinBottom = coin.y + coin.radius * 2;
+
+    const paddleLeft = paddleX;
+    const paddleRight = paddleX + paddleWidth;
+    const paddleTop = paddleY;
+    const paddleBottom = paddleY + paddleHeight;
+
+    const isOverlap =
+      coinRight >= paddleLeft &&
+      coinLeft <= paddleRight &&
+      coinBottom >= paddleTop &&
+      coinTop <= paddleBottom;
+
+    if (isOverlap) {
+      coin.active = false;
+
+      const earned = doublePointsActive ? 20 : 10;
+      score += earned;
+      updateScoreDisplay(); // 👈 aangepaste regel
+
+      coinSound.currentTime = 0;
+      coinSound.play();
+
+      pointPopups.push({
+        x: coin.x,
+        y: coin.y,
+        value: "+" + earned,
+        alpha: 1
+      });
+    } else if (coinBottom > canvas.height) {
+      coin.active = false;
+    }
+  });
+}
+
 
 
 function collisionDetection() {
