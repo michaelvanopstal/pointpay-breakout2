@@ -1174,7 +1174,6 @@ function checkCoinCollision() {
   });
 }
 
-
 function collisionDetection() {
   balls.forEach(ball => {
     for (let c = 0; c < brickColumnCount; c++) {
@@ -1211,13 +1210,35 @@ function collisionDetection() {
             b.heartDropped = true;
           }
 
-          // ⚡ Nieuw gedrag voor electric-blokje
+          // ⚡ Gedrag voor 'electric' blok
           if (b.type === "electric") {
             b.hits = (b.hits || 0) + 1;
 
-            if (b.hits >= 3) {
+            if (b.hits === 1) {
+              // Eerste hit: toon gescheurd zilver
+              electricHitSound.currentTime = 0;
+              electricHitSound.play();
+              return;
+            }
+
+            if (b.hits === 2) {
+              // Tweede hit: verwijder blok + elektrische explosie
               b.status = 0;
-              triggerElectricEffect(b.x, b.y); // veel bliksemstralen
+
+              for (let i = 0; i < electricBurstCount; i++) {
+                electricBursts.push({
+                  x: b.x + brickWidth / 2,
+                  y: b.y + brickHeight / 2,
+                  angle: Math.random() * 2 * Math.PI,
+                  length: Math.random() * 40 + 20,
+                  alpha: 1,
+                  life: 10 + Math.floor(Math.random() * 5)
+                });
+              }
+
+              electricExplodeSound.currentTime = 0;
+              electricExplodeSound.play();
+
               const earned = doublePointsActive ? 80 : 40;
               score += earned;
               updateScoreDisplay();
@@ -1228,9 +1249,11 @@ function collisionDetection() {
                 value: "+" + earned,
                 alpha: 1
               });
+
+              return;
             }
 
-            return; // geen verdere acties
+            return; // verder niks
           }
 
           // 🪨 Stenen blok
@@ -1324,24 +1347,18 @@ function collisionDetection() {
 
           b.status = 0;
 
-          let earned = 0;
-
-          if (b.type === "normal") {
-            earned = 5;
-          } else {
-            earned = doublePointsActive ? 20 : 10;
-          }
-
+          let earned = b.type === "normal" ? 5 : (doublePointsActive ? 20 : 10);
           score += earned;
           updateScoreDisplay();
 
-          b.type = "normal"; // reset naar normaal
+          b.type = "normal";
           spawnCoin(b.x, b.y);
         }
       }
     }
   });
 }
+
 
 
 function spawnExtraBall(originBall) {
