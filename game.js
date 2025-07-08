@@ -429,8 +429,6 @@ function mouseMoveHandler(e) {
     // ⛔ Anders geen Y-beweging toegestaan
   }
 }
-
-
 function drawBricks() {
   const totalBricksWidth = brickColumnCount * brickWidth;
   const offsetX = Math.floor((canvas.width - totalBricksWidth) / 2 - 3);
@@ -466,10 +464,10 @@ function drawBricks() {
             break;
 
           case "electric":
-            if (b.hits === 1) {
-              ctx.drawImage(electricBlockImg2, brickX, brickY, brickWidth, brickHeight);
-            } else {
-              ctx.drawImage(electricBlockImg1, brickX, brickY, brickWidth, brickHeight);
+            if (!b.hits || b.hits === 0) {
+              ctx.drawImage(silver1Img, brickX, brickY, brickWidth, brickHeight);
+            } else if (b.hits === 1) {
+              ctx.drawImage(silver2Img, brickX, brickY, brickWidth, brickHeight);
             }
             break;
 
