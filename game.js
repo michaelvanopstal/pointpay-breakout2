@@ -2197,22 +2197,35 @@ function updateLivesDisplay() {
 function drawElectricBursts() {
   for (let i = electricBursts.length - 1; i >= 0; i--) {
     const e = electricBursts[i];
-    const endX = e.x + Math.cos(e.angle) * e.length;
-    const endY = e.y + Math.sin(e.angle) * e.length;
+    const pts = e.points;
+    if (!pts || pts.length < 2) continue;
 
+    // Glow en kleurinstelling
     ctx.strokeStyle = e.color.replace("ALPHA", e.alpha.toFixed(2));
     ctx.lineWidth = e.width;
+    ctx.shadowBlur = 10;
+    ctx.shadowColor = e.color.replace("ALPHA", "0.4");
+
+    // Teken de bliksemlijn
     ctx.beginPath();
-    ctx.moveTo(e.x, e.y);
-    ctx.lineTo(endX, endY);
+    ctx.moveTo(pts[0].x, pts[0].y);
+    for (let p = 1; p < pts.length; p++) {
+      ctx.lineTo(pts[p].x, pts[p].y);
+    }
     ctx.stroke();
 
-    e.alpha -= 0.025;
+    // Reset glow voor andere canvas-objecten
+    ctx.shadowBlur = 0;
+    ctx.shadowColor = "transparent";
+
+    // Fade-out
+    e.alpha -= 0.03;
     if (e.alpha <= 0) {
       electricBursts.splice(i, 1);
     }
   }
 }
+
 
 function getRandomElectricColor() {
   const colors = [
@@ -2257,14 +2270,32 @@ function triggerSilverExplosion(x, y) {
 
     // 6 elektriciteitsflitsen per witte bol
     for (let j = 0; j < 6; j++) {
-      electricBursts.push({
-        x: burstX,
-        y: burstY,
-        angle: Math.random() * 2 * Math.PI,
-        length: 40 + Math.random() * 60,
+          const points = [];
+          let prevX = burstX;
+          let prevY = burstY;
+          const segments = 5 + Math.floor(Math.random() * 5);
+          const angle = Math.random() * Math.PI * 2;
+          const length = 40 + Math.random() * 60;
+
+          for (let s = 0; s < segments; s++) {
+          const segmentLength = length / segments;
+          const deviation = (Math.random() - 0.5) * 20;
+ 
+          const nextX = prevX + Math.cos(angle) * segmentLength + Math.cos(angle + Math.PI / 2) * deviation;
+          const nextY = prevY + Math.sin(angle) * segmentLength + Math.sin(angle + Math.PI / 2) * deviation;
+
+          points.push({ x: nextX, y: nextY });
+          prevX = nextX;
+          prevY = nextY;
+        }
+
+        electricBursts.push({
+        points: points,
         width: 1 + Math.random() * 1.5,
         alpha: 1,
         color: getRandomElectricColor()
+
+
       });
     }
   }
