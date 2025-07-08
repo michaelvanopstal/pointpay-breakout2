@@ -119,7 +119,9 @@ balls.push({
 const bonusBricks = [
   { col: 5, row: 3, type: "rocket" },  { col: 2, row: 12, type: "machinegun" },
   { col: 8, row: 4, type: "power" },
-  { col: 2, row: 7, type: "doubleball" }, { col: 7, row: 14, type: "silver" },
+  { col: 2, row: 7, type: "doubleball" }, { col: 7, row: 14, type: "silver" },{ col: 8, row: 14, type: "silver" },{ col: 6, row: 14, type: "silver" },
+
+
 
   { col: 4, row: 7, type: "2x" },
   { col: 2, row: 3, type: "speed" },
