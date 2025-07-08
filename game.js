@@ -1416,9 +1416,11 @@ function isPaddleBlockedHorizontally(newX) {
 }
 
 
-
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  drawElectricBursts(); // 🔄 VOORAF tekenen, zodat het ONDER alles ligt
+
   collisionDetection();
   drawCoins();
   drawFallingHearts();
@@ -1428,7 +1430,7 @@ function draw() {
   drawFlyingCoins();
   checkFlyingCoinHits();
   drawPointPopups();
-  drawElectricBursts();
+
 
   if (doublePointsActive && Date.now() - doublePointsStartTime > doublePointsDuration) {
     doublePointsActive = false;
