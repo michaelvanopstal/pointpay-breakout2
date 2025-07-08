@@ -84,6 +84,8 @@ let heartPopupTimer = 0;               // timer voor popup “Wow! 10 hearts –
 let heartBoardX = 20;
 let heartBoardY = 20;
 
+let electricBursts = [];
+
 
 let speedBoostActive = false;
 let speedBoostStart = 0;
@@ -1425,6 +1427,7 @@ function draw() {
   drawFlyingCoins();
   checkFlyingCoinHits();
   drawPointPopups();
+  drawElectricBursts();
 
   if (doublePointsActive && Date.now() - doublePointsStartTime > doublePointsDuration) {
     doublePointsActive = false;
@@ -1825,7 +1828,7 @@ if (levelMessageVisible) {
   ctx.fillStyle = "#00ffff";
   ctx.font = "bold 36px Arial";
   ctx.textAlign = "center";
-  ctx.fillText(`PointPay Breakout Level ${level}`, canvas.width / 2, canvas.height / 2);
+  ctx.fillText(`BrickShift Level ${level}`, canvas.width / 2, canvas.height / 2);
   ctx.restore();
 }
 
@@ -2188,8 +2191,38 @@ function updateLivesDisplay() {
   }
 }
 
+function drawElectricBursts() {
+  for (let i = electricBursts.length - 1; i >= 0; i--) {
+    const e = electricBursts[i];
+    const endX = e.x + Math.cos(e.angle) * e.length;
+    const endY = e.y + Math.sin(e.angle) * e.length;
+
+    ctx.strokeStyle = e.color.replace("ALPHA", e.alpha.toFixed(2));
+    ctx.lineWidth = e.width;
+    ctx.beginPath();
+    ctx.moveTo(e.x, e.y);
+    ctx.lineTo(endX, endY);
+    ctx.stroke();
+
+    e.alpha -= 0.025;
+    if (e.alpha <= 0) {
+      electricBursts.splice(i, 1);
+    }
+  }
+}
+
+function getRandomElectricColor() {
+  const colors = [
+    "rgba(255, 255, 255, ALPHA)", // wit
+    "rgba(0, 200, 255, ALPHA)",   // neon blauw
+    "rgba(255, 50, 50, ALPHA)",   // roodachtig
+    "rgba(255, 255, 100, ALPHA)"  // geelachtig
+  ];
+  return colors[Math.floor(Math.random() * colors.length)];
+}
 
 function triggerSilverExplosion(x, y) {
+  // Zilveren steensplinters vanuit middelpunt
   for (let i = 0; i < 20; i++) {
     const angle = Math.random() * Math.PI * 2;
     const speed = Math.random() * 5 + 2;
@@ -2205,15 +2238,32 @@ function triggerSilverExplosion(x, y) {
     });
   }
 
-  // Hele canvas met witte electriciteitflits
+  // Witte explosies + elektriciteitsstralen
   for (let i = 0; i < 15; i++) {
+    const burstX = Math.random() * canvas.width;
+    const burstY = Math.random() * canvas.height;
+
+    // Witte flits (explosie)
     explosions.push({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
+      x: burstX,
+      y: burstY,
       radius: Math.random() * 30 + 10,
       alpha: 1,
       color: "white"
     });
+
+    // 6 elektriciteitsflitsen per witte bol
+    for (let j = 0; j < 6; j++) {
+      electricBursts.push({
+        x: burstX,
+        y: burstY,
+        angle: Math.random() * 2 * Math.PI,
+        length: 40 + Math.random() * 60,
+        width: 1 + Math.random() * 1.5,
+        alpha: 1,
+        color: getRandomElectricColor()
+      });
+    }
   }
 }
 
