@@ -2200,13 +2200,17 @@ function drawElectricBursts() {
     const pts = e.points;
     if (!pts || pts.length < 2) continue;
 
-    // Glow en kleurinstelling
-    ctx.strokeStyle = e.color.replace("ALPHA", e.alpha.toFixed(2));
-    ctx.lineWidth = e.width;
+    // Flikker-effect per straal (zoals stroboscoop)
+    const flicker = 0.7 + Math.sin(Date.now() * e.flickerSpeed + e.flickerPhase * 1000) * 0.3;
+
+    ctx.strokeStyle = e.color.replace("ALPHA", (e.alpha * flicker).toFixed(2));
+    ctx.lineWidth = e.width * flicker;
+
+    // Glow instellen
     ctx.shadowBlur = 10;
     ctx.shadowColor = e.color.replace("ALPHA", "0.4");
 
-    // Teken de bliksemlijn
+    // Hoofdstraal tekenen
     ctx.beginPath();
     ctx.moveTo(pts[0].x, pts[0].y);
     for (let p = 1; p < pts.length; p++) {
@@ -2214,17 +2218,30 @@ function drawElectricBursts() {
     }
     ctx.stroke();
 
-    // Reset glow voor andere canvas-objecten
+    // Vertakkingen tekenen (indien aanwezig)
+    if (e.forks) {
+      e.forks.forEach(fork => {
+        ctx.beginPath();
+        ctx.moveTo(pts[Math.floor(pts.length / 2)].x, pts[Math.floor(pts.length / 2)].y);
+        fork.forEach(fp => {
+          ctx.lineTo(fp.x, fp.y);
+        });
+        ctx.stroke();
+      });
+    }
+
+    // Glow uitschakelen voor volgende canvas-elementen
     ctx.shadowBlur = 0;
     ctx.shadowColor = "transparent";
 
-    // Fade-out
+    // Langzaam vervagen
     e.alpha -= 0.03;
     if (e.alpha <= 0) {
       electricBursts.splice(i, 1);
     }
   }
 }
+
 
 
 function getRandomElectricColor() {
@@ -2250,16 +2267,16 @@ function triggerSilverExplosion(x, y) {
       dy: Math.sin(angle) * speed,
       radius: Math.random() * 3 + 2,
       alpha: 1,
-      type: "silver" // optioneel voor styling
+      type: "silver"
     });
   }
 
-  // Witte explosies + elektriciteitsstralen
+  // Witte flitsen + elektriciteit over canvas
   for (let i = 0; i < 15; i++) {
     const burstX = Math.random() * canvas.width;
     const burstY = Math.random() * canvas.height;
 
-    // Witte flits (explosie)
+    // Witte flits
     explosions.push({
       x: burstX,
       y: burstY,
@@ -2268,38 +2285,62 @@ function triggerSilverExplosion(x, y) {
       color: "white"
     });
 
-    // 6 elektriciteitsflitsen per witte bol
+    // 6 stralen per flits
     for (let j = 0; j < 6; j++) {
-          const points = [];
-          let prevX = burstX;
-          let prevY = burstY;
-          const segments = 5 + Math.floor(Math.random() * 5);
-          const angle = Math.random() * Math.PI * 2;
-          const length = 40 + Math.random() * 60;
+      const angle = Math.random() * Math.PI * 2;
+      const length = 40 + Math.random() * 60;
+      const segments = 5 + Math.floor(Math.random() * 5);
+      const color = getRandomElectricColor();
+      const flickerSpeed = 0.02 + Math.random() * 0.05;
 
-          for (let s = 0; s < segments; s++) {
-          const segmentLength = length / segments;
-          const deviation = (Math.random() - 0.5) * 20;
- 
-          const nextX = prevX + Math.cos(angle) * segmentLength + Math.cos(angle + Math.PI / 2) * deviation;
-          const nextY = prevY + Math.sin(angle) * segmentLength + Math.sin(angle + Math.PI / 2) * deviation;
+      let points = [];
+      let prevX = burstX;
+      let prevY = burstY;
 
-          points.push({ x: nextX, y: nextY });
-          prevX = nextX;
-          prevY = nextY;
+      for (let s = 0; s < segments; s++) {
+        const segLen = length / segments;
+        const deviation = (Math.random() - 0.5) * 20;
+        const nextX = prevX + Math.cos(angle) * segLen + Math.cos(angle + Math.PI / 2) * deviation;
+        const nextY = prevY + Math.sin(angle) * segLen + Math.sin(angle + Math.PI / 2) * deviation;
+
+        points.push({ x: nextX, y: nextY });
+        prevX = nextX;
+        prevY = nextY;
+      }
+
+      // Optionele zijtak (fork)
+      let forks = [];
+      if (Math.random() < 0.5) {
+        const forkStart = points[Math.floor(points.length / 2)];
+        const forkAngle = angle + (Math.random() < 0.5 ? -1 : 1) * (Math.PI / 3);
+        let forkPoints = [];
+        let forkX = forkStart.x;
+        let forkY = forkStart.y;
+        for (let f = 0; f < 3; f++) {
+          const segLen = length / 6;
+          const dev = (Math.random() - 0.5) * 20;
+          const nx = forkX + Math.cos(forkAngle) * segLen + Math.cos(forkAngle + Math.PI / 2) * dev;
+          const ny = forkY + Math.sin(forkAngle) * segLen + Math.sin(forkAngle + Math.PI / 2) * dev;
+          forkPoints.push({ x: nx, y: ny });
+          forkX = nx;
+          forkY = ny;
         }
+        forks.push(forkPoints);
+      }
 
-        electricBursts.push({
+      electricBursts.push({
         points: points,
+        forks: forks,
         width: 1 + Math.random() * 1.5,
         alpha: 1,
-        color: getRandomElectricColor()
-
-
+        flickerSpeed: flickerSpeed,
+        flickerPhase: Math.random(),
+        color: color
       });
     }
   }
 }
+
 
 
 function triggerBallReset() {
