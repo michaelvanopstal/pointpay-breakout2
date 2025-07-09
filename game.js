@@ -128,6 +128,7 @@ balls.push({
 
 
 
+
 const bonusBricks = [
   { col: 5, row: 3, type: "rocket" },  { col: 2, row: 12, type: "machinegun" },
   { col: 8, row: 4, type: "power" },
@@ -1360,11 +1361,9 @@ function collisionDetection() {
 
 
 function spawnExtraBall(originBall) {
-  // Huidige bal krijgt een lichte afwijking
   originBall.dx = -1;
   originBall.dy = -6;
 
-  // Tweede bal gaat recht omhoog met vaste snelheid
   balls.push({
     x: originBall.x,
     y: originBall.y,
@@ -1372,11 +1371,12 @@ function spawnExtraBall(originBall) {
     dy: -6,
     radius: ballRadius,
     isMain: false,
-    spinCurve: 0,       // ✅ curvebeweging
-    spinTimer: 0,       // ✅ timer om effect af te bouwen
-    spinActive: false   // ✅ geeft aan of effect actief is
+    spinCurve: 0,
+    spinTimer: 0,
+    spinActive: false
   });
 }
+
 
 
 function spawnPxpBag(x, y) {
@@ -1465,21 +1465,28 @@ function draw() {
   if (doublePointsActive && Date.now() - doublePointsStartTime > doublePointsDuration) {
     doublePointsActive = false;
   }
-balls.forEach((ball, index) => {
+
+  balls.forEach((ball, index) => {
   if (ballLaunched) {
     let speedMultiplier = (speedBoostActive && Date.now() - speedBoostStart < speedBoostDuration)
       ? speedBoostMultiplier : 1;
 
-    // ➕ combineer dx + curve in beweging
-    let effectiveDx = ball.dx + (ball.spinCurve || 0);
-    ball.x += effectiveDx * speedMultiplier;
-    ball.y += ball.dy * speedMultiplier;
+    // ✅ snelheid behouden – richting aanpassen met curve
+    const baseSpeed = Math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy);
+    let adjustedDx = ball.dx + (ball.spinActive ? ball.spinCurve : 0);
+    let adjustedDy = ball.dy;
 
-    // 🌀 spin afbouwen
+    const mag = Math.sqrt(adjustedDx * adjustedDx + adjustedDy * adjustedDy);
+    adjustedDx = (adjustedDx / mag) * baseSpeed;
+    adjustedDy = (adjustedDy / mag) * baseSpeed;
+
+    ball.x += adjustedDx * speedMultiplier;
+    ball.y += adjustedDy * speedMultiplier;
+
+    // 🌀 spin timer afbouwen
     if (ball.spinActive && ball.spinTimer > 0) {
-      ball.spinCurve *= 0.94; // iets trager afbouwen
       ball.spinTimer--;
-      if (ball.spinTimer <= 0 || Math.abs(ball.spinCurve) < 0.01) {
+      if (ball.spinTimer <= 0) {
         ball.spinActive = false;
         ball.spinCurve = 0;
       }
@@ -1490,7 +1497,7 @@ balls.forEach((ball, index) => {
     ball.y = paddleY - ballRadius * 2;
   }
 
-  // 🔥 visueel effect bij spin
+  // 🔥 visueel spin-effect
   if (ball.spinActive && ball.spinTimer > 0) {
     ctx.beginPath();
     ctx.arc(ball.x + ball.radius, ball.y + ball.radius, ball.radius + 6, 0, Math.PI * 2);
@@ -1564,7 +1571,7 @@ balls.forEach((ball, index) => {
         const spinDirection = paddleVelocityX > 0 ? 1 : -1;
         ball.spinActive = true;
         ball.spinTimer = SPIN_DURATION;
-        ball.spinCurve = 0.5 * spinDirection; // pas aan voor meer/minder curve
+        ball.spinCurve = 0.5 * spinDirection;
       }
 
       const hitPos = (ball.x - paddleX) / paddleWidth;
