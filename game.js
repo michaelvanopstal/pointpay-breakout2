@@ -1888,21 +1888,27 @@ if (showGameOver) {
   }
 }
 
+// 🎇 Paddle-explosie tekenen en herstellen
+if (paddleExploding) {
+  paddleExplosionParticles.forEach(p => {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255, 100, 0, ${p.alpha})`;
+    ctx.fill();
+    p.x += p.dx;
+    p.y += p.dy;
+    p.alpha -= 0.02;
+  });
 
-  // 🎇 Paddle-explosie tekenen
-  if (paddleExploding) {
-    paddleExplosionParticles.forEach(p => {
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(255, 100, 0, ${p.alpha})`;
-      ctx.fill();
-      p.x += p.dx;
-      p.y += p.dy;
-      p.alpha -= 0.02;
-    });
+  paddleExplosionParticles = paddleExplosionParticles.filter(p => p.alpha > 0);
 
-    paddleExplosionParticles = paddleExplosionParticles.filter(p => p.alpha > 0);
+  // ✅ Herstel paddle zodra explosie klaar is
+  if (paddleExplosionParticles.length === 0) {
+    paddleExploding = false;
+    resetPaddle(); // opnieuw tekenen
   }
+}
+
   
   if (resetOverlayActive) {
   if (Date.now() % 1000 < 500) {
