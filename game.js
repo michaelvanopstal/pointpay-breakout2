@@ -666,7 +666,9 @@ function resetBall() {
     dy: -6,
     radius: ballRadius,
     isMain: true,
-    spinCurve: 0 // ✅ spinCurve toevoegen
+    spinCurve: 0,       // ✅ nodig voor curve-afwijking
+    spinTimer: 0,       // ✅ nodig voor afbouw
+    spinActive: false   // ✅ geeft aan of spin actief is
   }];
   ballLaunched = false;
   ballMoving = false;
@@ -680,6 +682,7 @@ function resetBall() {
     transitionOffsetY = 0;
   }
 }
+
 
 
 
@@ -1366,7 +1369,9 @@ function spawnExtraBall(originBall) {
     dy: -6,
     radius: ballRadius,
     isMain: false,
-    spinCurve: 0 // ✅ nodig voor spin-ondersteuning
+    spinCurve: 0,       // ✅ curvebeweging
+    spinTimer: 0,       // ✅ timer om effect af te bouwen
+    spinActive: false   // ✅ geeft aan of effect actief is
   });
 }
 
