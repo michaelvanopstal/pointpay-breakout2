@@ -108,17 +108,16 @@ let thunderSounds = [thunder1, thunder2, thunder3];
 
 
 
-
 balls.push({
   x: canvas.width / 2,
   y: canvas.height - paddleHeight - 10,
   dx: 0,
   dy: -6,
   radius: 8,
-  isMain: true
-  spinCurve: 0,
-
+  isMain: true,          // ✅ hier moet de komma staan
+  spinCurve: 0           // ✅ laatste property mag zonder komma
 });
+
 
 
 
