@@ -114,9 +114,12 @@ balls.push({
   dx: 0,
   dy: -6,
   radius: 8,
-  isMain: true,          // ✅ hier moet de komma staan
-  spinCurve: 0           // ✅ laatste property mag zonder komma
+  isMain: true,
+  spinCurve: 0,
+  spinTimer: 0,
+  spinActive: false
 });
+
 
 
 
