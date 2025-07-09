@@ -1468,14 +1468,14 @@ balls.forEach((ball, index) => {
     let speedMultiplier = (speedBoostActive && Date.now() - speedBoostStart < speedBoostDuration)
       ? speedBoostMultiplier : 1;
 
-    // 🌀 Gebruik gecombineerde snelheid voor natuurlijke curve
+    // ✅ Combineer dx met spinCurve voor natuurlijke kromming
     let effectiveDx = ball.dx + (ball.spinCurve || 0);
     ball.x += effectiveDx * speedMultiplier;
     ball.y += ball.dy * speedMultiplier;
 
-    // 🧭 Laat spin langzaam afzwakken
+    // 🧭 Laat de spinCurve langzaam afnemen
     if (ball.spinActive && ball.spinTimer > 0) {
-      ball.spinCurve *= 0.93;
+      ball.spinCurve *= 0.93; // afbouw kromming
       ball.spinTimer--;
       if (ball.spinTimer <= 0 || Math.abs(ball.spinCurve) < 0.05) {
         ball.spinActive = false;
@@ -1487,6 +1487,7 @@ balls.forEach((ball, index) => {
     ball.y = paddleY - ballRadius * 2;
   }
 
+  // 🔁 Trail update
   if (!ball.trail) ball.trail = [];
   let last = ball.trail[ball.trail.length - 1] || { x: ball.x, y: ball.y };
   let steps = 3;
@@ -1497,6 +1498,7 @@ balls.forEach((ball, index) => {
   }
   while (ball.trail.length > 20) ball.trail.shift();
 
+  // ✅ Muurbotsingen
   if (ball.x <= ball.radius + 1 && ball.dx < 0) {
     ball.x = ball.radius + 1;
     ball.dx *= -1;
@@ -1516,6 +1518,7 @@ balls.forEach((ball, index) => {
     wallSound.play();
   }
 
+  // ✅ Paddle botsing + spin activatie
   if (
     ball.y + ball.radius > paddleY &&
     ball.y - ball.radius < paddleY + paddleHeight &&
@@ -1563,11 +1566,12 @@ balls.forEach((ball, index) => {
     }
   }
 
+  // ✅ Onderaan uit beeld
   if (ball.y + ball.dy > canvas.height) {
     balls.splice(index, 1);
   }
 
-  // ✨ Trail
+  // ✨ Trail tekenen
   if (ball.trail.length >= 2) {
     const head = ball.trail[ball.trail.length - 1];
     const tail = ball.trail[0];
@@ -1588,7 +1592,7 @@ balls.forEach((ball, index) => {
     ctx.restore();
   }
 
-  // ✨ Spin visueel
+  // ✨ Visueel spin-effect
   if (ball.spinActive && ball.spinTimer > 0) {
     ctx.beginPath();
     ctx.arc(ball.x + ball.radius, ball.y + ball.radius, ball.radius + 6, 0, Math.PI * 2);
@@ -1599,10 +1603,12 @@ balls.forEach((ball, index) => {
     ctx.shadowColor = "rgba(100,150,255,0.6)";
   }
 
+  // ✅ Bal tekenen
   ctx.drawImage(ballImg, ball.x, ball.y, ball.radius * 2, ball.radius * 2);
   ctx.shadowBlur = 0;
   ctx.shadowColor = "transparent";
 });
+
 
 
 
