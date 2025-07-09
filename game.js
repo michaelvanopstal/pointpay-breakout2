@@ -86,6 +86,9 @@ let heartBoardY = 20;
 
 let electricBursts = [];
 
+let lastPaddleX = paddleX;
+let paddleVelocityX = 0;
+
 
 let speedBoostActive = false;
 let speedBoostStart = 0;
@@ -1180,6 +1183,7 @@ function checkCoinCollision() {
   });
 }
 
+
 function collisionDetection() {
   balls.forEach(ball => {
     for (let c = 0; c < brickColumnCount; c++) {
@@ -1203,6 +1207,9 @@ function collisionDetection() {
             ball.y = b.y + brickHeight + ball.radius + 1;
           }
 
+          // 💥 SPIN EFFECT: bij botsing blok, voer spin burst uit
+          spawnSpinVisualEffect(ball.x, ball.y, paddleVelocityX);
+
           // 💖 Hartje laten vallen
           if (b.hasHeart && !b.heartDropped) {
             fallingHearts.push({
@@ -1220,7 +1227,9 @@ function collisionDetection() {
           if (b.type === "stone") {
             bricksSound.currentTime = 0;
             bricksSound.play();
-            b.hits++;
+
+            let extraHit = Math.abs(paddleVelocityX) > 3 ? 1 : 0; // bonusdamage bij spin
+            b.hits += 1 + extraHit;
 
             for (let i = 0; i < 5; i++) {
               stoneDebris.push({
@@ -1262,10 +1271,11 @@ function collisionDetection() {
 
           // 🪙 Gedrag voor silver blokken
           if (b.type === "silver") {
-            b.hits = (b.hits || 0) + 1;
+            let extraHit = Math.abs(paddleVelocityX) > 3 ? 1 : 0;
+            b.hits = (b.hits || 0) + 1 + extraHit;
 
             if (b.hits === 1) {
-              // toon silver2.png – gebeurt in drawBricks()
+              // silver2 wordt getoond in drawBricks
             } else if (b.hits >= 2) {
               b.status = 0;
 
@@ -1524,16 +1534,18 @@ if (
   }
 
   if (reflect) {
-    const hitPos = (ball.x - paddleX) / paddleWidth;
-    const angle = (hitPos - 0.5) * Math.PI / 2;
-    const speed = Math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy);
-    ball.dx = speed * Math.sin(angle);
-    ball.dy = -Math.abs(speed * Math.cos(angle));
+   const hitPos = (ball.x - paddleX) / paddleWidth;
+const baseAngle = (hitPos - 0.5) * Math.PI / 2;
+const spinInfluence = Math.min(Math.max(paddleVelocityX * 0.05, -0.4), 0.4); // clamp tussen -0.4 en 0.4 rad
+const finalAngle = baseAngle + spinInfluence;
 
-    wallSound.currentTime = 0;
-    wallSound.play();
-  }
-}
+const speed = Math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy);
+ball.dx = speed * Math.sin(finalAngle);
+ball.dy = -Math.abs(speed * Math.cos(finalAngle));
+
+// 🔥 Visuele burst toevoegen
+spawnSpinVisualEffect(ball.x, ball.y, paddleVelocityX);
+
 
 
 
@@ -1620,15 +1632,17 @@ if (downPressed) {
   }
 }
 
+// 👉 GEEN let hier! Alleen aanroepen
+updatePaddleMovement();
 
-  drawPaddle();
+drawPaddle();
 
+if (rocketActive && !rocketFired && rocketAmmo > 0) {
+  rocketX = paddleX + paddleWidth / 2 - 12;
+  rocketY = paddleY - 48;
+  ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
+}
 
-  if (rocketActive && !rocketFired && rocketAmmo > 0) {
-    rocketX = paddleX + paddleWidth / 2 - 12;
-    rocketY = paddleY - 48; // ✅ boven de paddle, waar die zich ook bevindt
-    ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
-  }
 
   if (rocketFired) {
     rocketY -= rocketSpeed;
@@ -2357,6 +2371,25 @@ function triggerSilverExplosion(x, y) {
         color: color
       });
     }
+  }
+}
+
+    function spawnSpinVisualEffect(x, y, direction) {
+  const particles = 15;
+  const angle = direction > 0 ? Math.PI / 2 : -Math.PI / 2;
+
+  for (let i = 0; i < particles; i++) {
+    const offsetAngle = angle + (Math.random() - 0.5) * 0.6;
+    const speed = Math.random() * 3 + 2;
+
+    stoneDebris.push({
+      x: x,
+      y: y,
+      dx: Math.cos(offsetAngle) * speed,
+      dy: Math.sin(offsetAngle) * speed,
+      radius: Math.random() * 2 + 1,
+      alpha: 1
+    });
   }
 }
 
