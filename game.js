@@ -116,6 +116,8 @@ balls.push({
   dy: -6,
   radius: 8,
   isMain: true
+  spinCurve: 0,
+
 });
 
 
@@ -1454,143 +1456,145 @@ function draw() {
   }
 
   balls.forEach((ball, index) => {
-    if (ballLaunched) {
-      let speedMultiplier = (speedBoostActive && Date.now() - speedBoostStart < speedBoostDuration)
-        ? speedBoostMultiplier : 1;
-      ball.x += ball.dx * speedMultiplier;
-      ball.y += ball.dy * speedMultiplier;
+  if (ballLaunched) {
+    let speedMultiplier = (speedBoostActive && Date.now() - speedBoostStart < speedBoostDuration)
+      ? speedBoostMultiplier : 1;
 
-      // 🌀 Stap 4 – Spin effect op dx toepassen
-      if (spinEffectActive && spinEffectTimer > 0) {
-        ball.dx += 0.15 * spinDirection;
-        spinEffectTimer--;
-        if (spinEffectTimer <= 0) {
-          spinEffectActive = false;
-          spinDirection = 0;
-        }
-      }
-    } else {
-      ball.x = paddleX + paddleWidth / 2 - ballRadius;
-      ball.y = paddleY - ballRadius * 2;
-    }
+    ball.x += ball.dx * speedMultiplier;
+    ball.y += ball.dy * speedMultiplier;
 
-    if (!ball.trail) ball.trail = [];
-    let last = ball.trail[ball.trail.length - 1] || { x: ball.x, y: ball.y };
-    let steps = 3;
-    for (let i = 1; i <= steps; i++) {
-      let px = last.x + (ball.x - last.x) * (i / steps);
-      let py = last.y + (ball.y - last.y) * (i / steps);
-      ball.trail.push({ x: px, y: py });
-    }
-    while (ball.trail.length > 20) ball.trail.shift();
-
-    if (ball.x <= ball.radius + 1 && ball.dx < 0) {
-      ball.x = ball.radius + 1;
-      ball.dx *= -1;
-      wallSound.currentTime = 0;
-      wallSound.play();
-    }
-    if (ball.x >= canvas.width - ball.radius - 1 && ball.dx > 0) {
-      ball.x = canvas.width - ball.radius - 1;
-      ball.dx *= -1;
-      wallSound.currentTime = 0;
-      wallSound.play();
-    }
-    if (ball.y <= ball.radius + 1 && ball.dy < 0) {
-      ball.y = ball.radius + 1;
-      ball.dy *= -1;
-      wallSound.currentTime = 0;
-      wallSound.play();
-    }
-
-    if (
-      ball.y + ball.radius > paddleY &&
-      ball.y - ball.radius < paddleY + paddleHeight &&
-      ball.x + ball.radius > paddleX &&
-      ball.x - ball.radius < paddleX + paddleWidth
-    ) {
-      let reflect = true;
-
-      if (machineGunActive || machineGunCooldownActive) {
-        const segmentWidth = paddleWidth / 10;
-        for (let i = 0; i < 10; i++) {
-          const segX = paddleX + i * segmentWidth;
-          const isDamaged = paddleDamageZones.some(hitX =>
-            hitX >= segX && hitX <= segX + segmentWidth
-          );
-
-          const ballCenterX = ball.x;
-          if (
-            ballCenterX >= segX &&
-            ballCenterX < segX + segmentWidth &&
-            isDamaged
-          ) {
-            reflect = false;
-            break;
-          }
-        }
-      }
-
-      if (reflect) {
-        // 🌀 Stap 3 – Spin activeren op basis van paddle snelheid
-        if (Math.abs(paddleVelocityX) > SPIN_THRESHOLD) {
-          spinEffectActive = true;
-          spinEffectTimer = SPIN_DURATION;
-          spinDirection = paddleVelocityX > 0 ? -1 : 1;
-
-        }
-
-        const hitPos = (ball.x - paddleX) / paddleWidth;
-        const angle = (hitPos - 0.5) * Math.PI / 2;
-        const speed = Math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy);
-        ball.dx = speed * Math.sin(angle);
-        ball.dy = -Math.abs(speed * Math.cos(angle));
-
-        wallSound.currentTime = 0;
-        wallSound.play();
-      }
-    }
-
-    if (ball.y + ball.dy > canvas.height) {
-      balls.splice(index, 1);
-    }
-
-    // ✨ Trail
-    if (ball.trail.length >= 2) {
-      const head = ball.trail[ball.trail.length - 1];
-      const tail = ball.trail[0];
-      ctx.save();
-      const gradient = ctx.createLinearGradient(
-        head.x + ball.radius, head.y + ball.radius,
-        tail.x + ball.radius, tail.y + ball.radius
-      );
-      gradient.addColorStop(0, "rgba(255, 215, 0, 0.6)");
-      gradient.addColorStop(1, "rgba(255, 215, 0, 0)");
-      ctx.beginPath();
-      ctx.moveTo(head.x + ball.radius, head.y + ball.radius);
-      ctx.lineTo(tail.x + ball.radius, tail.y + ball.radius);
-      ctx.strokeStyle = gradient;
-      ctx.lineWidth = ball.radius * 2.2;
-      ctx.lineCap = "round";
-      ctx.stroke();
-      ctx.restore();
-    }
-
-    // ✨ Stap 5 – Visueel effect bij spin
+    // 🌀 Spin effect – voeg kromming toe op X-as
     if (spinEffectActive && spinEffectTimer > 0) {
-      ctx.beginPath();
-      ctx.arc(ball.x + ball.radius, ball.y + ball.radius, ball.radius + 6, 0, Math.PI * 2);
-      ctx.strokeStyle = `rgba(100, 150, 255, ${spinEffectTimer / SPIN_DURATION})`;
-      ctx.lineWidth = 2;
-      ctx.stroke();
-      ctx.shadowBlur = 15;
-      ctx.shadowColor = "rgba(100,150,255,0.6)";
+      ball.x += ball.spinCurve; // constante curve tijdens spin
+      spinEffectTimer--;
+      if (spinEffectTimer <= 0) {
+        spinEffectActive = false;
+        spinDirection = 0;
+        ball.spinCurve = 0;
+      }
+    }
+  } else {
+    ball.x = paddleX + paddleWidth / 2 - ballRadius;
+    ball.y = paddleY - ballRadius * 2;
+  }
+
+  if (!ball.trail) ball.trail = [];
+  let last = ball.trail[ball.trail.length - 1] || { x: ball.x, y: ball.y };
+  let steps = 3;
+  for (let i = 1; i <= steps; i++) {
+    let px = last.x + (ball.x - last.x) * (i / steps);
+    let py = last.y + (ball.y - last.y) * (i / steps);
+    ball.trail.push({ x: px, y: py });
+  }
+  while (ball.trail.length > 20) ball.trail.shift();
+
+  if (ball.x <= ball.radius + 1 && ball.dx < 0) {
+    ball.x = ball.radius + 1;
+    ball.dx *= -1;
+    wallSound.currentTime = 0;
+    wallSound.play();
+  }
+  if (ball.x >= canvas.width - ball.radius - 1 && ball.dx > 0) {
+    ball.x = canvas.width - ball.radius - 1;
+    ball.dx *= -1;
+    wallSound.currentTime = 0;
+    wallSound.play();
+  }
+  if (ball.y <= ball.radius + 1 && ball.dy < 0) {
+    ball.y = ball.radius + 1;
+    ball.dy *= -1;
+    wallSound.currentTime = 0;
+    wallSound.play();
+  }
+
+  if (
+    ball.y + ball.radius > paddleY &&
+    ball.y - ball.radius < paddleY + paddleHeight &&
+    ball.x + ball.radius > paddleX &&
+    ball.x - ball.radius < paddleX + paddleWidth
+  ) {
+    let reflect = true;
+
+    if (machineGunActive || machineGunCooldownActive) {
+      const segmentWidth = paddleWidth / 10;
+      for (let i = 0; i < 10; i++) {
+        const segX = paddleX + i * segmentWidth;
+        const isDamaged = paddleDamageZones.some(hitX =>
+          hitX >= segX && hitX <= segX + segmentWidth
+        );
+
+        const ballCenterX = ball.x;
+        if (
+          ballCenterX >= segX &&
+          ballCenterX < segX + segmentWidth &&
+          isDamaged
+        ) {
+          reflect = false;
+          break;
+        }
+      }
     }
 
-    ctx.drawImage(ballImg, ball.x, ball.y, ball.radius * 2, ball.radius * 2);
-    ctx.shadowBlur = 0;
-    ctx.shadowColor = "transparent";
-  });
+    if (reflect) {
+      if (Math.abs(paddleVelocityX) > SPIN_THRESHOLD) {
+        spinEffectActive = true;
+        spinEffectTimer = SPIN_DURATION;
+        spinDirection = paddleVelocityX > 0 ? -1 : 1;
+        ball.spinCurve = 0.5 * spinDirection; // vaste curve-ratio
+      }
+
+      const hitPos = (ball.x - paddleX) / paddleWidth;
+      const angle = (hitPos - 0.5) * Math.PI / 2;
+      const speed = Math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy);
+      ball.dx = speed * Math.sin(angle);
+      ball.dy = -Math.abs(speed * Math.cos(angle));
+
+      wallSound.currentTime = 0;
+      wallSound.play();
+    }
+  }
+
+  if (ball.y + ball.dy > canvas.height) {
+    balls.splice(index, 1);
+  }
+
+  // ✨ Trail
+  if (ball.trail.length >= 2) {
+    const head = ball.trail[ball.trail.length - 1];
+    const tail = ball.trail[0];
+    ctx.save();
+    const gradient = ctx.createLinearGradient(
+      head.x + ball.radius, head.y + ball.radius,
+      tail.x + ball.radius, tail.y + ball.radius
+    );
+    gradient.addColorStop(0, "rgba(255, 215, 0, 0.6)");
+    gradient.addColorStop(1, "rgba(255, 215, 0, 0)");
+    ctx.beginPath();
+    ctx.moveTo(head.x + ball.radius, head.y + ball.radius);
+    ctx.lineTo(tail.x + ball.radius, tail.y + ball.radius);
+    ctx.strokeStyle = gradient;
+    ctx.lineWidth = ball.radius * 2.2;
+    ctx.lineCap = "round";
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  // ✨ Spin visueel
+  if (spinEffectActive && spinEffectTimer > 0) {
+    ctx.beginPath();
+    ctx.arc(ball.x + ball.radius, ball.y + ball.radius, ball.radius + 6, 0, Math.PI * 2);
+    ctx.strokeStyle = `rgba(100, 150, 255, ${spinEffectTimer / SPIN_DURATION})`;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = "rgba(100,150,255,0.6)";
+  }
+
+  ctx.drawImage(ballImg, ball.x, ball.y, ball.radius * 2, ball.radius * 2);
+  ctx.shadowBlur = 0;
+  ctx.shadowColor = "transparent";
+});
+
 
   if (resetOverlayActive) {
     if (Date.now() % 1000 < 500) {
