@@ -1458,21 +1458,22 @@ function draw() {
     doublePointsActive = false;
   }
 
-  balls.forEach((ball, index) => {
+balls.forEach((ball, index) => {
   if (ballLaunched) {
     let speedMultiplier = (speedBoostActive && Date.now() - speedBoostStart < speedBoostDuration)
       ? speedBoostMultiplier : 1;
 
-    ball.x += ball.dx * speedMultiplier;
+    // 🌀 Gebruik gecombineerde snelheid voor natuurlijke curve
+    let effectiveDx = ball.dx + (ball.spinCurve || 0);
+    ball.x += effectiveDx * speedMultiplier;
     ball.y += ball.dy * speedMultiplier;
 
-    // 🌀 Spin effect – voeg kromming toe op X-as
-    if (spinEffectActive && spinEffectTimer > 0) {
-      ball.x += ball.spinCurve; // constante curve tijdens spin
-      spinEffectTimer--;
-      if (spinEffectTimer <= 0) {
-        spinEffectActive = false;
-        spinDirection = 0;
+    // 🧭 Laat spin langzaam afzwakken
+    if (ball.spinActive && ball.spinTimer > 0) {
+      ball.spinCurve *= 0.93;
+      ball.spinTimer--;
+      if (ball.spinTimer <= 0 || Math.abs(ball.spinCurve) < 0.05) {
+        ball.spinActive = false;
         ball.spinCurve = 0;
       }
     }
@@ -1540,10 +1541,10 @@ function draw() {
 
     if (reflect) {
       if (Math.abs(paddleVelocityX) > SPIN_THRESHOLD) {
-        spinEffectActive = true;
-        spinEffectTimer = SPIN_DURATION;
-        spinDirection = paddleVelocityX > 0 ? -1 : 1;
-        ball.spinCurve = 0.5 * spinDirection; // vaste curve-ratio
+        ball.spinActive = true;
+        ball.spinTimer = SPIN_DURATION;
+        const spinDirection = paddleVelocityX > 0 ? -1 : 1;
+        ball.spinCurve = 0.5 * spinDirection;
       }
 
       const hitPos = (ball.x - paddleX) / paddleWidth;
@@ -1583,10 +1584,10 @@ function draw() {
   }
 
   // ✨ Spin visueel
-  if (spinEffectActive && spinEffectTimer > 0) {
+  if (ball.spinActive && ball.spinTimer > 0) {
     ctx.beginPath();
     ctx.arc(ball.x + ball.radius, ball.y + ball.radius, ball.radius + 6, 0, Math.PI * 2);
-    ctx.strokeStyle = `rgba(100, 150, 255, ${spinEffectTimer / SPIN_DURATION})`;
+    ctx.strokeStyle = `rgba(100, 150, 255, ${ball.spinTimer / SPIN_DURATION})`;
     ctx.lineWidth = 2;
     ctx.stroke();
     ctx.shadowBlur = 15;
@@ -1597,6 +1598,7 @@ function draw() {
   ctx.shadowBlur = 0;
   ctx.shadowColor = "transparent";
 });
+
 
 
   if (resetOverlayActive) {
