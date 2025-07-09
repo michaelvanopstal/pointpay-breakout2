@@ -1628,7 +1628,6 @@ function draw() {
   previousPaddleX = paddleX;
 
  
-}
 
 
   if (rocketActive && !rocketFired && rocketAmmo > 0) {
