@@ -1536,7 +1536,8 @@ function draw() {
         if (Math.abs(paddleVelocityX) > SPIN_THRESHOLD) {
           spinEffectActive = true;
           spinEffectTimer = SPIN_DURATION;
-          spinDirection = paddleVelocityX > 0 ? 1 : -1;
+          spinDirection = paddleVelocityX > 0 ? -1 : 1;
+
         }
 
         const hitPos = (ball.x - paddleX) / paddleWidth;
