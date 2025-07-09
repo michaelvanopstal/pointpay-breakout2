@@ -665,7 +665,8 @@ function resetBall() {
     dx: 0,
     dy: -6,
     radius: ballRadius,
-    isMain: true
+    isMain: true,
+    spinCurve: 0 // ✅ spinCurve toevoegen
   }];
   ballLaunched = false;
   ballMoving = false;
@@ -679,6 +680,7 @@ function resetBall() {
     transitionOffsetY = 0;
   }
 }
+
 
 
 function resetPaddle(skipBallReset = false, skipCentering = false) {
@@ -1363,9 +1365,11 @@ function spawnExtraBall(originBall) {
     dx: 0,
     dy: -6,
     radius: ballRadius,
-    isMain: false
+    isMain: false,
+    spinCurve: 0 // ✅ nodig voor spin-ondersteuning
   });
 }
+
 
 function spawnPxpBag(x, y) {
   pxpBags.push({
