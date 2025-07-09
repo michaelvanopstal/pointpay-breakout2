@@ -86,14 +86,6 @@ let heartBoardY = 20;
 
 let electricBursts = [];
 
-let previousPaddleX = paddleX;
-let paddleVelocityX = 0;
-let spinEffectActive = false;
-let spinEffectTimer = 0;
-let spinDirection = 0; // -1 = links, 1 = rechts
-const SPIN_DURATION = 60; // aantal frames
-const SPIN_THRESHOLD = 4; // minimale paddle snelheid
-
 
 let speedBoostActive = false;
 let speedBoostStart = 0;
@@ -108,20 +100,15 @@ let thunderSounds = [thunder1, thunder2, thunder3];
 
 
 
+
 balls.push({
   x: canvas.width / 2,
   y: canvas.height - paddleHeight - 10,
   dx: 0,
   dy: -6,
   radius: 8,
-  isMain: true,
-  spinCurve: 0,
-  spinTimer: 0,
-  spinActive: false
+  isMain: true
 });
-
-
-
 
 
 
@@ -669,10 +656,7 @@ function resetBall() {
     dx: 0,
     dy: -6,
     radius: ballRadius,
-    isMain: true,
-    spinCurve: 0,       // ✅ nodig voor curve-afwijking
-    spinTimer: 0,       // ✅ nodig voor afbouw
-    spinActive: false   // ✅ geeft aan of spin actief is
+    isMain: true
   }];
   ballLaunched = false;
   ballMoving = false;
@@ -686,8 +670,6 @@ function resetBall() {
     transitionOffsetY = 0;
   }
 }
-
-
 
 
 function resetPaddle(skipBallReset = false, skipCentering = false) {
@@ -1361,23 +1343,20 @@ function collisionDetection() {
 
 
 function spawnExtraBall(originBall) {
+  // Huidige bal krijgt een lichte afwijking
   originBall.dx = -1;
   originBall.dy = -6;
 
+  // Tweede bal gaat recht omhoog met vaste snelheid
   balls.push({
     x: originBall.x,
     y: originBall.y,
     dx: 0,
     dy: -6,
     radius: ballRadius,
-    isMain: false,
-    spinCurve: 0,
-    spinTimer: 0,
-    spinActive: false
+    isMain: false
   });
 }
-
-
 
 function spawnPxpBag(x, y) {
   pxpBags.push({
@@ -1451,7 +1430,8 @@ function isPaddleBlockedHorizontally(newX) {
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  drawElectricBursts();
+  drawElectricBursts(); // 🔄 VOORAF tekenen, zodat het ONDER alles ligt
+
   collisionDetection();
   drawCoins();
   drawFallingHearts();
@@ -1462,141 +1442,134 @@ function draw() {
   checkFlyingCoinHits();
   drawPointPopups();
 
+
   if (doublePointsActive && Date.now() - doublePointsStartTime > doublePointsDuration) {
     doublePointsActive = false;
   }
 
   balls.forEach((ball, index) => {
-  if (ballLaunched) {
-    let speedMultiplier = (speedBoostActive && Date.now() - speedBoostStart < speedBoostDuration)
-      ? speedBoostMultiplier : 1;
+    if (ballLaunched) {
+      let speedMultiplier = (speedBoostActive && Date.now() - speedBoostStart < speedBoostDuration)
+        ? speedBoostMultiplier : 1;
+      ball.x += ball.dx * speedMultiplier;
+      ball.y += ball.dy * speedMultiplier;
+    } else {
+       ball.x = paddleX + paddleWidth / 2 - ballRadius;
+       ball.y = paddleY - ballRadius * 2;
 
-    // ✅ snelheid behouden – richting aanpassen met curve
-    const baseSpeed = Math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy);
-    let adjustedDx = ball.dx + (ball.spinActive ? ball.spinCurve : 0);
-    let adjustedDy = ball.dy;
-
-    const mag = Math.sqrt(adjustedDx * adjustedDx + adjustedDy * adjustedDy);
-    adjustedDx = (adjustedDx / mag) * baseSpeed;
-    adjustedDy = (adjustedDy / mag) * baseSpeed;
-
-    ball.x += adjustedDx * speedMultiplier;
-    ball.y += adjustedDy * speedMultiplier;
-
-    // 🌀 spin timer afbouwen
-    if (ball.spinActive && ball.spinTimer > 0) {
-      ball.spinTimer--;
-      if (ball.spinTimer <= 0) {
-        ball.spinActive = false;
-        ball.spinCurve = 0;
-      }
     }
+    
+    if (!ball.trail) ball.trail = [];
 
-  } else {
-    ball.x = paddleX + paddleWidth / 2 - ballRadius;
-    ball.y = paddleY - ballRadius * 2;
-  }
-
-  // 🔥 visueel spin-effect
-  if (ball.spinActive && ball.spinTimer > 0) {
-    ctx.beginPath();
-    ctx.arc(ball.x + ball.radius, ball.y + ball.radius, ball.radius + 6, 0, Math.PI * 2);
-    ctx.strokeStyle = `rgba(100, 150, 255, ${ball.spinTimer / SPIN_DURATION})`;
-    ctx.lineWidth = 2;
-    ctx.stroke();
-    ctx.shadowBlur = 15;
-    ctx.shadowColor = "rgba(100,150,255,0.6)";
-  }
-
-  // trail
-  if (!ball.trail) ball.trail = [];
-  let last = ball.trail[ball.trail.length - 1] || { x: ball.x, y: ball.y };
-  let steps = 3;
-  for (let i = 1; i <= steps; i++) {
+    let last = ball.trail[ball.trail.length - 1] || { x: ball.x, y: ball.y };
+    let steps = 3; // hoe meer hoe vloeiender
+    for (let i = 1; i <= steps; i++) {
     let px = last.x + (ball.x - last.x) * (i / steps);
     let py = last.y + (ball.y - last.y) * (i / steps);
     ball.trail.push({ x: px, y: py });
   }
-  while (ball.trail.length > 20) ball.trail.shift();
 
-  // wand botsing
-  if (ball.x <= ball.radius + 1 && ball.dx < 0) {
-    ball.x = ball.radius + 1;
-    ball.dx *= -1;
-    wallSound.currentTime = 0;
-    wallSound.play();
-  }
-  if (ball.x >= canvas.width - ball.radius - 1 && ball.dx > 0) {
-    ball.x = canvas.width - ball.radius - 1;
-    ball.dx *= -1;
-    wallSound.currentTime = 0;
-    wallSound.play();
-  }
-  if (ball.y <= ball.radius + 1 && ball.dy < 0) {
-    ball.y = ball.radius + 1;
-    ball.dy *= -1;
-    wallSound.currentTime = 0;
-    wallSound.play();
-  }
+    while (ball.trail.length > 20) {
+    ball.trail.shift();
+ }
 
-  // paddle botsing + SPIN geven
-  if (
-    ball.y + ball.radius > paddleY &&
-    ball.y - ball.radius < paddleY + paddleHeight &&
-    ball.x + ball.radius > paddleX &&
-    ball.x - ball.radius < paddleX + paddleWidth
-  ) {
-    let reflect = true;
 
-    // schadezones skippen als paddle stuk
-    if (machineGunActive || machineGunCooldownActive) {
-      const segmentWidth = paddleWidth / 10;
-      for (let i = 0; i < 10; i++) {
-        const segX = paddleX + i * segmentWidth;
-        const isDamaged = paddleDamageZones.some(hitX =>
-          hitX >= segX && hitX <= segX + segmentWidth
-        );
-
-        const ballCenterX = ball.x;
-        if (ballCenterX >= segX && ballCenterX < segX + segmentWidth && isDamaged) {
-          reflect = false;
-          break;
-        }
-      }
-    }
-
-    if (reflect) {
-      // spin geven op paddle-velocity
-      if (Math.abs(paddleVelocityX) > SPIN_THRESHOLD) {
-        const spinDirection = paddleVelocityX > 0 ? 1 : -1;
-        ball.spinActive = true;
-        ball.spinTimer = SPIN_DURATION;
-        ball.spinCurve = 0.5 * spinDirection;
-      }
-
-      const hitPos = (ball.x - paddleX) / paddleWidth;
-      const angle = (hitPos - 0.5) * Math.PI / 2;
-      const speed = Math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy);
-      ball.dx = speed * Math.sin(angle);
-      ball.dy = -Math.abs(speed * Math.cos(angle));
-
+    // Veiliger links/rechts
+    if (ball.x <= ball.radius + 1 && ball.dx < 0) {
+      ball.x = ball.radius + 1;
+      ball.dx *= -1;
       wallSound.currentTime = 0;
       wallSound.play();
     }
+    if (ball.x >= canvas.width - ball.radius - 1 && ball.dx > 0) {
+      ball.x = canvas.width - ball.radius - 1;
+      ball.dx *= -1;
+      wallSound.currentTime = 0;
+      wallSound.play();
+    }
+
+    // Veiliger bovenkant
+    if (ball.y <= ball.radius + 1 && ball.dy < 0) {
+      ball.y = ball.radius + 1;
+      ball.dy *= -1;
+      wallSound.currentTime = 0;
+      wallSound.play();
+    }
+if (
+  ball.y + ball.radius > paddleY &&
+  ball.y - ball.radius < paddleY + paddleHeight &&
+  ball.x + ball.radius > paddleX &&
+  ball.x - ball.radius < paddleX + paddleWidth
+) {
+  let reflect = true;
+
+  if (machineGunActive || machineGunCooldownActive) {
+    const segmentWidth = paddleWidth / 10;
+    for (let i = 0; i < 10; i++) {
+      const segX = paddleX + i * segmentWidth;
+      const isDamaged = paddleDamageZones.some(hitX =>
+        hitX >= segX && hitX <= segX + segmentWidth
+      );
+
+      const ballCenterX = ball.x;
+      if (
+        ballCenterX >= segX &&
+        ballCenterX < segX + segmentWidth &&
+        isDamaged
+      ) {
+        reflect = false;
+        break;
+      }
+    }
   }
 
-  if (ball.y + ball.dy > canvas.height) {
-    balls.splice(index, 1);
+  if (reflect) {
+    const hitPos = (ball.x - paddleX) / paddleWidth;
+    const angle = (hitPos - 0.5) * Math.PI / 2;
+    const speed = Math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy);
+    ball.dx = speed * Math.sin(angle);
+    ball.dy = -Math.abs(speed * Math.cos(angle));
+
+    wallSound.currentTime = 0;
+    wallSound.play();
   }
-
-  // teken bal
-  ctx.drawImage(ballImg, ball.x, ball.y, ball.radius * 2, ball.radius * 2);
-  ctx.shadowBlur = 0;
-  ctx.shadowColor = "transparent";
-});
+}
 
 
 
+    if (ball.y + ball.dy > canvas.height) {
+      balls.splice(index, 1); // verwijder bal zonder actie
+    }
+// ✨ Gouden smalle energie-staart (taps en iets smaller dan bal)
+// ✨ Rechte gouden energie-staart — iets groter dan de bal en 2x zo lang
+if (ball.trail.length >= 2) {
+  const head = ball.trail[ball.trail.length - 1]; // meest recente positie
+  const tail = ball.trail[0]; // oudste positie (ver weg van bal)
+
+  ctx.save();
+
+  const gradient = ctx.createLinearGradient(
+    head.x + ball.radius, head.y + ball.radius,
+    tail.x + ball.radius, tail.y + ball.radius
+  );
+
+  ctx.lineWidth = ball.radius * 2.0; // iets kleiner dan 2.2
+  gradient.addColorStop(0, "rgba(255, 215, 0, 0.6)");
+  gradient.addColorStop(1, "rgba(255, 215, 0, 0)");
+
+  ctx.beginPath();
+  ctx.moveTo(head.x + ball.radius, head.y + ball.radius);
+  ctx.lineTo(tail.x + ball.radius, tail.y + ball.radius);
+  ctx.strokeStyle = gradient;
+  ctx.lineWidth = ball.radius * 2.2; // net iets groter dan de bal
+  ctx.lineCap = "round";
+  ctx.stroke();
+
+  ctx.restore();
+}
+
+    ctx.drawImage(ballImg, ball.x, ball.y, ball.radius * 2, ball.radius * 2);
+  });
 
 
   if (resetOverlayActive) {
@@ -1606,36 +1579,49 @@ function draw() {
     }
   }
 
+
+  // ✅ Na de loop: check of alle ballen weg zijn
   if (balls.length === 0 && !paddleExploding) {
-    triggerPaddleExplosion();
+    triggerPaddleExplosion(); // pas nu verlies van leven
   }
 
-  drawBricks();
+ drawBricks();
 
-  if (leftPressed) {
-    const newX = paddleX - paddleSpeed;
-    if (newX > 0 && !isPaddleBlockedHorizontally(newX)) paddleX = newX;
+  
+if (leftPressed) {
+  const newX = paddleX - paddleSpeed;
+  if (newX > 0 && !isPaddleBlockedHorizontally(newX)) {
+    paddleX = newX;
   }
-  if (rightPressed) {
-    const newX = paddleX + paddleSpeed;
-    if (newX + paddleWidth < canvas.width && !isPaddleBlockedHorizontally(newX)) paddleX = newX;
+}
+
+if (rightPressed) {
+  const newX = paddleX + paddleSpeed;
+  if (newX + paddleWidth < canvas.width && !isPaddleBlockedHorizontally(newX)) {
+    paddleX = newX;
   }
-  if (upPressed) {
-    const newY = paddleY - paddleSpeed;
-    if (paddleFreeMove && newY > 0 && !isPaddleBlockedVertically(newY)) paddleY = newY;
+}
+
+// 🔁 Alleen omhoogbeweging beperken tot na afschieten
+if (upPressed) {
+  const newY = paddleY - paddleSpeed;
+
+  if (paddleFreeMove) {
+    if (newY > 0 && !isPaddleBlockedVertically(newY)) {
+      paddleY = newY;
+    }
   }
-  if (downPressed) {
-    const newY = paddleY + paddleSpeed;
-    if (newY + paddleHeight < canvas.height && !isPaddleBlockedVertically(newY)) paddleY = newY;
+}
+
+if (downPressed) {
+  const newY = paddleY + paddleSpeed;
+  if (newY + paddleHeight < canvas.height && !isPaddleBlockedVertically(newY)) {
+    paddleY = newY;
   }
+}
+
 
   drawPaddle();
-
-  // 🧠 Stap 2 – Paddle snelheid updaten aan eind van frame
-  paddleVelocityX = paddleX - previousPaddleX;
-  previousPaddleX = paddleX;
-
- 
 
 
   if (rocketActive && !rocketFired && rocketAmmo > 0) {
