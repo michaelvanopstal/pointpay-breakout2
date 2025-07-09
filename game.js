@@ -1533,19 +1533,20 @@ if (
     }
   }
 
+  
   if (reflect) {
-   const hitPos = (ball.x - paddleX) / paddleWidth;
-const baseAngle = (hitPos - 0.5) * Math.PI / 2;
-const spinInfluence = Math.min(Math.max(paddleVelocityX * 0.05, -0.4), 0.4); // clamp tussen -0.4 en 0.4 rad
-const finalAngle = baseAngle + spinInfluence;
+  const hitPos = (ball.x - paddleX) / paddleWidth;
+  const baseAngle = (hitPos - 0.5) * Math.PI / 2;
+  const spinInfluence = Math.min(Math.max(paddleVelocityX * 0.05, -0.4), 0.4);
+  const finalAngle = baseAngle + spinInfluence;
 
-const speed = Math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy);
-ball.dx = speed * Math.sin(finalAngle);
-ball.dy = -Math.abs(speed * Math.cos(finalAngle));
+  const speed = Math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy);
+  ball.dx = speed * Math.sin(finalAngle);
+  ball.dy = -Math.abs(speed * Math.cos(finalAngle));
 
-// 🔥 Visuele burst toevoegen
-spawnSpinVisualEffect(ball.x, ball.y, paddleVelocityX);
-
+  // 🔥 Visueel effect
+  spawnSpinVisualEffect(ball.x, ball.y, paddleVelocityX);
+} // ✅ einde van if (reflect)
 
 
 
