@@ -1619,13 +1619,7 @@ function draw() {
     ctx.drawImage(ballImg, ball.x, ball.y, ball.radius * 2, ball.radius * 2);
   }); // ✅ sluit balls.forEach correct af
 
-  if (resetOverlayActive) {
-    if (Date.now() % 1000 < 500) {
-      ctx.fillStyle = 'rgba(255, 0, 0, 0.25)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-    }
-  }
-}
+
 
 
   // ✅ Na de loop: check of alle ballen weg zijn
