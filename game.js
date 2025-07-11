@@ -98,6 +98,8 @@ let thunder2 = new Audio("thunder2.mp3");
 let thunder3 = new Audio("thunder3.mp3");
 let thunderSounds = [thunder1, thunder2, thunder3];
 
+let lastPaddleX = paddleX;
+let paddleVelocityX = 0;
 
 
 
@@ -1180,6 +1182,7 @@ function checkCoinCollision() {
   });
 }
 
+
 function collisionDetection() {
   balls.forEach(ball => {
     for (let c = 0; c < brickColumnCount; c++) {
@@ -1260,12 +1263,12 @@ function collisionDetection() {
             return;
           }
 
-          // 🪙 Gedrag voor silver blokken
+          // 🪙 Silver blokken
           if (b.type === "silver") {
             b.hits = (b.hits || 0) + 1;
 
             if (b.hits === 1) {
-              // toon silver2.png – gebeurt in drawBricks()
+              // Laat silver2 zien
             } else if (b.hits >= 2) {
               b.status = 0;
 
@@ -1286,7 +1289,7 @@ function collisionDetection() {
             return;
           }
 
-          // 🎁 Bonusacties
+          // 🎁 Bonusblokken activeren
           switch (b.type) {
             case "power":
             case "flags":
@@ -1327,6 +1330,12 @@ function collisionDetection() {
               break;
           }
 
+          // ✨ STAP 3: kans op doordringen bij spin
+          if (ball.spinActive && Date.now() - ball.spinStartTime <= 3000 && Math.random() < 0.2) {
+            // 20% kans dat bal met spin gewoon doorvliegt zonder effect
+            return;
+          }
+
           b.status = 0;
 
           let earned = (b.type === "normal") ? 5 : (doublePointsActive ? 20 : 10);
@@ -1340,6 +1349,7 @@ function collisionDetection() {
     }
   });
 }
+
 
 
 function spawnExtraBall(originBall) {
@@ -1448,16 +1458,25 @@ function draw() {
   }
 
   balls.forEach((ball, index) => {
-    if (ballLaunched) {
-      let speedMultiplier = (speedBoostActive && Date.now() - speedBoostStart < speedBoostDuration)
-        ? speedBoostMultiplier : 1;
-      ball.x += ball.dx * speedMultiplier;
+  let speedMultiplier = (speedBoostActive && Date.now() - speedBoostStart < speedBoostDuration)
+    ? speedBoostMultiplier : 1;
+
+  if (ballLaunched) {
+    if (ball.spinActive && Date.now() - ball.spinStartTime <= 3000) {
+      const curveStrength = 0.3;
+      ball.x += ball.dx * speedMultiplier + curveStrength * Math.sin(Date.now() / 100);
       ball.y += ball.dy * speedMultiplier;
     } else {
-       ball.x = paddleX + paddleWidth / 2 - ballRadius;
-       ball.y = paddleY - ballRadius * 2;
-
+      ball.spinActive = false;
+      ball.x += ball.dx * speedMultiplier;
+      ball.y += ball.dy * speedMultiplier;
     }
+  } else {
+    ball.x = paddleX + paddleWidth / 2 - ballRadius;
+    ball.y = paddleY - ballRadius * 2;
+  }
+});
+
     
     if (!ball.trail) ball.trail = [];
 
@@ -1523,53 +1542,89 @@ if (
     }
   }
 
-  if (reflect) {
-    const hitPos = (ball.x - paddleX) / paddleWidth;
-    const angle = (hitPos - 0.5) * Math.PI / 2;
-    const speed = Math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy);
-    ball.dx = speed * Math.sin(angle);
-    ball.dy = -Math.abs(speed * Math.cos(angle));
+ if (reflect) {
+  const hitPos = (ball.x - paddleX) / paddleWidth;
+  const angle = (hitPos - 0.5) * Math.PI / 2;
+  const speed = Math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy);
+  ball.dx = speed * Math.sin(angle);
+  ball.dy = -Math.abs(speed * Math.cos(angle));
 
-    wallSound.currentTime = 0;
-    wallSound.play();
+  // ✅ Spin alleen als paddle echt snel beweegt
+  if (Math.abs(paddleVelocityX) > 10) {
+    ball.spinActive = true;
+    ball.spinStartTime = Date.now();
   }
 }
 
 
 
-    if (ball.y + ball.dy > canvas.height) {
-      balls.splice(index, 1); // verwijder bal zonder actie
-    }
-// ✨ Gouden smalle energie-staart (taps en iets smaller dan bal)
-// ✨ Rechte gouden energie-staart — iets groter dan de bal en 2x zo lang
-if (ball.trail.length >= 2) {
-  const head = ball.trail[ball.trail.length - 1]; // meest recente positie
-  const tail = ball.trail[0]; // oudste positie (ver weg van bal)
-
-  ctx.save();
-
-  const gradient = ctx.createLinearGradient(
-    head.x + ball.radius, head.y + ball.radius,
-    tail.x + ball.radius, tail.y + ball.radius
-  );
-
-  ctx.lineWidth = ball.radius * 2.0; // iets kleiner dan 2.2
-  gradient.addColorStop(0, "rgba(255, 215, 0, 0.6)");
-  gradient.addColorStop(1, "rgba(255, 215, 0, 0)");
-
-  ctx.beginPath();
-  ctx.moveTo(head.x + ball.radius, head.y + ball.radius);
-  ctx.lineTo(tail.x + ball.radius, tail.y + ball.radius);
-  ctx.strokeStyle = gradient;
-  ctx.lineWidth = ball.radius * 2.2; // net iets groter dan de bal
-  ctx.lineCap = "round";
-  ctx.stroke();
-
-  ctx.restore();
+if (ball.y + ball.dy > canvas.height) {
+  balls.splice(index, 1); // verwijder bal zonder actie
 }
 
-    ctx.drawImage(ballImg, ball.x, ball.y, ball.radius * 2, ball.radius * 2);
-  });
+// ✨ Gouden energie-staart
+if (ball.trail.length >= 2) {
+  const head = ball.trail[ball.trail.length - 1];
+  const tail = ball.trail[0];
+
+ ctx.save();
+
+// ✨ STAP 5: Gouden glow bij spin
+if (ball.spinActive && Date.now() - ball.spinStartTime <= 3000) {
+  ctx.shadowBlur = 20;
+  ctx.shadowColor = "gold";
+} else {
+  ctx.shadowBlur = 0;
+  ctx.shadowColor = "transparent";
+}
+
+const gradient = ctx.createLinearGradient(
+  head.x + ball.radius, head.y + ball.radius,
+  tail.x + ball.radius, tail.y + ball.radius
+);
+
+gradient.addColorStop(0, "rgba(255, 215, 0, 0.6)");
+gradient.addColorStop(1, "rgba(255, 215, 0, 0)");
+
+ctx.beginPath();
+ctx.moveTo(head.x + ball.radius, head.y + ball.radius);
+ctx.lineTo(tail.x + ball.radius, tail.y + ball.radius);
+ctx.strokeStyle = gradient;
+ctx.lineWidth = ball.radius * 2.2;
+ctx.lineCap = "round";
+ctx.stroke();
+
+ctx.restore();
+
+}
+
+// 🌀 Visuele ringen + sparkles bij actieve spin
+if (ball.spinActive && Date.now() - ball.spinStartTime <= 3000) {
+  // Ringen
+  for (let i = 0; i < 3; i++) {
+    ctx.beginPath();
+    const radius = ball.radius + 4 + i * 2;
+    ctx.strokeStyle = `rgba(255, 255, 255, ${0.3 - i * 0.1})`;
+    ctx.lineWidth = 1;
+    ctx.arc(ball.x + ball.radius, ball.y + ball.radius, radius, 0, 2 * Math.PI);
+    ctx.stroke();
+  }
+
+  // Sparkles
+  for (let i = 0; i < 3; i++) {
+    const angle = Math.random() * 2 * Math.PI;
+    const r = ball.radius + 8;
+    const x = ball.x + ball.radius + Math.cos(angle) * r;
+    const y = ball.y + ball.radius + Math.sin(angle) * r;
+    ctx.beginPath();
+    ctx.arc(x, y, 1.5, 0, 2 * Math.PI);
+    ctx.fillStyle = "white";
+    ctx.fill();
+  }
+}
+
+ctx.drawImage(ballImg, ball.x, ball.y, ball.radius * 2, ball.radius * 2);
+
 
 
   if (resetOverlayActive) {
@@ -1587,7 +1642,6 @@ if (ball.trail.length >= 2) {
 
  drawBricks();
 
-  
 if (leftPressed) {
   const newX = paddleX - paddleSpeed;
   if (newX > 0 && !isPaddleBlockedHorizontally(newX)) {
@@ -1620,41 +1674,44 @@ if (downPressed) {
   }
 }
 
+// 🚀 Bereken paddle snelheid voor spin-detectie
+paddleVelocityX = paddleX - lastPaddleX;
+lastPaddleX = paddleX;
 
-  drawPaddle();
+drawPaddle();
 
+if (rocketActive && !rocketFired && rocketAmmo > 0) {
+  rocketX = paddleX + paddleWidth / 2 - 12;
+  rocketY = paddleY - 48; // ✅ boven de paddle, waar die zich ook bevindt
+  ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
+}
 
-  if (rocketActive && !rocketFired && rocketAmmo > 0) {
-    rocketX = paddleX + paddleWidth / 2 - 12;
-    rocketY = paddleY - 48; // ✅ boven de paddle, waar die zich ook bevindt
-    ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
-  }
+if (rocketFired) {
+  rocketY -= rocketSpeed;
 
-  if (rocketFired) {
-    rocketY -= rocketSpeed;
+  smokeParticles.push({
+    x: rocketX + 15,
+    y: rocketY + 65,
+    radius: Math.random() * 6 + 4,
+    alpha: 1
+  });
 
-    smokeParticles.push({
-      x: rocketX + 15,
-      y: rocketY + 65,
-      radius: Math.random() * 6 + 4,
-      alpha: 1
-    });
-
-    if (rocketY < -48) {
-      rocketFired = false;
-      if (rocketAmmo <= 0) {
-        rocketActive = false;
-      }
-    } else {
-      ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
-      checkRocketCollision();
+  if (rocketY < -48) {
+    rocketFired = false;
+    if (rocketAmmo <= 0) {
+      rocketActive = false;
     }
-  } // ✅ DIT is de juiste afsluitende accolade voor rocketFired-block
-
-  // 🔁 Start level 2 zodra alle blokjes weg zijn
-  if (bricks.every(col => col.every(b => b.status === 0)) && !levelTransitionActive) {
-    startLevelTransition();
+  } else {
+    ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
+    checkRocketCollision();
   }
+} // ✅ DIT is de juiste afsluitende accolade voor rocketFired-block
+
+// 🔁 Start level 2 zodra alle blokjes weg zijn
+if (bricks.every(col => col.every(b => b.status === 0)) && !levelTransitionActive) {
+  startLevelTransition();
+}
+
 
  // Explosies tekenen
 explosions.forEach(e => {
