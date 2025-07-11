@@ -1532,40 +1532,19 @@ function draw() {
   if (doublePointsActive && Date.now() - doublePointsStartTime > doublePointsDuration) {
     doublePointsActive = false;
   }
-
-  balls.forEach((ball, index) => {
+balls.forEach((ball, index) => {
   let speedMultiplier = (speedBoostActive && Date.now() - speedBoostStart < speedBoostDuration)
     ? speedBoostMultiplier : 1;
 
-  // 🌠 Trail opslaan
-  if (!ball.trail) ball.trail = [];
-  ball.trail.push({ x: ball.x, y: ball.y, time: Date.now() });
-  while (ball.trail.length > 40) {
-    ball.trail.shift();
-  }
-
-  // 🌠 Trail tekenen
-  ctx.save();
-  ball.trail.forEach((point, i) => {
-    const age = Date.now() - point.time;
-    const alpha = Math.max(1 - age / 800, 0);
-    const radius = ball.radius * (0.8 + i / ball.trail.length);
-
-    ctx.beginPath();
-    ctx.arc(point.x + ball.radius, point.y + ball.radius, radius, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(255, 215, 0, ${alpha})`;
-    ctx.fill();
-  });
-  ctx.restore();
-
+  // Spinbeweging
   if (ballLaunched) {
     if (ball.spinActive && Date.now() - ball.spinStartTime <= 3000) {
       const t = (Date.now() - ball.spinStartTime) / 1000;
       const spinDirection = Math.sign(paddleVelocityX);
-      const curveForce = Math.min(Math.abs(paddleVelocityX), 12);
+      const curveForce = Math.min(Math.abs(paddleVelocityX), 6); // max 6 px per frame
       const curve = spinDirection * curveForce * (1 - Math.exp(-t * 3));
 
-      ball.x += ball.dx * speedMultiplier + curve;
+      ball.x += (ball.dx + curve) * speedMultiplier;
       ball.y += ball.dy * speedMultiplier;
     } else {
       ball.spinActive = false;
@@ -1577,133 +1556,28 @@ function draw() {
     ball.y = paddleY - ballRadius * 2;
   }
 
-  // 🧱 Wandbotsingen
-  if (ball.x <= ball.radius + 1 && ball.dx < 0) {
-    ball.x = ball.radius + 1;
-    ball.dx *= -1;
-    wallSound.currentTime = 0;
-    wallSound.play();
-  }
-  if (ball.x >= canvas.width - ball.radius - 1 && ball.dx > 0) {
-    ball.x = canvas.width - ball.radius - 1;
-    ball.dx *= -1;
-    wallSound.currentTime = 0;
-    wallSound.play();
-  }
-  if (ball.y <= ball.radius + 1 && ball.dy < 0) {
-    ball.y = ball.radius + 1;
-    ball.dy *= -1;
-    wallSound.currentTime = 0;
-    wallSound.play();
-  }
+  // Simpele trail (geen dikke lijnen)
+  if (!ball.trail) ball.trail = [];
+  ball.trail.push({ x: ball.x, y: ball.y, time: Date.now() });
+  while (ball.trail.length > 25) ball.trail.shift();
 
-  // 🎯 Paddle-botsing
-  if (
-    ball.y + ball.radius > paddleY &&
-    ball.y - ball.radius < paddleY + paddleHeight &&
-    ball.x + ball.radius > paddleX &&
-    ball.x - ball.radius < paddleX + paddleWidth
-  ) {
-    let reflect = true;
-
-    if (machineGunActive || machineGunCooldownActive) {
-      const segmentWidth = paddleWidth / 10;
-      for (let i = 0; i < 10; i++) {
-        const segX = paddleX + i * segmentWidth;
-        const isDamaged = paddleDamageZones.some(hitX =>
-          hitX >= segX && hitX <= segX + segmentWidth
-        );
-
-        const ballCenterX = ball.x;
-        if (
-          ballCenterX >= segX &&
-          ballCenterX < segX + segmentWidth &&
-          isDamaged
-        ) {
-          reflect = false;
-          break;
-        }
-      }
-    }
-
-    if (reflect) {
-      const hitPos = (ball.x - paddleX) / paddleWidth;
-      const angle = (hitPos - 0.5) * Math.PI / 2;
-      const speed = Math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy);
-      ball.dx = speed * Math.sin(angle);
-      ball.dy = -Math.abs(speed * Math.cos(angle));
-
-      if (Math.abs(paddleVelocityX) > 10) {
-        ball.spinActive = true;
-        ball.spinStartTime = Date.now();
-      }
-    }
-  }
-
-  if (ball.y + ball.dy > canvas.height) {
-    balls.splice(index, 1);
-    return;
-  }
-
-  // ✨ Energie-staart
-  if (ball.trail.length >= 2) {
-    const head = ball.trail[ball.trail.length - 1];
-    const tail = ball.trail[0];
-
-    ctx.save();
-    if (ball.spinActive && Date.now() - ball.spinStartTime <= 3000) {
-      ctx.shadowBlur = 20;
-      ctx.shadowColor = "gold";
-    } else {
-      ctx.shadowBlur = 0;
-      ctx.shadowColor = "transparent";
-    }
-
-    const gradient = ctx.createLinearGradient(
-      head.x + ball.radius, head.y + ball.radius,
-      tail.x + ball.radius, tail.y + ball.radius
-    );
-
-    gradient.addColorStop(0, "rgba(255, 215, 0, 0.6)");
-    gradient.addColorStop(1, "rgba(255, 215, 0, 0)");
+  ctx.save();
+  ball.trail.forEach((point, i) => {
+    const age = Date.now() - point.time;
+    const alpha = Math.max(1 - age / 700, 0.05);
+    const radius = ball.radius * 0.5;
 
     ctx.beginPath();
-    ctx.moveTo(head.x + ball.radius, head.y + ball.radius);
-    ctx.lineTo(tail.x + ball.radius, tail.y + ball.radius);
-    ctx.strokeStyle = gradient;
-    ctx.lineWidth = ball.radius * 2.2;
-    ctx.lineCap = "round";
-    ctx.stroke();
-    ctx.restore();
-  }
+    ctx.arc(point.x + ball.radius, point.y + ball.radius, radius, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255, 215, 0, ${alpha})`;
+    ctx.fill();
+  });
+  ctx.restore();
 
-  // 🌀 Ringen + sparkles
-  if (ball.spinActive && Date.now() - ball.spinStartTime <= 3000) {
-    for (let i = 0; i < 3; i++) {
-      ctx.beginPath();
-      const radius = ball.radius + 4 + i * 2;
-      ctx.strokeStyle = `rgba(255, 255, 255, ${0.3 - i * 0.1})`;
-      ctx.lineWidth = 1;
-      ctx.arc(ball.x + ball.radius, ball.y + ball.radius, radius, 0, 2 * Math.PI);
-      ctx.stroke();
-    }
-
-    for (let i = 0; i < 3; i++) {
-      const angle = Math.random() * 2 * Math.PI;
-      const r = ball.radius + 8;
-      const x = ball.x + ball.radius + Math.cos(angle) * r;
-      const y = ball.y + ball.radius + Math.sin(angle) * r;
-      ctx.beginPath();
-      ctx.arc(x, y, 1.5, 0, 2 * Math.PI);
-      ctx.fillStyle = "white";
-      ctx.fill();
-    }
-  }
-
-  // ✅ En nu: 1x correcte bal-tekening
+  // Eén keer de bal tekenen
   ctx.save();
   if (ball.spinActive && Date.now() - ball.spinStartTime <= 3000) {
-    ctx.shadowBlur = 30;
+    ctx.shadowBlur = 15;
     ctx.shadowColor = "gold";
   } else {
     ctx.shadowBlur = 0;
@@ -1711,7 +1585,7 @@ function draw() {
   }
   ctx.drawImage(ballImg, ball.x, ball.y, ball.radius * 2, ball.radius * 2);
   ctx.restore();
-}); // ✅ sluit balls.forEach af
+});
 
 
 
