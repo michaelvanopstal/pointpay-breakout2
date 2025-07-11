@@ -1538,7 +1538,7 @@ function draw() {
     let speedMultiplier = (speedBoostActive && Date.now() - speedBoostStart < speedBoostDuration)
       ? speedBoostMultiplier : 1;
 
-    if (ballLaunched) {
+  if (ballLaunched) {
   if (ball.spinActive && Date.now() - ball.spinStartTime <= 3000) {
     const timeSinceSpin = Date.now() - ball.spinStartTime;
     const spinDirection = Math.sign(paddleVelocityX); // -1 = links, 1 = rechts
@@ -1548,22 +1548,38 @@ function draw() {
     ball.x += ball.dx * speedMultiplier + curve;
     ball.y += ball.dy * speedMultiplier;
 
-    // Powerbal glow versterken
+    // 🎯 Alleen glow op de bal toepassen
+    ctx.save();
     ctx.shadowBlur = 30;
     ctx.shadowColor = "gold";
+    ctx.drawImage(ballImg, ball.x, ball.y, ball.radius * 2, ball.radius * 2);
+    ctx.restore();
+
   } else {
     ball.spinActive = false;
     ball.x += ball.dx * speedMultiplier;
     ball.y += ball.dy * speedMultiplier;
 
+    // 🎯 Geen glow bij normale bal
+    ctx.save();
     ctx.shadowBlur = 0;
     ctx.shadowColor = "transparent";
+    ctx.drawImage(ballImg, ball.x, ball.y, ball.radius * 2, ball.radius * 2);
+    ctx.restore();
   }
 } else {
   // Voor het afschieten → bal zit op paddle
   ball.x = paddleX + paddleWidth / 2 - ballRadius;
   ball.y = paddleY - ballRadius * 2;
+
+  // 🎯 Bal op paddle: geen glow
+  ctx.save();
+  ctx.shadowBlur = 0;
+  ctx.shadowColor = "transparent";
+  ctx.drawImage(ballImg, ball.x, ball.y, ball.radius * 2, ball.radius * 2);
+  ctx.restore();
 }
+
 
     if (!ball.trail) ball.trail = [];
 
