@@ -1624,7 +1624,7 @@ if (ball.spinActive && Date.now() - ball.spinStartTime <= 3000) {
 }
 
 ctx.drawImage(ballImg, ball.x, ball.y, ball.radius * 2, ball.radius * 2);
-
+}); // ✅ sluit balls.forEach correct af
 
 
   if (resetOverlayActive) {
