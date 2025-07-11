@@ -1456,9 +1456,6 @@ function draw() {
   }
 
   balls.forEach((ball, index) => {
-
-  if (typeof ball.dx !== "number") ball.dx = 0;
-  if (typeof ball.dy !== "number") ball.dy = -6;
     
     let speedMultiplier = (speedBoostActive && Date.now() - speedBoostStart < speedBoostDuration)
       ? speedBoostMultiplier : 1;
