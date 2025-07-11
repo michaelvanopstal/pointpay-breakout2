@@ -1196,17 +1196,106 @@ function collisionDetection() {
           ball.y > b.y &&
           ball.y < b.y + brickHeight
         ) {
+          // 🧨 POWERBAL breekt door alles
+          if (ball.spinActive && Date.now() - ball.spinStartTime <= 3000) {
+            b.status = 0;
+
+            // 💥 Optionele visuele explosie
+            if (b.type === "silver") {
+              triggerSilverExplosion(b.x + brickWidth / 2, b.y + brickHeight / 2);
+            } else if (b.type === "stone") {
+              for (let i = 0; i < 5; i++) {
+                stoneDebris.push({
+                  x: b.x + brickWidth / 2,
+                  y: b.y + brickHeight / 2,
+                  dx: (Math.random() - 0.5) * 3,
+                  dy: (Math.random() - 0.5) * 3,
+                  radius: Math.random() * 2 + 1,
+                  alpha: 1
+                });
+              }
+            }
+
+            // ❤️ Hartje laten vallen (ook tijdens spin)
+            if (b.hasHeart && !b.heartDropped) {
+              fallingHearts.push({
+                x: b.x + brickWidth / 2 - 12,
+                y: b.y + brickHeight,
+                dy: 2,
+                collected: false,
+                alpha: 1,
+                pulse: 0
+              });
+              b.heartDropped = true;
+            }
+
+            // 🎁 Bonusblokken blijven werken
+            switch (b.type) {
+              case "power":
+              case "flags":
+                flagsOnPaddle = true;
+                flagTimer = Date.now();
+                flagsActivatedSound.play();
+                break;
+              case "machinegun":
+                machineGunActive = true;
+                machineGunShotsFired = 0;
+                machineGunBullets = [];
+                paddleDamageZones = [];
+                machineGunLastShot = Date.now();
+                machineGunStartTime = Date.now();
+                machineGunGunX = paddleX + paddleWidth / 2 - 30;
+                machineGunGunY = Math.max(paddleY - machineGunYOffset, minMachineGunY);
+                break;
+              case "rocket":
+                rocketActive = true;
+                rocketAmmo = 3;
+                rocketReadySound.play();
+                break;
+              case "doubleball":
+                spawnExtraBall(ball);
+                doubleBallSound.play();
+                break;
+              case "2x":
+                doublePointsActive = true;
+                doublePointsStartTime = Date.now();
+                doublePointsSound.play();
+                break;
+              case "speed":
+                speedBoostActive = true;
+                speedBoostStart = Date.now();
+                speedBoostSound.play();
+                break;
+            }
+
+            const earned = doublePointsActive ? 40 : 20;
+            score += earned;
+            updateScoreDisplay();
+
+            pointPopups.push({
+              x: b.x + brickWidth / 2,
+              y: b.y,
+              value: "+" + earned,
+              alpha: 1
+            });
+
+            b.type = "normal";
+            spawnCoin(b.x, b.y);
+            return; // ⛔ sla rest over tijdens spin
+          }
+
+          // 🔊 Normaal geluid en rebound
           blockSound.currentTime = 0;
           blockSound.play();
-
           ball.dy = -ball.dy;
+
           if (ball.dy < 0) {
             ball.y = b.y - ball.radius - 1;
           } else {
             ball.y = b.y + brickHeight + ball.radius + 1;
           }
 
-          // 💖 Hartje laten vallen
+          // ❤️ Hartje bij normale botsing
           if (b.hasHeart && !b.heartDropped) {
             fallingHearts.push({
               x: b.x + brickWidth / 2 - 12,
@@ -1219,7 +1308,7 @@ function collisionDetection() {
             b.heartDropped = true;
           }
 
-          // 🪨 Steen-blok gedrag
+          // 🪨 Stone-blok
           if (b.type === "stone") {
             bricksSound.currentTime = 0;
             bricksSound.play();
@@ -1263,15 +1352,12 @@ function collisionDetection() {
             return;
           }
 
-          // 🪙 Silver blokken
+          // 🪙 Silver-blok
           if (b.type === "silver") {
             b.hits = (b.hits || 0) + 1;
 
-            if (b.hits === 1) {
-              // Laat silver2 zien
-            } else if (b.hits >= 2) {
+            if (b.hits >= 2) {
               b.status = 0;
-
               triggerSilverExplosion(b.x + brickWidth / 2, b.y + brickHeight / 2);
 
               const earned = doublePointsActive ? 150 : 75;
@@ -1289,7 +1375,7 @@ function collisionDetection() {
             return;
           }
 
-          // 🎁 Bonusblokken activeren
+          // 🎁 Bonusblokken (normaal)
           switch (b.type) {
             case "power":
             case "flags":
@@ -1306,8 +1392,6 @@ function collisionDetection() {
               machineGunStartTime = Date.now();
               machineGunGunX = paddleX + paddleWidth / 2 - 30;
               machineGunGunY = Math.max(paddleY - machineGunYOffset, minMachineGunY);
-              b.status = 0;
-              b.type = "normal";
               break;
             case "rocket":
               rocketActive = true;
@@ -1330,15 +1414,7 @@ function collisionDetection() {
               break;
           }
 
-         if (ball.spinActive && Date.now() - ball.spinStartTime <= 3000) {
-           const timeSinceSpin = Date.now() - ball.spinStartTime;
-           const spinDirection = Math.sign(paddleVelocityX); // -1 = links, 1 = rechts
-           const curveForce = Math.min(Math.abs(paddleVelocityX) / 3, 3); // max 3 px afwijking
-           const curve = spinDirection * curveForce * Math.sin(timeSinceSpin / 100);
-           ball.x += ball.dx * speedMultiplier + curve;
-           ball.y += ball.dy * speedMultiplier;
-         }
-
+          // 🎯 Normale score en vernietiging
           b.status = 0;
 
           let earned = (b.type === "normal") ? 5 : (doublePointsActive ? 20 : 10);
@@ -1352,7 +1428,6 @@ function collisionDetection() {
     }
   });
 }
-
 
 
 function spawnExtraBall(originBall) {
