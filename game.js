@@ -1957,7 +1957,7 @@ if (showGameOver) {
     ctx.fillStyle = 'rgba(255, 0, 0, 0.25)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   }
-}
+
 
   // 🧱 Steenpuin tekenen
   stoneDebris.forEach(p => {
