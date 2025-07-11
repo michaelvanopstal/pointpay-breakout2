@@ -1436,7 +1436,6 @@ function isPaddleBlockedHorizontally(newX) {
   return false;
 }
 
-
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -1452,46 +1451,42 @@ function draw() {
   checkFlyingCoinHits();
   drawPointPopups();
 
-
   if (doublePointsActive && Date.now() - doublePointsStartTime > doublePointsDuration) {
     doublePointsActive = false;
   }
 
   balls.forEach((ball, index) => {
-  let speedMultiplier = (speedBoostActive && Date.now() - speedBoostStart < speedBoostDuration)
-    ? speedBoostMultiplier : 1;
+    let speedMultiplier = (speedBoostActive && Date.now() - speedBoostStart < speedBoostDuration)
+      ? speedBoostMultiplier : 1;
 
-  if (ballLaunched) {
-    if (ball.spinActive && Date.now() - ball.spinStartTime <= 3000) {
-      const curveStrength = 0.3;
-      ball.x += ball.dx * speedMultiplier + curveStrength * Math.sin(Date.now() / 100);
-      ball.y += ball.dy * speedMultiplier;
+    if (ballLaunched) {
+      if (ball.spinActive && Date.now() - ball.spinStartTime <= 3000) {
+        const curveStrength = 0.3;
+        ball.x += ball.dx * speedMultiplier + curveStrength * Math.sin(Date.now() / 100);
+        ball.y += ball.dy * speedMultiplier;
+      } else {
+        ball.spinActive = false;
+        ball.x += ball.dx * speedMultiplier;
+        ball.y += ball.dy * speedMultiplier;
+      }
     } else {
-      ball.spinActive = false;
-      ball.x += ball.dx * speedMultiplier;
-      ball.y += ball.dy * speedMultiplier;
+      ball.x = paddleX + paddleWidth / 2 - ballRadius;
+      ball.y = paddleY - ballRadius * 2;
     }
-  } else {
-    ball.x = paddleX + paddleWidth / 2 - ballRadius;
-    ball.y = paddleY - ballRadius * 2;
-  }
-});
 
-    
     if (!ball.trail) ball.trail = [];
 
     let last = ball.trail[ball.trail.length - 1] || { x: ball.x, y: ball.y };
     let steps = 3; // hoe meer hoe vloeiender
     for (let i = 1; i <= steps; i++) {
-    let px = last.x + (ball.x - last.x) * (i / steps);
-    let py = last.y + (ball.y - last.y) * (i / steps);
-    ball.trail.push({ x: px, y: py });
-  }
+      let px = last.x + (ball.x - last.x) * (i / steps);
+      let py = last.y + (ball.y - last.y) * (i / steps);
+      ball.trail.push({ x: px, y: py });
+    }
 
     while (ball.trail.length > 20) {
-    ball.trail.shift();
- }
-
+      ball.trail.shift();
+    }
 
     // Veiliger links/rechts
     if (ball.x <= ball.radius + 1 && ball.dx < 0) {
@@ -1514,118 +1509,114 @@ function draw() {
       wallSound.currentTime = 0;
       wallSound.play();
     }
-if (
-  ball.y + ball.radius > paddleY &&
-  ball.y - ball.radius < paddleY + paddleHeight &&
-  ball.x + ball.radius > paddleX &&
-  ball.x - ball.radius < paddleX + paddleWidth
-) {
-  let reflect = true;
 
-  if (machineGunActive || machineGunCooldownActive) {
-    const segmentWidth = paddleWidth / 10;
-    for (let i = 0; i < 10; i++) {
-      const segX = paddleX + i * segmentWidth;
-      const isDamaged = paddleDamageZones.some(hitX =>
-        hitX >= segX && hitX <= segX + segmentWidth
-      );
+    if (
+      ball.y + ball.radius > paddleY &&
+      ball.y - ball.radius < paddleY + paddleHeight &&
+      ball.x + ball.radius > paddleX &&
+      ball.x - ball.radius < paddleX + paddleWidth
+    ) {
+      let reflect = true;
 
-      const ballCenterX = ball.x;
-      if (
-        ballCenterX >= segX &&
-        ballCenterX < segX + segmentWidth &&
-        isDamaged
-      ) {
-        reflect = false;
-        break;
+      if (machineGunActive || machineGunCooldownActive) {
+        const segmentWidth = paddleWidth / 10;
+        for (let i = 0; i < 10; i++) {
+          const segX = paddleX + i * segmentWidth;
+          const isDamaged = paddleDamageZones.some(hitX =>
+            hitX >= segX && hitX <= segX + segmentWidth
+          );
+
+          const ballCenterX = ball.x;
+          if (
+            ballCenterX >= segX &&
+            ballCenterX < segX + segmentWidth &&
+            isDamaged
+          ) {
+            reflect = false;
+            break;
+          }
+        }
+      }
+
+      if (reflect) {
+        const hitPos = (ball.x - paddleX) / paddleWidth;
+        const angle = (hitPos - 0.5) * Math.PI / 2;
+        const speed = Math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy);
+        ball.dx = speed * Math.sin(angle);
+        ball.dy = -Math.abs(speed * Math.cos(angle));
+
+        // ✅ Spin alleen als paddle echt snel beweegt
+        if (Math.abs(paddleVelocityX) > 10) {
+          ball.spinActive = true;
+          ball.spinStartTime = Date.now();
+        }
       }
     }
-  }
 
- if (reflect) {
-  const hitPos = (ball.x - paddleX) / paddleWidth;
-  const angle = (hitPos - 0.5) * Math.PI / 2;
-  const speed = Math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy);
-  ball.dx = speed * Math.sin(angle);
-  ball.dy = -Math.abs(speed * Math.cos(angle));
+    if (ball.y + ball.dy > canvas.height) {
+      balls.splice(index, 1); // verwijder bal zonder actie
+    }
 
-  // ✅ Spin alleen als paddle echt snel beweegt
-  if (Math.abs(paddleVelocityX) > 10) {
-    ball.spinActive = true;
-    ball.spinStartTime = Date.now();
-  }
-}
+    // ✨ Gouden energie-staart
+    if (ball.trail.length >= 2) {
+      const head = ball.trail[ball.trail.length - 1];
+      const tail = ball.trail[0];
 
+      ctx.save();
 
+      // ✨ STAP 5: Gouden glow bij spin
+      if (ball.spinActive && Date.now() - ball.spinStartTime <= 3000) {
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = "gold";
+      } else {
+        ctx.shadowBlur = 0;
+        ctx.shadowColor = "transparent";
+      }
 
-if (ball.y + ball.dy > canvas.height) {
-  balls.splice(index, 1); // verwijder bal zonder actie
-}
+      const gradient = ctx.createLinearGradient(
+        head.x + ball.radius, head.y + ball.radius,
+        tail.x + ball.radius, tail.y + ball.radius
+      );
 
-// ✨ Gouden energie-staart
-if (ball.trail.length >= 2) {
-  const head = ball.trail[ball.trail.length - 1];
-  const tail = ball.trail[0];
+      gradient.addColorStop(0, "rgba(255, 215, 0, 0.6)");
+      gradient.addColorStop(1, "rgba(255, 215, 0, 0)");
 
- ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(head.x + ball.radius, head.y + ball.radius);
+      ctx.lineTo(tail.x + ball.radius, tail.y + ball.radius);
+      ctx.strokeStyle = gradient;
+      ctx.lineWidth = ball.radius * 2.2;
+      ctx.lineCap = "round";
+      ctx.stroke();
 
-// ✨ STAP 5: Gouden glow bij spin
-if (ball.spinActive && Date.now() - ball.spinStartTime <= 3000) {
-  ctx.shadowBlur = 20;
-  ctx.shadowColor = "gold";
-} else {
-  ctx.shadowBlur = 0;
-  ctx.shadowColor = "transparent";
-}
+      ctx.restore();
+    }
 
-const gradient = ctx.createLinearGradient(
-  head.x + ball.radius, head.y + ball.radius,
-  tail.x + ball.radius, tail.y + ball.radius
-);
+    // 🌀 Visuele ringen + sparkles bij actieve spin
+    if (ball.spinActive && Date.now() - ball.spinStartTime <= 3000) {
+      for (let i = 0; i < 3; i++) {
+        ctx.beginPath();
+        const radius = ball.radius + 4 + i * 2;
+        ctx.strokeStyle = `rgba(255, 255, 255, ${0.3 - i * 0.1})`;
+        ctx.lineWidth = 1;
+        ctx.arc(ball.x + ball.radius, ball.y + ball.radius, radius, 0, 2 * Math.PI);
+        ctx.stroke();
+      }
 
-gradient.addColorStop(0, "rgba(255, 215, 0, 0.6)");
-gradient.addColorStop(1, "rgba(255, 215, 0, 0)");
+      for (let i = 0; i < 3; i++) {
+        const angle = Math.random() * 2 * Math.PI;
+        const r = ball.radius + 8;
+        const x = ball.x + ball.radius + Math.cos(angle) * r;
+        const y = ball.y + ball.radius + Math.sin(angle) * r;
+        ctx.beginPath();
+        ctx.arc(x, y, 1.5, 0, 2 * Math.PI);
+        ctx.fillStyle = "white";
+        ctx.fill();
+      }
+    }
 
-ctx.beginPath();
-ctx.moveTo(head.x + ball.radius, head.y + ball.radius);
-ctx.lineTo(tail.x + ball.radius, tail.y + ball.radius);
-ctx.strokeStyle = gradient;
-ctx.lineWidth = ball.radius * 2.2;
-ctx.lineCap = "round";
-ctx.stroke();
-
-ctx.restore();
-
-}
-
-// 🌀 Visuele ringen + sparkles bij actieve spin
-if (ball.spinActive && Date.now() - ball.spinStartTime <= 3000) {
-  // Ringen
-  for (let i = 0; i < 3; i++) {
-    ctx.beginPath();
-    const radius = ball.radius + 4 + i * 2;
-    ctx.strokeStyle = `rgba(255, 255, 255, ${0.3 - i * 0.1})`;
-    ctx.lineWidth = 1;
-    ctx.arc(ball.x + ball.radius, ball.y + ball.radius, radius, 0, 2 * Math.PI);
-    ctx.stroke();
-  }
-
-  // Sparkles
-  for (let i = 0; i < 3; i++) {
-    const angle = Math.random() * 2 * Math.PI;
-    const r = ball.radius + 8;
-    const x = ball.x + ball.radius + Math.cos(angle) * r;
-    const y = ball.y + ball.radius + Math.sin(angle) * r;
-    ctx.beginPath();
-    ctx.arc(x, y, 1.5, 0, 2 * Math.PI);
-    ctx.fillStyle = "white";
-    ctx.fill();
-  }
-}
-
-ctx.drawImage(ballImg, ball.x, ball.y, ball.radius * 2, ball.radius * 2);
-}); // ✅ sluit balls.forEach correct af
-
+    ctx.drawImage(ballImg, ball.x, ball.y, ball.radius * 2, ball.radius * 2);
+  }); // ✅ sluit balls.forEach correct af
 
   if (resetOverlayActive) {
     if (Date.now() % 1000 < 500) {
@@ -1633,6 +1624,7 @@ ctx.drawImage(ballImg, ball.x, ball.y, ball.radius * 2, ball.radius * 2);
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
   }
+}
 
 
   // ✅ Na de loop: check of alle ballen weg zijn
