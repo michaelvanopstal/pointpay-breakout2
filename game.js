@@ -1330,11 +1330,14 @@ function collisionDetection() {
               break;
           }
 
-          // ✨ STAP 3: kans op doordringen bij spin
-          if (ball.spinActive && Date.now() - ball.spinStartTime <= 3000 && Math.random() < 0.2) {
-            // 20% kans dat bal met spin gewoon doorvliegt zonder effect
-            return;
-          }
+         if (ball.spinActive && Date.now() - ball.spinStartTime <= 3000) {
+           const timeSinceSpin = Date.now() - ball.spinStartTime;
+           const spinDirection = Math.sign(paddleVelocityX); // -1 = links, 1 = rechts
+           const curveForce = Math.min(Math.abs(paddleVelocityX) / 3, 3); // max 3 px afwijking
+           const curve = spinDirection * curveForce * Math.sin(timeSinceSpin / 100);
+           ball.x += ball.dx * speedMultiplier + curve;
+           ball.y += ball.dy * speedMultiplier;
+         }
 
           b.status = 0;
 
@@ -1461,19 +1464,31 @@ function draw() {
       ? speedBoostMultiplier : 1;
 
     if (ballLaunched) {
-      if (ball.spinActive && Date.now() - ball.spinStartTime <= 3000) {
-        const curveStrength = 0.3;
-        ball.x += ball.dx * speedMultiplier + curveStrength * Math.sin(Date.now() / 100);
-        ball.y += ball.dy * speedMultiplier;
-      } else {
-        ball.spinActive = false;
-        ball.x += ball.dx * speedMultiplier;
-        ball.y += ball.dy * speedMultiplier;
-      }
-    } else {
-      ball.x = paddleX + paddleWidth / 2 - ballRadius;
-      ball.y = paddleY - ballRadius * 2;
-    }
+  if (ball.spinActive && Date.now() - ball.spinStartTime <= 3000) {
+    const timeSinceSpin = Date.now() - ball.spinStartTime;
+    const spinDirection = Math.sign(paddleVelocityX); // -1 = links, 1 = rechts
+    const curveForce = Math.min(Math.abs(paddleVelocityX) / 2.5, 4);
+    const curve = spinDirection * curveForce * Math.sin(timeSinceSpin / 100);
+
+    ball.x += ball.dx * speedMultiplier + curve;
+    ball.y += ball.dy * speedMultiplier;
+
+    // Powerbal glow versterken
+    ctx.shadowBlur = 30;
+    ctx.shadowColor = "gold";
+  } else {
+    ball.spinActive = false;
+    ball.x += ball.dx * speedMultiplier;
+    ball.y += ball.dy * speedMultiplier;
+
+    ctx.shadowBlur = 0;
+    ctx.shadowColor = "transparent";
+  }
+} else {
+  // Voor het afschieten → bal zit op paddle
+  ball.x = paddleX + paddleWidth / 2 - ballRadius;
+  ball.y = paddleY - ballRadius * 2;
+}
 
     if (!ball.trail) ball.trail = [];
 
