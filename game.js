@@ -1703,11 +1703,6 @@ if (rocketFired) {
   }
 } // ✅ DIT is de juiste afsluitende accolade voor rocketFired-block
 
-// 🔁 Start level 2 zodra alle blokjes weg zijn
-if (bricks.every(col => col.every(b => b.status === 0)) && !levelTransitionActive) {
-  startLevelTransition();
-}
-
 
  // Explosies tekenen
 explosions.forEach(e => {
@@ -1956,27 +1951,32 @@ if (showGameOver) {
     paddleExplosionParticles = paddleExplosionParticles.filter(p => p.alpha > 0);
   }
   
-  if (resetOverlayActive) {
+ if (resetOverlayActive) {
   if (Date.now() % 1000 < 500) {
     ctx.fillStyle = 'rgba(255, 0, 0, 0.25)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   }
+}
 
+// 🧱 Steenpuin tekenen – altijd tonen, dus buiten `if (resetOverlayActive)`
+stoneDebris.forEach(p => {
+  ctx.beginPath();
+  ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+  ctx.fillStyle = `rgba(140, 120, 100, ${p.alpha})`;
+  ctx.fill();
+  p.x += p.dx;
+  p.y += p.dy;
+  p.alpha -= 0.02;
+});
+stoneDebris = stoneDebris.filter(p => p.alpha > 0);
 
-  // 🧱 Steenpuin tekenen
-  stoneDebris.forEach(p => {
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(140, 120, 100, ${p.alpha})`;
-    ctx.fill();
-    p.x += p.dx;
-    p.y += p.dy;
-    p.alpha -= 0.02;
-  });
+// ✅ HIER pas level-check (niet eerder!)
+if (bricks.every(col => col.every(b => b.status === 0)) && !levelTransitionActive) {
+  startLevelTransition();
+}
 
-  stoneDebris = stoneDebris.filter(p => p.alpha > 0);
-
-  animationFrameId = requestAnimationFrame(draw);
+// 🔁 Herstart animatielus
+animationFrameId = requestAnimationFrame(draw);
 } // ✅ Sluit function draw() correct af
 
 
